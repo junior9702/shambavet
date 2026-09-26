@@ -1,11 +1,1 @@
-export default function handler(req,res){
-  res.status(200).json({
-    ok:true,
-    service:"Shamba Vet API",
-    geminiConfigured:Boolean(process.env.GEMINI_API_KEY),
-    geminiModel:"gemini-3.8-flash",
-    geminiApi:"Interactions API",
-    firebaseReady:true,
-    mpesaReady:true
-  });
-}
+export default function handler(req,res){res.status(200).json({ok:true,service:"Shamba Vet API",geminiConfigured:Boolean(process.env.GEMINI_API_KEY),primaryModel:"gemini-3.8-flash",fallbackModel:"gemini-3.5-flash-lite",geminiApi:"Interactions API",firebaseReady:true,mpesaReady:true});}
