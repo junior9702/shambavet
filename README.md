@@ -97,3 +97,16 @@ The AI payment reference state now uses a component-scoped `activePaymentReferen
 - Firestore rules include a `vetApplications` collection for public submissions and admin-only review/approval.
 
 PayHero veterinarian registration link: https://short.payhero.co.ke/s/jx8R364pSyukhWLhQKKKjw
+
+
+## Firebase cloud-save fix
+This build now uses Firebase Authentication anonymous sign-in for farmer/browser sessions and stores animal records and AI veterinary cases in Firestore under `users/{uid}/animals` and `users/{uid}/cases`. The app still keeps a local fallback cache.
+
+### Required Firebase setting
+In Firebase Console → Authentication → Sign-in method, enable **Anonymous**. Then publish `firestore.rules` from this project. Without Anonymous Authentication, cloud saving cannot identify a farmer safely; the local fallback will still work.
+
+### What is saved
+- Registered animals
+- AI veterinary cases
+- Changes survive page refreshes and reopening the deployed site in the same browser/device while the anonymous Firebase account remains available.
+- Veterinarian applications continue to save in `vetApplications` for admin review.
