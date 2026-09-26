@@ -80,3 +80,6 @@ Never put the Gemini key in `src/main.jsx`.
 
 ## Vercel production
 This version targets Vercel directly. The Gemini function is `api/ai.js`; Vercel runs it as a serverless function. Local-only API middleware has been removed.
+
+## Vercel dependency fix
+Vite is pinned to 7.x and @vitejs/plugin-react to 5.x because plugin-react 6.x requires Vite 8.x.
