@@ -83,3 +83,17 @@ This version targets Vercel directly. The Gemini function is `api/ai.js`; Vercel
 
 ## Vercel dependency fix
 Vite is pinned to 7.x and @vitejs/plugin-react to 5.x because plugin-react 6.x requires Vite 8.x.
+
+
+## PaymentRef runtime fix
+The AI payment reference state now uses a component-scoped `activePaymentReference` name to avoid the `paymentRef is not defined` runtime error seen in a stale/previous Vercel bundle. Redeploy this version so Vercel generates a fresh frontend bundle.
+
+
+## Veterinarian self-registration
+- Public Vet Registration page lets veterinarians create a professional profile and indicate they are open to job opportunities.
+- Registration fee is KSh 250 and uses the configured PayHero short payment link.
+- Applicants enter their PayHero/M-PESA transaction code; administrators verify the payment and approve the profile.
+- Approved profiles appear in Find a Veterinarian.
+- Firestore rules include a `vetApplications` collection for public submissions and admin-only review/approval.
+
+PayHero veterinarian registration link: https://short.payhero.co.ke/s/jx8R364pSyukhWLhQKKKjw

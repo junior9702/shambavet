@@ -3,8 +3,11 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /veterinarians/{id} {
       allow read: if true;
-      allow create, update, delete: if request.auth != null &&
-        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
+      allow create, update, delete: if request.auth != null && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
+    }
+    match /vetApplications/{id} {
+      allow create: if request.resource.data.fee == 250 && request.resource.data.status == 'pending' && request.resource.data.name is string && request.resource.data.phone is string && request.resource.data.email is string;
+      allow read, update, delete: if request.auth != null && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
     }
     match /admins/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
