@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shambavet.vercel.app/sitemap.xml
