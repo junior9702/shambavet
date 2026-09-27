@@ -107,7 +107,7 @@ function Admin({animals,cases,authUser}){
 }
 function Emergency(){return <><Title I={AlertTriangle} title="Emergency Assistance" text="For serious or life-threatening situations, contact a qualified veterinarian immediately."/><div className="emergencyBox"><AlertTriangle size={58}/><h2>Possible veterinary emergency?</h2><p>Severe breathing difficulty, collapse, uncontrolled bleeding, poisoning, severe bloat and difficult birth require urgent professional help.</p><div className="actions center"><button className="danger"><Phone/> Call veterinarian</button><button className="whatsapp"><MessageCircle/> WhatsApp request</button><button><Search/> Share location</button></div></div></>}
 function Market(){
- const[products,setProducts]=useState([]),[category,setCategory]=useState('all'),[search,setSearch]=useState(''),[userLocation,setUserLocation]=useState(null),[locating,setLocating]=useState(false),[locationMessage,setLocationMessage]=useState('');
+ const[products,setProducts]=useState([]),[category,setCategory]=useState('all'),[search,setSearch]=useState(''),[detailProduct,setDetailProduct]=useState(null),[userLocation,setUserLocation]=useState(null),[locating,setLocating]=useState(false),[locationMessage,setLocationMessage]=useState('');
  const categories=[
   {id:'Veterinary medicines',emoji:'💊',title:'Veterinary Medicines',desc:'Trusted medicines, treatments and animal-health products from listed sellers.',label:'Animal health'},
   {id:'Fertilizers',emoji:'🌱',title:'Fertilizers',desc:'Fertilizers and crop nutrition products for healthier, more productive farms.',label:'Crop nutrition'},
