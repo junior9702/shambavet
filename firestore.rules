@@ -32,6 +32,20 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    match /farmerOrganizationRequests/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted'
+        && request.resource.data.message is string;
+      allow read: if isAdmin() || (signedIn() &&
+        (resource.data.ownerUid == request.auth.uid ||
+         resource.data.organizationOwnerUid == request.auth.uid));
+      allow update: if isAdmin() || (signedIn() &&
+        resource.data.organizationOwnerUid == request.auth.uid &&
+        request.resource.data.organizationId == resource.data.organizationId &&
+        request.resource.data.ownerUid == resource.data.ownerUid);
+      allow delete: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+    }
+
     match /fieldVisitReports/{id} {
       allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.status == 'submitted'
@@ -49,6 +63,20 @@ service cloud.firestore {
     match /trainingRegistrations/{id} {
       allow create: if signedIn() && request.resource.data.farmerUid == request.auth.uid;
       allow read: if isAdmin() || (signedIn() && resource.data.farmerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /farmProjectRequests/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted';
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /expertVisitRequests/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted';
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
       allow update, delete: if isAdmin();
     }
 
