@@ -52,6 +52,20 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    match /farmProjectRequests/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted';
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /expertVisitRequests/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted';
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
     match /veterinarians/{id} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
