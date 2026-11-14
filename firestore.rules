@@ -1,24 +1,73 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
+    }
+
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /farmerProfiles/{uid} {
+      allow create, read, update: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+    }
+
+    match /organizationApplications/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.name is string
+        && request.resource.data.phone is string;
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /organizations/{id} {
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /fieldVisitReports/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted'
+        && request.resource.data.topic is string
+        && request.resource.data.county is string;
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /trainingEvents/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /trainingRegistrations/{id} {
+      allow create: if signedIn() && request.resource.data.farmerUid == request.auth.uid;
+      allow read: if isAdmin() || (signedIn() && resource.data.farmerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
     match /veterinarians/{id} {
       allow read: if true;
-      allow create, update, delete: if request.auth != null && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
+      allow create, update, delete: if isAdmin();
     }
     match /vetApplications/{id} {
-      allow create: if request.resource.data.fee == 250 && request.resource.data.status == 'pending' && request.resource.data.name is string && request.resource.data.phone is string && request.resource.data.email is string;
-      allow read, update, delete: if request.auth != null && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
+      allow create: if request.resource.data.fee == 250 && request.resource.data.status == 'pending'
+        && request.resource.data.name is string && request.resource.data.phone is string
+        && request.resource.data.email is string;
+      allow read, update, delete: if isAdmin();
     }
     match /marketplaceProducts/{id} {
       allow read: if true;
-      allow create, update, delete: if request.auth != null && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
+      allow create, update, delete: if isAdmin();
     }
     match /users/{uid}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
-    }
-    match /admins/{uid} {
-      allow read: if request.auth != null && request.auth.uid == uid;
-      allow write: if false;
+      allow read, write: if signedIn() && request.auth.uid == uid;
     }
   }
 }
