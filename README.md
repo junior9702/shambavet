@@ -1,112 +1,132 @@
-# AgroVet
+# ShambaVet — Kenya Agricultural Hub
 
-Mobile-first AgroVet & Veterinary Assistance platform foundation.
+A Vite + React + Firebase application prepared for Vercel deployment. This release expands the existing ShambaVet veterinary and marketplace platform with farmer profiles, agricultural organization registration and verification, extension field-visit reports, farmer training events, crop production logs, feed-budget calculations and farm-structure planning.
 
-## Included
-- Farmer, veterinarian and admin portal UI
-- Animal profiles and health records
-- AI veterinary assistant demo workflow
-- Medication guidance with safety messaging
-- Veterinarian case handoff
-- Emergency assistance
-- Marketplace foundation
-- Crop assistant foundation
-- M-PESA-ready configuration placeholders
+**Training certificates are intentionally not included.** Training is for practical learning, demonstrations and event participation only.
 
-## Run
-```bash
-npm install
+## Included modules
+
+- Existing ShambaVet home, veterinary assistant UI, animal records, health records, veterinarian directory and registration, emergency information, marketplace, crop assistant and admin tools.
+- Farmer profile and farm information, including email/password account linking so a temporary anonymous session can be upgraded without losing the current Firebase UID and its records.
+- Agricultural organization applications for government departments, county departments, NGOs, cooperatives, farmer groups, research institutions, training institutions and agribusinesses.
+- Public directory of approved organizations only.
+- Field visit and extension reports, county selection, optional GPS capture and optional image upload to Firebase Storage.
+- Published farmer training / field events and farmer interest registration.
+- Admin workspace to approve/reject organization applications, review field reports and publish events.
+- Livestock performance records for milk, eggs, weights, births, mortality and harvests.
+- Crop planting and production records.
+- Feed quantity and cost estimator. It is a budgeting calculator, not a ration-formulation or veterinary prescription tool.
+- Farm structure floor-area, perimeter and preliminary budget calculator. It is not an engineering design or building approval.
+- Firestore and Storage rules for owner/admin access.
+
+## Requirements
+
+- Node.js 20 or newer
+- npm
+- Firebase project with Authentication, Firestore and Storage enabled
+- Vercel account for hosting
+- Optional Gemini API key for the server-side AI veterinary endpoint
+
+## Local installation (Windows PowerShell)
+
+1. Extract the ZIP.
+2. Open PowerShell in the extracted `shambavet-main` folder.
+3. Run:
+
+```powershell
+npm ci
 npm run dev
 ```
 
-Open the local URL shown by Vite.
+4. Open the local URL printed by Vite (usually `http://localhost:5173`).
+5. Before deployment, run:
 
-## Production architecture
-The UI is intentionally ready to connect to a secure backend. API keys, veterinary medication databases, authentication, PostgreSQL and M-PESA credentials must be handled server-side in production.
+```powershell
+npm run build
+```
 
+The production output is `dist/`.
 
-## Firebase
-This version is connected to the AgroVet Firebase project:
-- Firebase App
-- Authentication SDK
-- Cloud Firestore SDK
-- Cloud Storage SDK
-- Analytics SDK (optional/auto-detected)
+## Firebase setup
 
-Before production use, enable the Firebase products you need in the Firebase Console and configure secure Firestore/Storage rules. Never put server credentials or Admin SDK service-account keys in the frontend.
+This project includes a Firebase web configuration for project `agrovet-fa09a` in `src/firebase.js` and `.firebaserc`. Confirm that you own/control this project and that the Firebase web app configuration still matches your console. Firebase web API keys are public client identifiers; never place service-account private keys in this frontend.
 
+In Firebase Console:
 
-## Shamba Vet & Feed Calculator v2
+1. Authentication → Sign-in method: enable **Anonymous** and **Email/Password**.
+2. Firestore Database: create/enable the database.
+3. Storage: create/enable the default bucket.
+4. Ensure the storage bucket configured in `src/firebase.js` matches the bucket shown in Firebase Console.
 
-This version narrows the product to three farmer actions:
-1. Select Kuku, Goat or Cow and describe symptoms.
-2. Receive AI-assisted preliminary guidance and escalate to a veterinarian.
-3. Calculate a starting feed-planning estimate from live weight.
+Then in PowerShell:
 
-Business model foundation:
-- 3 free checks per device, then KSh 49/check.
-- M-PESA STK integration point is designed for a secure backend/Firebase Function.
-- Agrovet partner referral/commission flow.
-- Ad placement is included. Google AdMob itself is for native Android/iOS apps; the web UI contains an ad slot and can be wrapped with Capacitor/native Google Mobile Ads for production.
+```powershell
+firebase login
+firebase use agrovet-fa09a
+firebase deploy --only firestore:rules,storage
+```
 
-AI safety:
-- The browser must not contain a private AI provider key.
-- Production AI should run through a secure backend/Firebase Function.
-- Medicine information is guidance only; final medicine, dose, duration and withdrawal period must be verified by a licensed veterinarian.
-- Feed figures are planning estimates and should be configured/reviewed by livestock nutrition professionals for the target species and production stage.
+If using another Firebase project, update `.firebaserc` and `src/firebase.js` with that project's web configuration before deploying. Do not copy a private service account key into the frontend.
 
+### Create the first platform administrator
 
-## V3 — Any Animal
-The veterinary check now accepts any animal. It includes common livestock, poultry, pets, fish, bees, working animals and an **Other animal** option where the farmer can type any species. Species-specific AI knowledge can be expanded through the secure backend without changing the farmer UI.
+1. Firebase Console → Authentication → Add user: create a trusted administrator email/password account.
+2. Copy that user's **UID**.
+3. Firestore → create collection `admins`.
+4. Create a document whose document ID is exactly that UID.
+5. Add field `enabled` with Boolean value `true`.
+6. Sign in to ShambaVet's **Institution Admin** or existing **Admin Dashboard** using that account.
 
-## V4 complete foundation
-Farmer Portal, animal registration, health-records foundation, AI veterinary assistant, photo/video upload UI, safety-controlled medicine guidance, veterinarian handoff and portal, emergency assistance, AgroVet marketplace, admin dashboard, crop assistant, M-PESA-ready environment, Vercel-ready Vite setup, and responsive mobile UI.
+Never create an admin document for an untrusted user. Admin permissions are controlled by the Firestore `admins/{uid}` record.
 
-Production note: connect AI and M-PESA through secure server/Firebase Functions. Do not put private AI or M-PESA credentials in the browser.
+## Vercel deployment
 
-## Gemini AI setup
-The AI Veterinary Assistant calls `/api/ai`; the Gemini key is server-side and is never placed in the browser. In local development create `.env.local` and set `GEMINI_API_KEY=your_key`. On Vercel add `GEMINI_API_KEY` under Project Settings → Environment Variables. The route uses Google's Gemini `generateContent` endpoint and supports a single uploaded animal image.
+### Git-based deployment
 
-## Local Gemini API fix
-V6 includes a Vite development middleware for `/api/ai`. This prevents the browser from receiving an HTML/empty response from Vite and then failing with `Unexpected end of JSON input`.
+1. Push the extracted project folder to a private or public Git repository you control.
+2. In Vercel, select **Add New → Project** and import that repository.
+3. Framework preset: **Vite**.
+4. Build command: `npm run build`.
+5. Output directory: `dist`.
+6. Install command: `npm ci`.
+7. Add `GEMINI_API_KEY` only if using the AI endpoint. Do not add the key as a `VITE_` variable.
+8. Deploy.
 
-Create `.env.local`:
-`GEMINI_API_KEY=YOUR_KEY`
+### Vercel CLI deployment
 
-Then restart the dev server:
-`npm run dev`
+```powershell
+npm install -g vercel
+vercel login
+vercel
+vercel --prod
+```
 
-Never put the Gemini key in `src/main.jsx`.
+The included `vercel.json` configures Vite output and SPA routing while leaving `/api/*` serverless routes available.
 
-## Vercel production
-This version targets Vercel directly. The Gemini function is `api/ai.js`; Vercel runs it as a serverless function. Local-only API middleware has been removed.
+## Optional Gemini AI
 
-## Vercel dependency fix
-Vite is pinned to 7.x and @vitejs/plugin-react to 5.x because plugin-react 6.x requires Vite 8.x.
+The AI route is `api/ai.js`. Add `GEMINI_API_KEY` in Vercel → Project → Settings → Environment Variables, then redeploy. The AI endpoint is optional; the core farmer, organization, field visit, event, crop record and calculator modules use Firebase.
 
+## Important workflow boundaries
 
-## PaymentRef runtime fix
-The AI payment reference state now uses a component-scoped `activePaymentReference` name to avoid the `paymentRef is not defined` runtime error seen in a stale/previous Vercel bundle. Redeploy this version so Vercel generates a fresh frontend bundle.
+- Organization submissions are **pending** until an administrator verifies them. A submitted organization is not a government-approved or legally accredited institution.
+- Only records with `status: approved` are shown in the public organization directory.
+- Only published training events appear to farmers.
+- Field visit GPS capture is optional and should only be used with the host farmer's knowledge and consent.
+- Visit photographs are optional, restricted by Storage rules and limited to images under 5 MB.
+- Farmer records are private to their Firebase account. Anonymous accounts are device/session dependent; use the Farm Profile page to link an email/password account before changing devices.
+- The feed tool estimates quantity and cost from user-entered values. It does not decide safe feeding rates or balance nutrients.
+- The farm structure tool estimates dimensions and a user-entered floor-area budget only. Obtain qualified engineering, animal-welfare and county approvals before construction.
+- No training certificate feature exists in this release.
 
+## Firestore collections
 
-## Veterinarian self-registration
-- Public Vet Registration page lets veterinarians create a professional profile and indicate they are open to job opportunities.
-- Registration fee is KSh 250 and uses the configured PayHero short payment link.
-- Applicants enter their PayHero/M-PESA transaction code; administrators verify the payment and approve the profile.
-- Approved profiles appear in Find a Veterinarian.
-- Firestore rules include a `vetApplications` collection for public submissions and admin-only review/approval.
+`farmerProfiles`, `organizationApplications`, `organizations`, `fieldVisitReports`, `trainingEvents`, `trainingRegistrations`, existing `veterinarians`, `vetApplications`, `marketplaceProducts`, `admins`, and user-owned subcollections such as `users/{uid}/animals`, `users/{uid}/cases`, `users/{uid}/productionRecords`, `users/{uid}/cropRecords` and `users/{uid}/feedPlans`.
 
-PayHero veterinarian registration link: https://short.payhero.co.ke/s/jx8R364pSyukhWLhQKKKjw
+## Troubleshooting
 
-
-## Firebase cloud-save fix
-This build now uses Firebase Authentication anonymous sign-in for farmer/browser sessions and stores animal records and AI veterinary cases in Firestore under `users/{uid}/animals` and `users/{uid}/cases`. The app still keeps a local fallback cache.
-
-### Required Firebase setting
-In Firebase Console → Authentication → Sign-in method, enable **Anonymous**. Then publish `firestore.rules` from this project. Without Anonymous Authentication, cloud saving cannot identify a farmer safely; the local fallback will still work.
-
-### What is saved
-- Registered animals
-- AI veterinary cases
-- Changes survive page refreshes and reopening the deployed site in the same browser/device while the anonymous Firebase account remains available.
-- Veterinarian applications continue to save in `vetApplications` for admin review.
+- `Missing or insufficient permissions`: deploy the included Firestore and Storage rules; check that the user is signed in and that the administrator UID has `admins/{uid}.enabled == true`.
+- `auth/operation-not-allowed`: enable Anonymous and Email/Password providers in Firebase Authentication.
+- Upload errors: enable Firebase Storage and verify the configured bucket.
+- Vercel API errors: add `GEMINI_API_KEY` if using AI; other app sections do not require it.
+- If the browser shows an old version after deployment, hard-refresh or clear the installed PWA's cached site data; the service-worker cache version is incremented in this release.
