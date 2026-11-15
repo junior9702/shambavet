@@ -235,3 +235,26 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .nutritionStep .nutritionAnalysisGrid b{overflow-wrap:anywhere}
 @media(max-width:900px){.nutritionSourceRow{grid-template-columns:repeat(2,minmax(0,1fr))}.nutritionSourceRow>button{justify-self:start}}
 @media(max-width:560px){.nutritionSourceRow{grid-template-columns:1fr}.nutritionSourceRow>button{width:100%}.nutritionTagList span{font-size:10px}}
+
+/* Crop production management workflow */
+.cropManagementStep{margin:16px 0;padding:20px;border:1px solid #e0e9e2;border-radius:16px;background:#fff}
+.cropManagementStep h3{margin:0 0 7px;color:#17452e;font-size:18px}
+.cropManagementStep>p{color:#65756b;line-height:1.55;margin:0 0 16px}
+.cropCalendar{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:18px 0}
+.cropCalendarItem{display:flex;flex-direction:column;gap:5px;padding:12px;border:1px solid #e1e9e2;border-radius:12px;background:#f8faf8;min-height:78px}
+.cropCalendarItem>span{font-size:10px;font-weight:800;color:#84958a;letter-spacing:.08em}
+.cropCalendarItem>b{font-size:12px;color:#40564a}
+.cropCalendarItem small{color:#207344;font-weight:700}
+.cropCalendarItem.current{border-color:#72b48a;background:#edf8ef;box-shadow:inset 0 0 0 1px #b7ddc2}
+.cropMetrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:16px 0}
+.cropMetrics>div{display:flex;flex-direction:column;gap:6px;padding:14px;border:1px solid #e3ebe4;border-radius:12px;background:#f8fbf8;min-width:0}
+.cropMetrics span,.cropRecordStats span{font-size:11px;color:#718076}
+.cropMetrics b{font-size:16px;color:#1b4b31;overflow-wrap:anywhere}
+.cropMetrics b.positive{color:#207344}
+.cropMetrics b.negative{color:#a33d35}
+.cropFootnote{display:block;color:#748278;line-height:1.5}
+.cropRecordCard{padding:15px 0;border-bottom:1px solid #e7eee8}
+.cropRecordStats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin:12px 0}
+.cropRecordStats span{display:flex;flex-direction:column;gap:4px}
+.cropRecordStats b{font-size:13px;color:#244c35}
+@media(max-width:600px){.cropManagementStep{padding:14px}.cropCalendar{grid-template-columns:repeat(2,minmax(0,1fr))}.cropMetrics{grid-template-columns:1fr 1fr}.cropMetrics b{font-size:14px}}
