@@ -38,7 +38,8 @@ function App(){
  const[animalList,setAnimalList]=useState([]);
  const[cases,setCases]=useState([]);
  const[authUser,setAuthUser]=useState(auth.currentUser||null);
- const[cloudReady,setCloudReady]=useState(!!auth.currentUser),[developerAdmin,setDeveloperAdmin]=useState(false);\n const[notifications,setNotifications]=useState([]),[notificationOpen,setNotificationOpen]=useState(false);
+ const[cloudReady,setCloudReady]=useState(!!auth.currentUser),[developerAdmin,setDeveloperAdmin]=useState(false);
+ const[notifications,setNotifications]=useState([]),[notificationOpen,setNotificationOpen]=useState(false);
  useEffect(()=>{const fn=e=>{e.preventDefault();setInstallEvent(e)};window.addEventListener('beforeinstallprompt',fn);return()=>window.removeEventListener('beforeinstallprompt',fn)},[]);
  useEffect(()=>{
    if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
