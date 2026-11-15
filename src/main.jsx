@@ -21,7 +21,8 @@ const animals=[['chicken','🐔','Kuku / Chicken'],['goat','🐐','Goat'],['cow'
 const label=k=>animals.find(a=>a[0]===k)?.[2]||k;
 const icon=k=>animals.find(a=>a[0]===k)?.[1]||'🐾';
 
-async function createPlatformNotification(data){try{const user=auth.currentUser;if(!user?.uid)return;await addDoc(collection(db,'platformNotifications'),{type:String(data.type||'update'),title:String(data.title||'ShambaVet update').slice(0,100),message:String(data.message||'').slice(0,500),link:String(data.link||'home'),audience:data.audience==='all'?'all':'admins',actorUid:user.uid,createdAt:serverTimestamp(),read:false});}catch(error){console.warn('Notification could not be created:',error?.message||error)}}\nfunction safeReadArray(key){try{const value=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(value)?value:[]}catch{return []}}
+async function createPlatformNotification(data){try{const user=auth.currentUser;if(!user?.uid)return;await addDoc(collection(db,'platformNotifications'),{type:String(data.type||'update'),title:String(data.title||'ShambaVet update').slice(0,100),message:String(data.message||'').slice(0,500),link:String(data.link||'home'),audience:data.audience==='all'?'all':'admins',actorUid:user.uid,createdAt:serverTimestamp(),read:false});}catch(error){console.warn('Notification could not be created:',error?.message||error)}}
+function safeReadArray(key){try{const value=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(value)?value:[]}catch{return []}}
 function safeWrite(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){console.warn('Local storage unavailable:',e)}}
 class AppErrorBoundary extends React.Component{constructor(props){super(props);this.state={failed:false}}static getDerivedStateFromError(){return{failed:true}}componentDidCatch(error){console.error('ShambaVet render error:',error)}render(){if(this.state.failed)return <div style={{maxWidth:720,margin:'12vh auto',padding:24,fontFamily:'Arial,sans-serif',color:'#173e2c'}}><h1>ShambaVet could not load this page</h1><p>A display error was caught so the page does not remain blank. Refresh the page. If the problem continues, contact the platform administrator.</p><button onClick={()=>window.location.reload()}>Reload ShambaVet</button></div>;return this.props.children}}
 
@@ -52,7 +53,7 @@ function App(){
  useEffect(()=>{
    if(!authUser?.uid){setNotifications([]);return;}
    let feeds=[];const merge=()=>{const map=new Map();feeds.flat().forEach(n=>map.set(n.id,n));setNotifications([...map.values()].sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,40));};
-   const unsubs=[];const subscribe=q=>unsubs.push(onSnapshot(q,s=>{feeds.push(s.docs.map(d=>({id:d.id,...d.data()})));merge();},e=>console.warn('Notification feed unavailable:',e.message)));
+   const unsubs=[];const subscribe=q=>{const index=feeds.length;feeds.push([]);unsubs.push(onSnapshot(q,s=>{feeds[index]=s.docs.map(d=>({id:d.id,...d.data()}));merge();},e=>console.warn('Notification feed unavailable:',e.message)));};
    subscribe(query(collection(db,'platformNotifications'),where('audience','==','all'),limit(25)));
    subscribe(query(collection(db,'platformNotifications'),where('recipientUid','==',authUser.uid),limit(25)));
    if(developerAdmin)subscribe(query(collection(db,'platformNotifications'),where('audience','==','admins'),limit(25)));
