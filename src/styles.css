@@ -162,3 +162,38 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .onboardingPrivacy{display:block;color:#829087;font-size:11px;line-height:1.5;margin-top:17px}.onboardingFooter{margin-top:auto;min-height:62px;padding:0;background:transparent;border-top:1px solid #e1eae2;display:flex;justify-content:space-between;align-items:center;gap:12px;color:#829087;font-size:10px}.onboardingFooter span:first-child{font-weight:850;letter-spacing:.08em}
 @media(max-width:760px){.onboardingWelcome{grid-template-columns:1fr;padding:45px 0}.onboardingWelcomeArt{min-height:280px}.onboardingArtIcon{font-size:65px}.onboardingWelcomeCopy h1{font-size:46px}.onboardingWizard{margin:28px auto 38px}.onboardingFooter{padding:14px 0;align-items:flex-start;flex-direction:column;justify-content:center}}
 @media(max-width:520px){.onboardingTop{height:68px}.onboardingSecure{font-size:10px}.onboardingBrand img{width:40px}.onboardingChoices{grid-template-columns:1fr}.onboardingChoice{min-height:62px}.onboardingChoice small{max-width:55%}.onboardingProgressHead{align-items:flex-start;flex-direction:column}.onboardingWelcomeCopy h1{font-size:41px}.onboardingWelcomeCopy>p{font-size:15px}.onboardingWelcomeArt{padding:25px}.onboardingActions button{min-width:0;flex:1}}
+
+
+/* ShambaVet professional desktop and mobile navigation */
+.siteHeader{height:76px;min-height:76px;padding:0 clamp(16px,3vw,42px);gap:clamp(12px,1.7vw,25px);background:rgba(255,255,255,.97);border-bottom:1px solid #e3ebe5;box-shadow:0 3px 14px rgba(20,54,34,.045);backdrop-filter:blur(14px)}
+.siteHeader .brand{flex:0 0 auto;gap:10px;min-width:185px}
+.siteHeader .brandLogo{width:44px;height:43px}
+.siteHeader .brand b{font-size:14px;color:#173e2c;letter-spacing:1.35px}
+.siteHeader .brand small{font-size:9px;letter-spacing:.65px;margin-top:3px}
+.siteHeader .appNav{display:flex;align-items:center;justify-content:center;gap:3px;margin:0 auto;overflow:visible;max-width:none;min-width:0;flex:1}
+.siteHeader .navGroup{position:relative;display:block;flex:0 0 auto;padding:0;border:0}
+.siteHeader .navGroup>summary{list-style:none;display:flex;align-items:center;gap:6px;padding:11px 10px;border-radius:9px;color:#42574a;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;user-select:none}
+.siteHeader .navGroup>summary::-webkit-details-marker{display:none}
+.siteHeader .navGroup>summary:after{content:"";position:absolute;left:10px;right:10px;bottom:3px;height:2px;border-radius:3px;background:transparent}
+.siteHeader .navGroup.activeGroup>summary{color:#176b39;background:#f0f7f1}
+.siteHeader .navGroup[open]>summary{background:#edf6ef;color:#176b39}
+.siteHeader .navGroup>summary svg{transition:transform .16s ease;color:#829087}
+.siteHeader .navGroup[open]>summary svg{transform:rotate(180deg)}
+.siteHeader .navGroupItems{position:absolute;z-index:50;top:calc(100% + 12px);left:0;min-width:230px;display:grid;gap:4px;padding:9px;background:#fff;border:1px solid #e0e9e2;border-radius:14px;box-shadow:0 18px 42px rgba(19,49,30,.16)}
+.siteHeader .navGroupItems:before{content:"";position:absolute;left:0;right:0;top:-13px;height:13px}
+.siteHeader .navGroupItems button{width:100%;min-height:42px;padding:9px 11px;border:0;border-radius:9px;background:transparent;color:#405449;display:flex;align-items:center;gap:10px;text-align:left;font-size:12px;font-weight:650;white-space:nowrap}
+.siteHeader .navGroupItems button>svg:first-child{color:#718679;flex:0 0 auto}
+.siteHeader .navGroupItems button>svg:last-child{margin-left:auto;color:#168044}
+.siteHeader .navGroupItems button:hover{background:#f3f8f4;color:#176b39;transform:none}
+.siteHeader .navGroupItems button.active{background:#eaf5ec;color:#176b39}
+.siteHeader .headerActions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.siteHeader .installTop{margin:0;min-height:39px;padding:0 12px;display:flex;align-items:center;gap:7px;border:1px solid #dce8de;border-radius:10px;background:#fff;color:#365b43;font-size:11px;font-weight:750}
+.siteHeader .installTop:hover{background:#f3f8f4;transform:none}
+.siteHeader .accountTop{margin:0;min-height:41px;max-width:210px;padding:0 11px;display:flex;align-items:center;gap:8px;border:1px solid #dce8de;border-radius:11px;background:#f8fbf8;color:#294c36;font-size:11px;font-weight:750}
+.siteHeader .accountTop span{max-width:135px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.siteHeader .accountTop:hover{background:#f0f7f1;transform:none}
+.siteHeader .menu{display:none}
+@media(max-width:1250px) and (min-width:1051px){.siteHeader{gap:10px;padding-left:18px;padding-right:18px}.siteHeader .brand{min-width:160px}.siteHeader .brandLogo{width:39px}.siteHeader .navGroup>summary{font-size:10px;padding:10px 6px;gap:3px}.siteHeader .headerActions{gap:5px}.siteHeader .installTop{padding:0 8px}.siteHeader .accountTop{max-width:155px;padding:0 8px}.siteHeader .accountTop span{max-width:95px}}
+@media(max-width:1050px){.siteHeader{height:70px;min-height:70px;padding:0 18px;gap:10px}.siteHeader .brand{min-width:0}.siteHeader .appNav{display:none}.siteHeader .appNav.open{display:flex;position:absolute;top:70px;left:0;right:0;max-width:none;max-height:calc(100vh - 70px);overflow-y:auto;overflow-x:hidden;margin:0;padding:13px 16px 22px;background:#fff;box-shadow:0 20px 34px rgba(19,49,30,.16);border-bottom:1px solid #dce7de;align-items:stretch;justify-content:flex-start;flex-direction:column;gap:7px}.siteHeader .navGroup{width:100%;border:1px solid #e7eee8;border-radius:12px;background:#fff;overflow:visible}.siteHeader .navGroup>summary{min-height:48px;padding:12px 14px;justify-content:space-between;font-size:13px}.siteHeader .navGroup>summary svg{margin-left:auto}.siteHeader .navGroupItems{position:static;min-width:0;box-shadow:none;border:0;border-top:1px solid #edf2ee;border-radius:0 0 12px 12px;padding:7px;grid-template-columns:repeat(2,minmax(0,1fr));background:#fbfdfb}.siteHeader .navGroupItems:before{display:none}.siteHeader .navGroupItems button{white-space:normal;min-height:44px;font-size:12px;background:#fff}.siteHeader .headerActions{margin-left:auto}.siteHeader .menu{display:grid;place-items:center;width:41px;height:41px;margin:0;border:1px solid #dce8de;border-radius:10px;background:#fff;color:#244a32}.siteHeader .menu:hover{background:#f0f7f1;transform:none}}
+@media(max-width:560px){.siteHeader{padding:0 12px}.siteHeader .brandLogo{width:37px;height:38px}.siteHeader .brand b{font-size:12px}.siteHeader .brand small{font-size:8px}.siteHeader .headerActions{gap:5px}.siteHeader .installTop{width:38px;min-width:38px;padding:0;justify-content:center}.siteHeader .installTop span{display:none}.siteHeader .accountTop{max-width:43px;width:43px;min-width:43px;padding:0;justify-content:center;gap:0}.siteHeader .accountTop span,.siteHeader .accountTop>svg:last-child{display:none}.siteHeader .menu{width:39px;height:39px}.siteHeader .appNav.open{padding-left:11px;padding-right:11px}}
+@media(min-width:1051px){.siteHeader .navGroupItems{display:none}.siteHeader .navGroup[open] .navGroupItems{display:grid}}
