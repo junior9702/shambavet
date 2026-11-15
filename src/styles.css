@@ -205,3 +205,19 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .siteHeader .navGroup.activeGroup .navGroupImage{outline:2px solid #b9dfc3;outline-offset:1px}
 @media(max-width:1050px){.siteHeader .navGroup>summary{gap:11px}.siteHeader .navGroupImage{width:36px;height:36px;flex-basis:36px;border-radius:10px}.siteHeader .navGroup>summary>span{flex:1}.siteHeader .navGroup>summary svg{margin-left:auto}}
 @media(max-width:560px){.siteHeader .navGroupImage{width:34px;height:34px;flex-basis:34px}}
+
+/* Live platform notifications */
+.notificationWrap{position:relative;display:flex;align-items:center}
+.notificationTop{position:relative;display:grid;place-items:center;width:40px;height:40px;border:1px solid #dce7de;border-radius:12px;background:#fff;color:#173e2c}
+.notificationTop i{position:absolute;right:-5px;top:-6px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#c52f35;color:#fff;font-size:10px;font-style:normal;font-weight:800;display:grid;place-items:center}
+.notificationPanel{position:absolute;z-index:120;right:0;top:48px;width:min(380px,calc(100vw - 24px));max-height:470px;overflow:auto;background:#fff;border:1px solid #dce7de;border-radius:16px;box-shadow:0 18px 48px rgba(18,45,30,.2);padding:10px}
+.notificationHead{position:sticky;top:-10px;z-index:1;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:8px 5px 12px;border-bottom:1px solid #edf1ed}
+.notificationHead button{border:0;background:transparent;color:#188344;font-weight:700}
+.notificationItem{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;padding:12px 10px;border:0;border-bottom:1px solid #edf1ed;background:#fff;color:#233b2d;border-radius:9px}
+.notificationItem.unread{background:#f0f8f1}
+.notificationItem strong{font-size:13px}
+.notificationItem span{font-size:12px;line-height:1.45;color:#607168}
+.notificationItem small{font-size:10px;color:#849188}
+.notificationEmpty{padding:24px 12px;text-align:center;color:#718078;font-size:13px;line-height:1.5}
+@media(max-width:1050px){.notificationPanel{right:-54px;top:46px}}
+@media(max-width:560px){.notificationPanel{right:-50px;width:calc(100vw - 24px)}}
