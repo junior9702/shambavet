@@ -27,7 +27,8 @@ class AppErrorBoundary extends React.Component{constructor(props){super(props);t
 function App(){
  const[page,setPage]=useState('home'),[open,setOpen]=useState(false),[installOpen,setInstallOpen]=useState(false),[installEvent,setInstallEvent]=useState(null);
  const[accountOpen,setAccountOpen]=useState(false),[authMode,setAuthMode]=useState('signin'),[authEmail,setAuthEmail]=useState(''),[authPassword,setAuthPassword]=useState(''),[authBusy,setAuthBusy]=useState(false),[authMessage,setAuthMessage]=useState('');
- const authPausedRef=useRef(false);\n if(!authPausedRef.current){try{authPausedRef.current=localStorage.getItem('shambavet_signed_out')==='1'}catch{}}
+ const authPausedRef=useRef(false);
+ if(!authPausedRef.current){try{authPausedRef.current=localStorage.getItem('shambavet_signed_out')==='1'}catch{}}
  const[animalList,setAnimalList]=useState([]);
  const[cases,setCases]=useState([]);
  const[authUser,setAuthUser]=useState(auth.currentUser||null);
