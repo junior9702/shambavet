@@ -48,8 +48,8 @@
 .nutritionStep{padding:0!important;overflow:hidden}
 .nutritionStep>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;font-size:15px}
 .nutritionStep>summary::-webkit-details-marker{display:none}
-.nutritionStep>summary:after{content:'+';font-size:22px;font-weight:700;color:#28734a}
-.nutritionStep[open]>summary:after{content:'−'}
+.nutritionStep>summary:after{content:'';width:9px;height:9px;flex:0 0 9px;border-right:2px solid #28734a;border-bottom:2px solid #28734a;transform:rotate(45deg) translateY(-2px);transition:transform .2s ease;justify-self:end}
+.nutritionStep[open]>summary:after{content:'';transform:rotate(225deg) translateY(-2px)}
 .nutritionStep>summary span{font-size:12px;color:#6a786f;font-weight:400;text-align:right}
 .nutritionStepBody{padding:0 18px 18px}
 .feedProcedure{padding-left:22px;display:grid;gap:12px;line-height:1.6}
@@ -277,3 +277,11 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .agrovetAvailabilityToggle small{font-size:12px;color:#68796d;line-height:1.45}
 .agrovetProductRow .secondary{border:1px solid #cbdccf;background:#f5faf6;color:#28583b;border-radius:9px;padding:8px 11px;font-weight:700;cursor:pointer}
 .agrovetProductRow .secondary:hover{background:#e7f3e9}
+
+
+/* Refined nutrition disclosure control: compact, aligned chevron instead of plus/minus */
+.nutritionStep>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:18px}
+.nutritionStep>summary>b,.nutritionStep>summary>span{grid-column:1}
+.nutritionStep>summary:after{grid-column:2;grid-row:1 / span 2;align-self:center}
+.nutritionStep>summary:focus-visible{outline:3px solid #9bd4ae;outline-offset:-3px;border-radius:12px}
+@media(max-width:650px){.nutritionStep>summary{align-items:center;flex-direction:initial}.nutritionStep>summary span{text-align:left}}
