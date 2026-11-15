@@ -258,3 +258,13 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .cropRecordStats span{display:flex;flex-direction:column;gap:4px}
 .cropRecordStats b{font-size:13px;color:#244c35}
 @media(max-width:600px){.cropManagementStep{padding:14px}.cropCalendar{grid-template-columns:repeat(2,minmax(0,1fr))}.cropMetrics{grid-template-columns:1fr 1fr}.cropMetrics b{font-size:14px}}
+
+/* Farmer feed ingredient marketplace workflow */
+.farmerFeedListing{border:1px solid #cfe4d4;background:linear-gradient(145deg,#f7fcf7,#fff)}
+.farmerListingHead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.farmerListingHead p{max-width:760px}
+.farmerListingIcon{display:grid;place-items:center;width:52px;height:52px;flex:0 0 52px;border-radius:15px;background:#e5f4e8;font-size:26px}
+.marketIngredientBtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;align-self:end;min-height:42px;padding:9px 13px;border:1px solid #b8d7c1;border-radius:9px;background:#eef8f0;color:#1c6338;font-weight:700;cursor:pointer;white-space:nowrap}
+.marketIngredientBtn:hover{background:#dff1e3}
+.farmerFeedListing .formGrid{margin:14px 0}
+@media(max-width:600px){.farmerListingHead{gap:8px}.farmerListingIcon{width:42px;height:42px;flex-basis:42px}}
