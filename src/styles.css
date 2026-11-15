@@ -58,3 +58,24 @@
 .marketSellerCta p{margin:5px 0 0;color:#607166;font-size:13px}
 .marketSellerCta button{white-space:nowrap}
 @media(max-width:650px){.marketSellerCta{align-items:stretch;flex-direction:column}.marketSellerCta button{width:100%}.nutritionStep>summary{align-items:flex-start;flex-direction:column}.nutritionStep>summary span{text-align:left}}
+
+
+/* Agrovet seller dashboard and Cloudinary product image upload */
+.agrovetShopDashboard{border:1px solid #b9e6ca;background:linear-gradient(135deg,#f0fff5,#ffffff)}
+.agrovetDashboardHeading{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.agrovetDashboardHeading h2{margin:12px 0 6px}
+.agrovetDashboardHeading p{margin:0;color:#64748b}
+.agrovetShopStats{display:grid;grid-template-columns:repeat(3,minmax(74px,1fr));gap:4px 16px;text-align:center;padding:14px 18px;background:#fff;border:1px solid #dcefe3;border-radius:14px}
+.agrovetShopStats b{font-size:1.35rem;color:#168044}
+.agrovetShopStats small{font-size:.75rem;color:#64748b}
+.agrovetImageUpload{display:flex;align-items:center;gap:14px;padding:18px;border:2px dashed #9acdae;border-radius:14px;background:#f6fff8;color:#16733d;cursor:pointer;margin:14px 0;position:relative}
+.agrovetImageUpload span{display:flex;flex-direction:column;gap:4px}
+.agrovetImageUpload small{color:#64748b;font-weight:400}
+.agrovetImageUpload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.agrovetImagePreview{display:flex;align-items:center;gap:14px;margin:12px 0 18px;padding:12px;border:1px solid #dce8df;border-radius:12px}
+.agrovetImagePreview img{width:104px;height:104px;object-fit:cover;border-radius:9px}
+.agrovetImagePreview div{display:flex;flex-direction:column;gap:5px}
+.agrovetImagePreview small{color:#64748b}
+.agrovetImagePreview button{align-self:flex-start;border:0;background:transparent;color:#b42318;padding:4px 0;cursor:pointer}
+.agrovetProductRow{align-items:center;flex-wrap:wrap}
+@media(max-width:640px){.agrovetDashboardHeading{display:block}.agrovetShopStats{margin-top:16px}.agrovetShopStats{grid-template-columns:repeat(3,minmax(0,1fr));padding:10px 8px}.agrovetProductRow{align-items:flex-start}}
