@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState}from"react";
 import{createRoot}from"react-dom/client";
-import{Activity,AlertTriangle,Brain,Camera,CheckCircle2,ClipboardList,CloudUpload,CreditCard,FileText,Home as HomeIcon,Leaf,Menu,MessageCircle,Phone,Plus,Search,ShieldCheck,ShoppingBag,Stethoscope,UserRound,X,MapPin,Navigation,LogIn,LogOut,Download,Trash2,Map as MapIcon,Building2,GraduationCap,CalendarDays,ClipboardCheck,Users,Sprout,Upload,LocateFixed,Wallet,Boxes,CalendarCheck,Bell,ChevronDown,UserCircle}from"lucide-react";
+import{Activity,AlertTriangle,Brain,Camera,Check,CheckCircle2,ClipboardList,CloudUpload,CreditCard,FileText,Home as HomeIcon,Leaf,Menu,MessageCircle,Phone,Plus,Search,ShieldCheck,ShoppingBag,Stethoscope,UserRound,X,MapPin,Navigation,LogIn,LogOut,Download,Trash2,Map as MapIcon,Building2,GraduationCap,CalendarDays,ClipboardCheck,Users,Sprout,Upload,LocateFixed,Wallet,Boxes,CalendarCheck,Bell,ChevronDown,UserCircle}from"lucide-react";
 import{collection,addDoc,deleteDoc,doc,onSnapshot,orderBy,query,serverTimestamp,setDoc,updateDoc,getDoc,where}from"firebase/firestore";
 import{signInAnonymously,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,onAuthStateChanged,EmailAuthProvider,linkWithCredential}from"firebase/auth";
 import{auth,db,storage}from"./firebase";
