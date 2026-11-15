@@ -205,3 +205,75 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .siteHeader .navGroup.activeGroup .navGroupImage{outline:2px solid #b9dfc3;outline-offset:1px}
 @media(max-width:1050px){.siteHeader .navGroup>summary{gap:11px}.siteHeader .navGroupImage{width:36px;height:36px;flex-basis:36px;border-radius:10px}.siteHeader .navGroup>summary>span{flex:1}.siteHeader .navGroup>summary svg{margin-left:auto}}
 @media(max-width:560px){.siteHeader .navGroupImage{width:34px;height:34px;flex-basis:34px}}
+
+/* Live platform notifications */
+.notificationWrap{position:relative;display:flex;align-items:center}
+.notificationTop{position:relative;display:grid;place-items:center;width:40px;height:40px;border:1px solid #dce7de;border-radius:12px;background:#fff;color:#173e2c}
+.notificationTop i{position:absolute;right:-5px;top:-6px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#c52f35;color:#fff;font-size:10px;font-style:normal;font-weight:800;display:grid;place-items:center}
+.notificationPanel{position:absolute;z-index:120;right:0;top:48px;width:min(380px,calc(100vw - 24px));max-height:470px;overflow:auto;background:#fff;border:1px solid #dce7de;border-radius:16px;box-shadow:0 18px 48px rgba(18,45,30,.2);padding:10px}
+.notificationHead{position:sticky;top:-10px;z-index:1;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:8px 5px 12px;border-bottom:1px solid #edf1ed}
+.notificationHead button{border:0;background:transparent;color:#188344;font-weight:700}
+.notificationItem{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;padding:12px 10px;border:0;border-bottom:1px solid #edf1ed;background:#fff;color:#233b2d;border-radius:9px}
+.notificationItem.unread{background:#f0f8f1}
+.notificationItem strong{font-size:13px}
+.notificationItem span{font-size:12px;line-height:1.45;color:#607168}
+.notificationItem small{font-size:10px;color:#849188}
+.notificationEmpty{padding:24px 12px;text-align:center;color:#718078;font-size:13px;line-height:1.5}
+@media(max-width:1050px){.notificationPanel{right:-54px;top:46px}}
+@media(max-width:560px){.notificationPanel{right:-50px;width:calc(100vw - 24px)}}
+
+/* Expanded livestock nutrition and feed-budget workflow */
+.nutritionStep .nutritionStepBody h3{margin:0 0 8px;color:#173e2c;font-size:18px}
+.nutritionStep .nutritionStepBody>p{color:#617268;line-height:1.55}
+.nutritionSourceRow{grid-template-columns:minmax(180px,1.4fr) minmax(115px,.7fr) minmax(130px,.8fr) minmax(160px,1fr) auto;align-items:end}
+.nutritionRecommendation{margin:14px 0;padding:14px;border:1px solid #d8e9dc;background:#f4faf5;border-radius:13px}
+.nutritionRecommendation>b{display:block;color:#1c5032;font-size:13px;margin-bottom:9px}
+.nutritionTagList{display:flex;flex-wrap:wrap;gap:7px}
+.nutritionTagList span{display:inline-flex;padding:6px 9px;border-radius:99px;background:#e3f1e6;color:#285b38;font-size:11px;font-weight:700}
+.nutritionStep .nutritionAnalysisGrid{margin:16px 0}
+.nutritionStep .nutritionAnalysisGrid>div{min-width:0}
+.nutritionStep .nutritionAnalysisGrid b{overflow-wrap:anywhere}
+@media(max-width:900px){.nutritionSourceRow{grid-template-columns:repeat(2,minmax(0,1fr))}.nutritionSourceRow>button{justify-self:start}}
+@media(max-width:560px){.nutritionSourceRow{grid-template-columns:1fr}.nutritionSourceRow>button{width:100%}.nutritionTagList span{font-size:10px}}
+
+/* Crop production management workflow */
+.cropManagementStep{margin:16px 0;padding:20px;border:1px solid #e0e9e2;border-radius:16px;background:#fff}
+.cropManagementStep h3{margin:0 0 7px;color:#17452e;font-size:18px}
+.cropManagementStep>p{color:#65756b;line-height:1.55;margin:0 0 16px}
+.cropCalendar{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:18px 0}
+.cropCalendarItem{display:flex;flex-direction:column;gap:5px;padding:12px;border:1px solid #e1e9e2;border-radius:12px;background:#f8faf8;min-height:78px}
+.cropCalendarItem>span{font-size:10px;font-weight:800;color:#84958a;letter-spacing:.08em}
+.cropCalendarItem>b{font-size:12px;color:#40564a}
+.cropCalendarItem small{color:#207344;font-weight:700}
+.cropCalendarItem.current{border-color:#72b48a;background:#edf8ef;box-shadow:inset 0 0 0 1px #b7ddc2}
+.cropMetrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:16px 0}
+.cropMetrics>div{display:flex;flex-direction:column;gap:6px;padding:14px;border:1px solid #e3ebe4;border-radius:12px;background:#f8fbf8;min-width:0}
+.cropMetrics span,.cropRecordStats span{font-size:11px;color:#718076}
+.cropMetrics b{font-size:16px;color:#1b4b31;overflow-wrap:anywhere}
+.cropMetrics b.positive{color:#207344}
+.cropMetrics b.negative{color:#a33d35}
+.cropFootnote{display:block;color:#748278;line-height:1.5}
+.cropRecordCard{padding:15px 0;border-bottom:1px solid #e7eee8}
+.cropRecordStats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin:12px 0}
+.cropRecordStats span{display:flex;flex-direction:column;gap:4px}
+.cropRecordStats b{font-size:13px;color:#244c35}
+@media(max-width:600px){.cropManagementStep{padding:14px}.cropCalendar{grid-template-columns:repeat(2,minmax(0,1fr))}.cropMetrics{grid-template-columns:1fr 1fr}.cropMetrics b{font-size:14px}}
+
+/* Farmer feed ingredient marketplace workflow */
+.farmerFeedListing{border:1px solid #cfe4d4;background:linear-gradient(145deg,#f7fcf7,#fff)}
+.farmerListingHead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.farmerListingHead p{max-width:760px}
+.farmerListingIcon{display:grid;place-items:center;width:52px;height:52px;flex:0 0 52px;border-radius:15px;background:#e5f4e8;font-size:26px}
+.marketIngredientBtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;align-self:end;min-height:42px;padding:9px 13px;border:1px solid #b8d7c1;border-radius:9px;background:#eef8f0;color:#1c6338;font-weight:700;cursor:pointer;white-space:nowrap}
+.marketIngredientBtn:hover{background:#dff1e3}
+.farmerFeedListing .formGrid{margin:14px 0}
+@media(max-width:600px){.farmerListingHead{gap:8px}.farmerListingIcon{width:42px;height:42px;flex-basis:42px}}
+
+/* Agrovet ingredient stock and availability controls */
+.agrovetAvailabilityToggle{display:flex;align-items:flex-start;gap:11px;padding:13px 15px;margin:12px 0 16px;border:1px solid #cfe2d2;border-radius:12px;background:#f5fbf6;cursor:pointer}
+.agrovetAvailabilityToggle input{width:18px;height:18px;margin-top:2px;accent-color:#21834a}
+.agrovetAvailabilityToggle span{display:flex;flex-direction:column;gap:4px}
+.agrovetAvailabilityToggle b{font-size:13px;color:#245238}
+.agrovetAvailabilityToggle small{font-size:12px;color:#68796d;line-height:1.45}
+.agrovetProductRow .secondary{border:1px solid #cbdccf;background:#f5faf6;color:#28583b;border-radius:9px;padding:8px 11px;font-weight:700;cursor:pointer}
+.agrovetProductRow .secondary:hover{background:#e7f3e9}
