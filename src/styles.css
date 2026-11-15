@@ -268,3 +268,12 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .marketIngredientBtn:hover{background:#dff1e3}
 .farmerFeedListing .formGrid{margin:14px 0}
 @media(max-width:600px){.farmerListingHead{gap:8px}.farmerListingIcon{width:42px;height:42px;flex-basis:42px}}
+
+/* Agrovet ingredient stock and availability controls */
+.agrovetAvailabilityToggle{display:flex;align-items:flex-start;gap:11px;padding:13px 15px;margin:12px 0 16px;border:1px solid #cfe2d2;border-radius:12px;background:#f5fbf6;cursor:pointer}
+.agrovetAvailabilityToggle input{width:18px;height:18px;margin-top:2px;accent-color:#21834a}
+.agrovetAvailabilityToggle span{display:flex;flex-direction:column;gap:4px}
+.agrovetAvailabilityToggle b{font-size:13px;color:#245238}
+.agrovetAvailabilityToggle small{font-size:12px;color:#68796d;line-height:1.45}
+.agrovetProductRow .secondary{border:1px solid #cbdccf;background:#f5faf6;color:#28583b;border-radius:9px;padding:8px 11px;font-weight:700;cursor:pointer}
+.agrovetProductRow .secondary:hover{background:#e7f3e9}
