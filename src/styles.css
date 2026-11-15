@@ -221,3 +221,17 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .notificationEmpty{padding:24px 12px;text-align:center;color:#718078;font-size:13px;line-height:1.5}
 @media(max-width:1050px){.notificationPanel{right:-54px;top:46px}}
 @media(max-width:560px){.notificationPanel{right:-50px;width:calc(100vw - 24px)}}
+
+/* Expanded livestock nutrition and feed-budget workflow */
+.nutritionStep .nutritionStepBody h3{margin:0 0 8px;color:#173e2c;font-size:18px}
+.nutritionStep .nutritionStepBody>p{color:#617268;line-height:1.55}
+.nutritionSourceRow{grid-template-columns:minmax(180px,1.4fr) minmax(115px,.7fr) minmax(130px,.8fr) minmax(160px,1fr) auto;align-items:end}
+.nutritionRecommendation{margin:14px 0;padding:14px;border:1px solid #d8e9dc;background:#f4faf5;border-radius:13px}
+.nutritionRecommendation>b{display:block;color:#1c5032;font-size:13px;margin-bottom:9px}
+.nutritionTagList{display:flex;flex-wrap:wrap;gap:7px}
+.nutritionTagList span{display:inline-flex;padding:6px 9px;border-radius:99px;background:#e3f1e6;color:#285b38;font-size:11px;font-weight:700}
+.nutritionStep .nutritionAnalysisGrid{margin:16px 0}
+.nutritionStep .nutritionAnalysisGrid>div{min-width:0}
+.nutritionStep .nutritionAnalysisGrid b{overflow-wrap:anywhere}
+@media(max-width:900px){.nutritionSourceRow{grid-template-columns:repeat(2,minmax(0,1fr))}.nutritionSourceRow>button{justify-self:start}}
+@media(max-width:560px){.nutritionSourceRow{grid-template-columns:1fr}.nutritionSourceRow>button{width:100%}.nutritionTagList span{font-size:10px}}
