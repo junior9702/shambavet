@@ -8,6 +8,9 @@ import{ref as storageRef,uploadBytes,getDownloadURL}from"firebase/storage";
 import L from"leaflet";
 import"leaflet/dist/leaflet.css";
 import"./styles.css";
+let farmerAuthPromise=null;
+async function getSignedInFarmer(){if(auth.currentUser)return auth.currentUser;if(!farmerAuthPromise)farmerAuthPromise=signInAnonymously(auth).then(result=>result.user).finally(()=>{farmerAuthPromise=null});return farmerAuthPromise;}
+
 
 const PAYMENT_LINK="https://short.payhero.co.ke/s/ALDL9UWM57HzyUe53wNFWk";
 const VET_REGISTRATION_PAYMENT_LINK="https://short.payhero.co.ke/s/jx8R364pSyukhWLhQKKKjw";
@@ -23,35 +26,36 @@ class AppErrorBoundary extends React.Component{constructor(props){super(props);t
 
 function App(){
  const[page,setPage]=useState('home'),[open,setOpen]=useState(false),[installOpen,setInstallOpen]=useState(false),[installEvent,setInstallEvent]=useState(null);
- const[animalList,setAnimalList]=useState(()=>safeReadArray('sv_animals'));
- const[cases,setCases]=useState(()=>safeReadArray('sv_cases'));
- const[authUser,setAuthUser]=useState(null);
- const[cloudReady,setCloudReady]=useState(false);
- useEffect(()=>safeWrite('sv_animals',animalList),[animalList]);
- useEffect(()=>safeWrite('sv_cases',cases),[cases]);
+ const[animalList,setAnimalList]=useState([]);
+ const[cases,setCases]=useState([]);
+ const[authUser,setAuthUser]=useState(auth.currentUser||null);
+ const[cloudReady,setCloudReady]=useState(!!auth.currentUser);
  useEffect(()=>{const fn=e=>{e.preventDefault();setInstallEvent(e)};window.addEventListener('beforeinstallprompt',fn);return()=>window.removeEventListener('beforeinstallprompt',fn)},[]);
  useEffect(()=>{
    if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
-   const unsub=onAuthStateChanged(auth,async user=>{
+   const unsub=onAuthStateChanged(auth,user=>{
      if(user){setAuthUser(user);setCloudReady(true);return;}
-     try{await signInAnonymously(auth)}catch(e){console.warn('Firebase anonymous sign-in unavailable:',e.message);setCloudReady(false)}
+     setAuthUser(null);setCloudReady(false);
+     getSignedInFarmer().catch(e=>console.error('Farmer sign-in failed:',e));
    });
    return()=>unsub();
  },[]);
  useEffect(()=>{
-   if(!authUser || authUser.isAnonymous===false)return;
+   if(!authUser?.uid){setAnimalList([]);setCases([]);return;}
+   setAnimalList([]);setCases([]);
    const animalsRef=collection(db,'users',authUser.uid,'animals');
    const casesRef=collection(db,'users',authUser.uid,'cases');
-   const ua=onSnapshot(animalsRef,s=>{const rows=s.docs.map(d=>({id:d.id,...d.data()}));if(!rows.length&&animalList.length){syncCollection('animals',[],animalList);return;}setAnimalList(rows)},e=>console.warn('Firebase animals sync failed:',e.message));
-   const uc=onSnapshot(casesRef,s=>{const rows=s.docs.map(d=>({id:d.id,...d.data()}));if(!rows.length&&cases.length){syncCollection('cases',[],cases);return;}setCases(rows)},e=>console.warn('Firebase cases sync failed:',e.message));
+   const ua=onSnapshot(animalsRef,s=>setAnimalList(s.docs.map(d=>({id:d.id,...d.data()}))),e=>console.error('Firebase animals sync failed:',e));
+   const uc=onSnapshot(casesRef,s=>setCases(s.docs.map(d=>({id:d.id,...d.data()}))),e=>console.error('Firebase cases sync failed:',e));
    return()=>{ua();uc()};
  },[authUser]);
  const syncCollection=(name,previous,next)=>{
-   if(!authUser||!authUser.isAnonymous)return;
+   const activeUser=auth.currentUser||authUser;
+   if(!activeUser?.uid)return;
    const oldMap=new Map((previous||[]).map(x=>[String(x.id),x]));
    const newMap=new Map((next||[]).map(x=>[String(x.id),x]));
-   for(const item of next||[])setDoc(doc(db,'users',authUser.uid,name,String(item.id)),{...item,updatedAt:serverTimestamp()},{merge:true}).catch(e=>console.warn('Firebase save failed:',e.message));
-   for(const [id] of oldMap)if(!newMap.has(id))deleteDoc(doc(db,'users',authUser.uid,name,id)).catch(e=>console.warn('Firebase delete failed:',e.message));
+   for(const item of next||[])setDoc(doc(db,'users',activeUser.uid,name,String(item.id)),{...item,updatedAt:serverTimestamp()},{merge:true}).catch(e=>console.warn('Firebase save failed:',e.message));
+   for(const [id] of oldMap)if(!newMap.has(id))deleteDoc(doc(db,'users',activeUser.uid,name,id)).catch(e=>console.warn('Firebase delete failed:',e.message));
  };
  const saveAnimals=updater=>setAnimalList(prev=>{const next=typeof updater==='function'?updater(prev):updater;syncCollection('animals',prev,next);return next});
  const saveCases=updater=>setCases(prev=>{const next=typeof updater==='function'?updater(prev):updater;syncCollection('cases',prev,next);return next;});
