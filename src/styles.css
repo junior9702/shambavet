@@ -86,3 +86,33 @@
 @media(max-width:650px){.accountTop{padding:8px;font-size:11px}.accountTop span{max-width:82px}.accountTop svg:last-child{display:none}.businessGrid{grid-template-columns:1fr}.businessWide{grid-column:auto}.accountModal{padding:22px 18px}}
 
 .agrovetLoginCard{max-width:520px;margin:28px auto;padding:clamp(20px,4vw,34px);border:1px solid #dce9df;box-shadow:0 12px 36px rgba(20,60,35,.07)}.agrovetLoginCard h2{margin:10px 0 6px}.agrovetLoginCard>p{color:#68776f;line-height:1.6}.agrovetLoginCard label{display:block;font-size:13px;font-weight:700;margin:14px 0 6px}.agrovetLoginCard input{width:100%;padding:13px;border:1px solid #d6e0d8;border-radius:10px}.agrovetLoginCard .primary{margin-top:18px}
+
+
+/* Professional, responsive ShambaVet location directory */
+.locationDirectoryIntro{display:flex;align-items:center;justify-content:space-between;gap:20px;background:linear-gradient(120deg,#eef8f0,#f8fbf8);border:1px solid #d9e9dc}
+.locationDirectoryIntro h2{margin:10px 0 6px;color:#173e2c}
+.locationDirectoryIntro p,.locationDirectoryTools .note{color:#65756b;line-height:1.55}
+.locationCounts{min-width:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;border:1px solid #dce9df;border-radius:14px;background:#fff}
+.locationCounts b{font-size:30px;color:#167a43}.locationCounts span{font-size:12px;color:#68776f}
+.locationDirectoryTools>input{width:100%;padding:13px 15px;border:1px solid #d5e2d8;border-radius:12px;margin-bottom:12px}
+.locationFilters{display:flex;gap:8px;flex-wrap:wrap;margin:0}
+.locationTrackerCard{overflow:hidden}
+.locationTrackerMap{height:min(66vh,620px);min-height:380px;border-radius:14px;z-index:1}
+.locationResultsHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 2px 12px}
+.locationResultsHead h2{margin:0;color:#173e2c}
+.locationResultsHead span{font-size:13px;color:#68776f}
+.locationResults{grid-template-columns:repeat(3,minmax(0,1fr))}
+.locationResultCard{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
+.locationResultCard h3{margin:4px 0 0;color:#173e2c}
+.locationResultCard p{margin:0;color:#65756b;font-size:13px;line-height:1.5}
+.locationResultCard>a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:650;color:#167a43}
+.locationResultCard .locationDirectionLink{padding:9px 13px;border-radius:9px;color:#fff}
+.locationResultCard>small{margin-top:auto;color:#829087;font-size:11px;overflow-wrap:anywhere}
+.locationType{display:inline-flex;padding:5px 9px;border-radius:99px;background:#eef2f7;color:#334155;font-size:11px;font-weight:750}
+.locationType.farmer{background:#eaf2ff;color:#2455a2}.locationType.vet{background:#e7f7ef;color:#167a43}.locationType.organization{background:#f1eaff;color:#7041a5}.locationType.agrovet{background:#fff3e4;color:#a65b08}
+.locationConsent{display:flex;align-items:flex-start;gap:10px;margin:12px 0;padding:13px;background:#f2f8f3;border:1px solid #dceade;border-radius:11px;font-size:13px;line-height:1.5;color:#315640}
+.locationConsent input{width:18px;height:18px;flex:0 0 18px;margin:1px 0 0;accent-color:#168044}
+.locationPopup{min-width:170px;line-height:1.55}.locationPopup a{display:inline-block;margin-top:5px;color:#167a43;font-weight:700}
+.registrationPinMap{height:390px;min-height:300px}
+@media(max-width:850px){.locationResults{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.locationDirectoryIntro{align-items:stretch;flex-direction:column}.locationCounts{align-items:flex-start}.locationResults{grid-template-columns:1fr}.locationTrackerMap{height:58vh;min-height:340px}.locationFilters button{flex:1 1 auto}.locationResultsHead{margin-top:18px}}
