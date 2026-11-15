@@ -319,7 +319,7 @@ function Market({go,authUser}){
   if(/\\bdap\\b|di-ammonium phosphate|\\bnpk\\b|\\burea\\b|\\bcan fertilizer\\b|fertilizer|fertiliser/.test(words)) return 'Fertilizers';
   return raw||'Other farm supplies';
  };
- const normalizedProducts=products.map(p=>({...p,marketCategory:normalizeCategory(p)}));
+ const normalizedProducts=products.filter(p=>p.available!==false).map(p=>({...p,marketCategory:normalizeCategory(p)}));
  const extraCategories=[...new Set(normalizedProducts.map(p=>p.marketCategory).filter(Boolean))]
   .filter(id=>!baseCategories.some(c=>c.id.toLowerCase()===id.toLowerCase()))
   .map(id=>({id,emoji:'🛍️',title:id,desc:'Products listed by verified ShambaVet suppliers.',label:'Supplier products'}));
