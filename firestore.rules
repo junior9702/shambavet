@@ -14,8 +14,40 @@ service cloud.firestore {
     }
 
     match /farmerProfiles/{uid} {
-      allow create, read, update: if signedIn() && (request.auth.uid == uid || isAdmin());
-      allow delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+      // Farmers may only manage their own profile document; admins may inspect/manage profiles.
+      allow create, read, update, delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+    }
+
+    // Agrovet / agricultural supplier onboarding and self-managed product listings.
+    match /agrovetApplications/{id} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.shopName is string
+        && request.resource.data.phone is string;
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update: if isAdmin() || (signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.status == 'approved'
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.status == resource.data.status);
+      allow delete: if isAdmin();
+    }
+
+    match /marketplaceProducts/{id} {
+      allow read: if resource.data.status == 'approved' || resource.data.available == true || isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.name is string
+        && request.resource.data.category is string;
+      allow update: if isAdmin() || (signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.status == 'pending'
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.status == 'pending');
+      allow delete: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
     }
 
     match /organizationApplications/{id} {
@@ -90,10 +122,7 @@ service cloud.firestore {
         && request.resource.data.email is string;
       allow read, update, delete: if isAdmin();
     }
-    match /marketplaceProducts/{id} {
-      allow read: if true;
-      allow create, update, delete: if isAdmin();
-    }
+
     match /users/{uid}/{document=**} {
       allow read, write: if signedIn() && request.auth.uid == uid;
     }
