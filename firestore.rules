@@ -44,7 +44,7 @@ service cloud.firestore {
           && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.ownerUid == request.auth.uid
           && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.status == 'approved';
       }
-      allow read: if (resource.data.status == 'approved' && resource.data.available == true) || isAdmin()
+      allow read: if resource.data.status == 'approved' || isAdmin()
         || (signedIn() && resource.data.ownerUid == request.auth.uid);
       // Only an approved supplier can publish directly to the public marketplace.
       allow create: if isAdmin() || (approvedSupplier()
