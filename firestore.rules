@@ -5,7 +5,8 @@ service cloud.firestore {
     function isAdmin() {
       return signedIn() &&
         exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'developer';
     }
 
     match /admins/{uid} {
@@ -43,7 +44,7 @@ service cloud.firestore {
           && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.ownerUid == request.auth.uid
           && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.status == 'approved';
       }
-      allow read: if resource.data.status == 'approved' || resource.data.available == true || isAdmin()
+      allow read: if (resource.data.status == 'approved' && resource.data.available == true) || isAdmin()
         || (signedIn() && resource.data.ownerUid == request.auth.uid);
       // Only an approved supplier can publish directly to the public marketplace.
       allow create: if isAdmin() || (approvedSupplier()
