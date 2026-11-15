@@ -38,7 +38,7 @@ function App(){
  useEffect(()=>{
    if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
    const unsub=onAuthStateChanged(auth,user=>{
-     if(user){setAuthUser(user);setCloudReady(true);getDoc(doc(db,'admins',user.uid)).then(s=>setDeveloperAdmin(s.exists()&&s.data()?.enabled===true&&s.data()?.role==='developer')).catch(()=>setDeveloperAdmin(false));return;}
+     if(user){setDeveloperAdmin(false);setAuthUser(user);setCloudReady(true);getDoc(doc(db,'admins',user.uid)).then(s=>setDeveloperAdmin(s.exists()&&s.data()?.enabled===true&&s.data()?.role==='developer')).catch(()=>setDeveloperAdmin(false));return;}
      setDeveloperAdmin(false);setAuthUser(null);setCloudReady(false);
      // Do not silently recreate a session after the user explicitly signs out.
      if(!authPausedRef.current&&(()=>{try{return localStorage.getItem('shambavet_signed_out')!=='1'}catch{return true}})())getSignedInFarmer().catch(e=>console.error('Farmer sign-in failed:',e));
