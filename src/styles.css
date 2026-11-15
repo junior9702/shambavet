@@ -35,3 +35,173 @@
 .hubNotice{background:#eef8f0;border:1px solid #cfe5d4;color:#315c3e;border-radius:12px;padding:13px 15px;margin:0 0 16px;line-height:1.5;font-size:13px}.hubActions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}.hubActions span,.hubSectionHead>span{color:#718078;font-size:12px}.hubSectionHead{display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px}.hubSectionHead h2{margin:0}.hubGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:12px 0 20px}.hubCard{margin:0}.hubCard h3{font-size:19px;margin:12px 0 7px}.hubCard p{color:#68776f;line-height:1.5;margin:7px 0}.hubCard p svg{vertical-align:middle;color:#188344}.hubCard a{display:inline-block;margin:5px 12px 0 0;color:#16743a;font-weight:700}.hubTag{display:inline-flex;background:#e5f4e8;color:#16743a;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:800}.hubMessage{color:#27633b;background:#eef8f0;border:1px solid #d0e7d4;border-radius:10px;padding:10px 12px;line-height:1.5}.inlineFields{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center}.inlineFields input,.inlineFields select{margin:6px 0}.filePick{display:flex;align-items:center;gap:9px;padding:12px;border:1px dashed #aebfae;border-radius:10px;color:#42634d;cursor:pointer}.filePick input{max-width:190px;margin:0!important;padding:0!important;border:0!important}.hubCard .primary{margin-top:8px}.adminLogin{max-width:540px}.adminLogin p{color:#68776f;line-height:1.5}
 @media(max-width:650px){.hubGrid{grid-template-columns:1fr}.hubSectionHead{align-items:flex-start;gap:8px;flex-direction:column}.inlineFields{grid-template-columns:1fr 100px}.filePick{align-items:flex-start;flex-direction:column}.hubActions{align-items:stretch}.hubActions button{width:100%}}
 .hubHomeSection{margin:22px 0 26px}.hubHomeSection .hubSectionHead{margin-bottom:13px}.hubHomeSection .hubSectionHead h2{margin:8px 0 4px}.hubHomeSection .hubSectionHead p{margin:0;color:#68776f}.hubHomeGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.hubHomeCard{min-height:145px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:8px;padding:17px;background:#fff;border:1px solid #dfe8e0;border-radius:16px}.hubHomeCard>span{font-size:26px}.hubHomeCard b{font-size:14px}.hubHomeCard small{color:#68776f;line-height:1.45;font-weight:500}.hubHomeCard:hover{border-color:#9ac9a5;box-shadow:0 7px 20px rgba(23,62,44,.08)}.accountBox{padding:15px;background:#f3f9f4;border:1px solid #d6ead9;border-radius:13px;margin-bottom:16px}.accountBox h2{margin:0 0 5px}.accountBox p{color:#65756b;line-height:1.5}.accountTabs{display:flex;gap:8px;margin:10px 0}.nutritionMetric{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 0;border-bottom:1px solid #e7eee8}.nutritionMetric span{color:#68776f}.nutritionMetric b{font-size:18px;color:#173e2c;text-align:right}@media(max-width:1000px){.hubHomeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.hubHomeGrid{grid-template-columns:1fr 1fr}.hubHomeCard{min-height:135px;padding:13px}.nutritionMetric{align-items:flex-start;flex-direction:column;gap:5px}}
+
+.agriPhotoHero{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 16px;padding:10px;background:#eaf2e9;border:1px solid #d8e6d8;border-radius:18px;overflow:hidden}.agriPhotoHero img{width:100%;height:220px;object-fit:cover;border-radius:12px;display:block}.agriPhotoCaption{grid-column:1/-1;display:flex;flex-direction:column;gap:4px;padding:5px 7px 7px;color:#173e2c}.agriPhotoCaption b{font-size:18px}.agriPhotoCaption span{font-size:13px;color:#617365}.structureHero img{height:245px}@media(max-width:650px){.agriPhotoHero{grid-template-columns:1fr}.agriPhotoHero img,.structureHero img{height:190px}.agriPhotoCaption{grid-column:auto}}
+
+/* Agricultural photo galleries */
+.agriPhotoHero{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0;padding:12px;background:#eaf2e9;border:1px solid #d8e6d8;border-radius:18px;overflow:hidden}.agriPhotoHero img{width:100%;height:230px;object-fit:cover;border-radius:12px;display:block;background:#dce9dc}.agriPhotoCaption{grid-column:1/-1;display:flex;flex-direction:column;gap:4px;padding:5px 7px 7px;color:#173e2c}.agriPhotoCaption b{font-size:18px}.agriPhotoCaption span{font-size:13px;color:#617365}.structureGallery{grid-template-columns:repeat(3,minmax(0,1fr))}.structureCard{display:flex;flex-direction:column;align-items:stretch;text-align:left;overflow:hidden;padding:0 0 15px}.structureCard .structureThumb{width:100%;height:165px;object-fit:cover;background:#e6eee6;border-radius:12px 12px 0 0;display:block}.structureCard .hubTag,.structureCard h3,.structureCard p,.structureCard b{margin-left:14px;margin-right:14px}.structureCard .hubTag{margin-top:12px;align-self:flex-start}.structureCard h3{margin-top:8px;margin-bottom:5px}.structureCard p{margin-top:0}.structureCard b{margin-top:auto;padding-top:8px}@media(max-width:900px){.structureGallery{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.agriPhotoHero{grid-template-columns:1fr}.agriPhotoHero img{height:190px}.agriPhotoCaption{grid-column:auto}.structureGallery{grid-template-columns:1fr 1fr}.structureCard .structureThumb{height:130px}.structureCard .hubTag,.structureCard h3,.structureCard p,.structureCard b{margin-left:10px;margin-right:10px}}
+
+/* Clear, readable feed formulation workflow */
+.feedIngredientRow{display:grid;grid-template-columns:minmax(190px,2fr) minmax(120px,1fr) minmax(145px,1fr) auto;gap:12px;align-items:end;padding:14px 0;border-bottom:1px solid #e6eee7}.feedIngredientRow label{display:flex;flex-direction:column;gap:6px}.feedIngredientRow small{color:#68776f;font-weight:400;line-height:1.4}.nutritionAnalysisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}.nutritionAnalysisGrid>div{background:#f3f8f3;border:1px solid #dfe9df;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:7px}.nutritionAnalysisGrid span{font-size:13px;color:#617166}.nutritionAnalysisGrid b{font-size:23px;color:#173e2c}.nutritionAnalysisGrid small{font-size:12px;color:#68776f;line-height:1.4}.farmerPortalTabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}.farmerPortalTabs button{min-height:42px}@media(max-width:760px){.feedIngredientRow{grid-template-columns:1fr 1fr}.feedIngredientRow label:first-child{grid-column:1/-1}.feedIngredientRow button{grid-column:1/-1}.nutritionAnalysisGrid{grid-template-columns:1fr 1fr}}@media(max-width:460px){.nutritionAnalysisGrid{grid-template-columns:1fr}.feedIngredientRow{grid-template-columns:1fr}}
+
+/* Compact expandable workflow cards */
+.nutritionStep{padding:0!important;overflow:hidden}
+.nutritionStep>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;font-size:15px}
+.nutritionStep>summary::-webkit-details-marker{display:none}
+.nutritionStep>summary:after{content:'+';font-size:22px;font-weight:700;color:#28734a}
+.nutritionStep[open]>summary:after{content:'−'}
+.nutritionStep>summary span{font-size:12px;color:#6a786f;font-weight:400;text-align:right}
+.nutritionStepBody{padding:0 18px 18px}
+.feedProcedure{padding-left:22px;display:grid;gap:12px;line-height:1.6}
+.feedProcedure li::marker{color:#28734a;font-weight:700}
+.marketSellerCta{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#f1f7f1;border:1px solid #dceade;border-radius:16px;padding:16px 18px;margin:0 0 18px}
+.marketSellerCta p{margin:5px 0 0;color:#607166;font-size:13px}
+.marketSellerCta button{white-space:nowrap}
+@media(max-width:650px){.marketSellerCta{align-items:stretch;flex-direction:column}.marketSellerCta button{width:100%}.nutritionStep>summary{align-items:flex-start;flex-direction:column}.nutritionStep>summary span{text-align:left}}
+
+
+/* Agrovet seller dashboard and Cloudinary product image upload */
+.agrovetShopDashboard{border:1px solid #b9e6ca;background:linear-gradient(135deg,#f0fff5,#ffffff)}
+.agrovetDashboardHeading{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.agrovetDashboardHeading h2{margin:12px 0 6px}
+.agrovetDashboardHeading p{margin:0;color:#64748b}
+.agrovetShopStats{display:grid;grid-template-columns:repeat(3,minmax(74px,1fr));gap:4px 16px;text-align:center;padding:14px 18px;background:#fff;border:1px solid #dcefe3;border-radius:14px}
+.agrovetShopStats b{font-size:1.35rem;color:#168044}
+.agrovetShopStats small{font-size:.75rem;color:#64748b}
+.agrovetImageUpload{display:flex;align-items:center;gap:14px;padding:18px;border:2px dashed #9acdae;border-radius:14px;background:#f6fff8;color:#16733d;cursor:pointer;margin:14px 0;position:relative}
+.agrovetImageUpload span{display:flex;flex-direction:column;gap:4px}
+.agrovetImageUpload small{color:#64748b;font-weight:400}
+.agrovetImageUpload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.agrovetImagePreview{display:flex;align-items:center;gap:14px;margin:12px 0 18px;padding:12px;border:1px solid #dce8df;border-radius:12px}
+.agrovetImagePreview img{width:104px;height:104px;object-fit:cover;border-radius:9px}
+.agrovetImagePreview div{display:flex;flex-direction:column;gap:5px}
+.agrovetImagePreview small{color:#64748b}
+.agrovetImagePreview button{align-self:flex-start;border:0;background:transparent;color:#b42318;padding:4px 0;cursor:pointer}
+.agrovetProductRow{align-items:center;flex-wrap:wrap}
+@media(max-width:640px){.agrovetDashboardHeading{display:block}.agrovetShopStats{margin-top:16px}.agrovetShopStats{grid-template-columns:repeat(3,minmax(0,1fr));padding:10px 8px}.agrovetProductRow{align-items:flex-start}}
+
+/* Account, security and farm operations workspace */
+.accountTop{display:flex;align-items:center;gap:7px;white-space:nowrap;margin-left:0;background:#f5faf6;border-color:#d5e4d8;padding:9px 11px;font-size:12px}.accountTop span{max-width:150px;overflow:hidden;text-overflow:ellipsis}.accountBackdrop{position:fixed;inset:0;background:rgba(12,28,19,.62);z-index:120;display:grid;place-items:center;padding:16px}.accountModal{position:relative;width:min(100%,470px);background:#fff;border-radius:20px;padding:26px;box-shadow:0 24px 80px rgba(0,0,0,.25);max-height:90vh;overflow:auto}.accountClose{position:absolute;right:12px;top:10px;border:0;font-size:26px;background:transparent}.accountModalHead{display:flex;gap:13px;align-items:center;margin-bottom:20px;color:#188344}.accountModalHead h2{margin:0;color:#183126}.accountModalHead p{margin:4px 0;color:#718078;font-size:13px;overflow-wrap:anywhere}.accountModal label{display:block;font-size:12px;font-weight:700;margin:12px 0 5px}.accountInput{width:100%;padding:12px;border:1px solid #d6e0d8;border-radius:10px}.accountSession{background:#eff8f0;border:1px solid #d5e8d8;padding:14px;border-radius:12px;margin-bottom:14px}.accountSession b,.accountSession small{display:block}.accountSession small{color:#68776f;margin-top:5px}.onlineDot{display:inline-block;width:8px;height:8px;background:#1a9b52;border-radius:50%;margin-right:5px}.textButton{display:block;border:0;background:transparent;color:#187b43;margin:8px auto}.accountModal .accountTabs{display:flex;gap:8px;margin:12px 0}.accountModal .accountTabs button{flex:1}.businessGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.businessGrid .card{margin:0;min-width:0}.businessGrid h2{display:flex;align-items:center;gap:8px;font-size:19px}.businessGrid h2 svg{color:#188344}.businessWide{grid-column:1/-1}.businessGrid .row input[type=checkbox]{width:18px;min-width:18px;margin:0}.businessGrid .row{min-width:0}.businessGrid .row>div{min-width:0}.businessGrid .row small{overflow-wrap:anywhere}.stockLow{background:#fff0d8;color:#885400}.incomeValue{color:#178348;white-space:nowrap}.expenseValue{color:#b33b32;white-space:nowrap}
+@media(max-width:1050px){.accountTop{margin-left:auto}.installTop{margin-left:0}}
+@media(max-width:650px){.accountTop{padding:8px;font-size:11px}.accountTop span{max-width:82px}.accountTop svg:last-child{display:none}.businessGrid{grid-template-columns:1fr}.businessWide{grid-column:auto}.accountModal{padding:22px 18px}}
+
+.agrovetLoginCard{max-width:520px;margin:28px auto;padding:clamp(20px,4vw,34px);border:1px solid #dce9df;box-shadow:0 12px 36px rgba(20,60,35,.07)}.agrovetLoginCard h2{margin:10px 0 6px}.agrovetLoginCard>p{color:#68776f;line-height:1.6}.agrovetLoginCard label{display:block;font-size:13px;font-weight:700;margin:14px 0 6px}.agrovetLoginCard input{width:100%;padding:13px;border:1px solid #d6e0d8;border-radius:10px}.agrovetLoginCard .primary{margin-top:18px}
+
+
+/* Professional, responsive ShambaVet location directory */
+.locationDirectoryIntro{display:flex;align-items:center;justify-content:space-between;gap:20px;background:linear-gradient(120deg,#eef8f0,#f8fbf8);border:1px solid #d9e9dc}
+.locationDirectoryIntro h2{margin:10px 0 6px;color:#173e2c}
+.locationDirectoryIntro p,.locationDirectoryTools .note{color:#65756b;line-height:1.55}
+.locationCounts{min-width:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;border:1px solid #dce9df;border-radius:14px;background:#fff}
+.locationCounts b{font-size:30px;color:#167a43}.locationCounts span{font-size:12px;color:#68776f}
+.locationDirectoryTools>input{width:100%;padding:13px 15px;border:1px solid #d5e2d8;border-radius:12px;margin-bottom:12px}
+.locationFilters{display:flex;gap:8px;flex-wrap:wrap;margin:0}
+.locationTrackerCard{overflow:hidden}
+.locationTrackerMap{height:min(66vh,620px);min-height:380px;border-radius:14px;z-index:1}
+.locationResultsHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 2px 12px}
+.locationResultsHead h2{margin:0;color:#173e2c}
+.locationResultsHead span{font-size:13px;color:#68776f}
+.locationResults{grid-template-columns:repeat(3,minmax(0,1fr))}
+.locationResultCard{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
+.locationResultCard h3{margin:4px 0 0;color:#173e2c}
+.locationResultCard p{margin:0;color:#65756b;font-size:13px;line-height:1.5}
+.locationResultCard>a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:650;color:#167a43}
+.locationResultCard .locationDirectionLink{padding:9px 13px;border-radius:9px;color:#fff}
+.locationResultCard>small{margin-top:auto;color:#829087;font-size:11px;overflow-wrap:anywhere}
+.locationType{display:inline-flex;padding:5px 9px;border-radius:99px;background:#eef2f7;color:#334155;font-size:11px;font-weight:750}
+.locationType.farmer{background:#eaf2ff;color:#2455a2}.locationType.vet{background:#e7f7ef;color:#167a43}.locationType.organization{background:#f1eaff;color:#7041a5}.locationType.agrovet{background:#fff3e4;color:#a65b08}
+.locationConsent{display:flex;align-items:flex-start;gap:10px;margin:12px 0;padding:13px;background:#f2f8f3;border:1px solid #dceade;border-radius:11px;font-size:13px;line-height:1.5;color:#315640}
+.locationConsent input{width:18px;height:18px;flex:0 0 18px;margin:1px 0 0;accent-color:#168044}
+.locationPopup{min-width:170px;line-height:1.55}.locationPopup a{display:inline-block;margin-top:5px;color:#167a43;font-weight:700}
+.registrationPinMap{height:390px;min-height:300px}
+@media(max-width:850px){.locationResults{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.locationDirectoryIntro{align-items:stretch;flex-direction:column}.locationCounts{align-items:flex-start}.locationResults{grid-template-columns:1fr}.locationTrackerMap{height:58vh;min-height:340px}.locationFilters button{flex:1 1 auto}.locationResultsHead{margin-top:18px}}
+
+
+/* Navigation hierarchy and responsive menu */
+header{min-height:72px;height:auto;gap:12px}
+header nav{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-left:auto;max-width:min(70vw,1040px);overflow-x:auto;overflow-y:hidden;padding:7px 0;scrollbar-width:thin}
+.navGroup{display:flex;flex-direction:column;gap:3px;flex:0 0 auto;min-width:0}
+.navGroupLabel{padding:0 7px;color:#829087;font-size:9px;font-weight:850;letter-spacing:.09em;text-transform:uppercase}
+.navGroupItems{display:flex;align-items:center;gap:2px}
+header nav .navGroupItems button{display:inline-flex;align-items:center;gap:5px;padding:8px 9px;border-radius:9px;font-size:11px;color:#405449}
+header nav .navGroupItems button svg{width:14px;height:14px;flex:0 0 auto}
+header nav .navGroupItems button:hover{background:#f0f6f1;transform:none}
+header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-shadow:inset 0 0 0 1px #d1e8d6}
+.agrovetAuthTabs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:18px 0 20px}
+.agrovetAuthTabs button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px}
+.agrovetLoginCard>label{display:block;font-size:13px;font-weight:750;margin:13px 0 6px}
+.agrovetLoginCard>input{width:100%;padding:12px 13px;border:1px solid #d6e0d8;border-radius:10px;background:#fff}
+.agrovetLoginCard .full{width:100%;justify-content:center;margin-top:12px;min-height:45px}
+.agrovetLoginCard .note{font-size:12px;line-height:1.55}
+@media(max-width:1250px){header nav{max-width:62vw;gap:6px}header nav .navGroupItems button{padding:7px 6px;font-size:10px}}
+@media(max-width:1050px){header{height:68px;min-height:68px}header nav{display:none}header nav.open{display:flex;position:absolute;top:68px;left:0;right:0;max-width:none;max-height:calc(100vh - 68px);overflow-y:auto;overflow-x:hidden;background:#fff;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:14px 18px 22px;border-bottom:1px solid #dce7de;box-shadow:0 18px 30px rgba(16,45,28,.12);gap:12px}.navGroup{padding:7px 0;border-bottom:1px solid #edf1ed}.navGroupLabel{font-size:10px;padding:4px 8px 7px}.navGroupItems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}header nav .navGroupItems button{font-size:13px;padding:11px 10px;justify-content:flex-start;background:#f7faf7}.menu{display:block}.installTop{margin-left:auto}}
+@media(max-width:480px){.agrovetAuthTabs{grid-template-columns:1fr 1fr}.agrovetLoginCard{padding:20px 16px}}
+
+
+/* First-visit welcome and guided onboarding */
+.onboardingShell{min-height:100vh;background:radial-gradient(circle at 82% 18%,#e4f4e8 0,transparent 28%),#f5f8f5;color:#173e2c;display:flex;flex-direction:column;padding:0 clamp(18px,5vw,76px)}
+.onboardingTop{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e1eae2}
+.onboardingBrand{display:flex;align-items:center;gap:10px}.onboardingBrand img{width:48px;height:42px;object-fit:contain}.onboardingBrand b,.onboardingBrand small{display:block}.onboardingBrand b{letter-spacing:1px}.onboardingBrand small{font-size:10px;color:#718078}
+.onboardingSecure{display:flex;align-items:center;gap:7px;color:#567260;font-size:12px;font-weight:700}
+.onboardingWelcome{width:min(1100px,100%);margin:auto;display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(28px,6vw,80px);align-items:center;padding:70px 0}
+.onboardingWelcomeCopy h1{font-size:clamp(42px,6vw,70px);line-height:1.02;letter-spacing:-.045em;margin:18px 0}.onboardingWelcomeCopy h1 em{font-style:normal;color:#188344}
+.onboardingWelcomeCopy>p{font-size:17px;line-height:1.7;color:#627369;max-width:650px}
+.onboardingWelcomeCopy ul{list-style:none;padding:0;margin:25px 0;display:grid;gap:12px}.onboardingWelcomeCopy li{display:flex;align-items:center;gap:10px;color:#385744;font-weight:650}.onboardingWelcomeCopy li svg{width:19px;color:#188344}
+.onboardingStart{padding:15px 24px;min-width:190px;justify-content:space-between;display:flex;align-items:center;font-size:15px;border-radius:12px}.onboardingStart span{font-size:20px}
+.onboardingWelcomeArt{min-height:390px;border-radius:28px;background:linear-gradient(145deg,#173e2c,#246b43);color:#fff;padding:35px;display:flex;flex-direction:column;justify-content:flex-end;box-shadow:0 24px 60px rgba(23,62,44,.16);position:relative;overflow:hidden}.onboardingWelcomeArt:before,.onboardingWelcomeArt:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.12);border-radius:50%;width:330px;height:330px;right:-95px;top:-110px}.onboardingWelcomeArt:after{width:230px;height:230px;right:-45px;top:-60px}
+.onboardingArtIcon{font-size:90px;margin-bottom:auto;position:relative;z-index:1}.onboardingWelcomeArt>b{font-size:27px;position:relative;z-index:1}.onboardingWelcomeArt>span{color:#c6dfcd;margin-top:8px;font-size:13px;position:relative;z-index:1}
+.onboardingArtStats{display:flex;gap:12px;margin-top:30px;position:relative;z-index:1}.onboardingArtStats>div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:13px 16px;min-width:115px}.onboardingArtStats strong,.onboardingArtStats small{display:block}.onboardingArtStats strong{font-size:25px}.onboardingArtStats small{font-size:11px;color:#c6dfcd;margin-top:2px}
+.onboardingWizard{width:min(760px,100%);margin:48px auto 55px;background:#fff;border:1px solid #e0e9e1;border-radius:24px;padding:clamp(22px,5vw,42px);box-shadow:0 18px 55px rgba(23,62,44,.07)}
+.onboardingProgressHead{display:flex;align-items:flex-end;justify-content:space-between;gap:15px}.onboardingProgressHead h1{font-size:clamp(25px,4vw,34px);margin:12px 0 5px}.onboardingProgressHead p{color:#718078;margin:0;line-height:1.5}.onboardingProgressHead>b{white-space:nowrap;color:#188344;font-size:11px;letter-spacing:.08em}
+.onboardingProgress{height:7px;background:#edf3ee;border-radius:99px;margin:24px 0 34px;overflow:hidden}.onboardingProgress span{display:block;height:100%;background:#188344;border-radius:99px;transition:width .2s}
+.onboardingQuestion h2{font-size:23px;margin:0 0 7px}.onboardingQuestion>p{color:#718078;margin:0 0 20px;line-height:1.5}
+.onboardingChoices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.onboardingChoice{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:14px;border:1px solid #dfe8e0;border-radius:13px;background:#fff}.onboardingChoice>span{font-weight:750}.onboardingChoice small{display:block;color:#718078;font-weight:450;font-size:11px;margin-left:auto;max-width:48%;text-align:right}.onboardingChoice svg{color:#188344;flex:0 0 auto}.onboardingChoice.selected{background:#eff9f1;border-color:#5eaf75;box-shadow:0 0 0 2px rgba(24,131,68,.08)}
+.onboardingLabel{display:block;font-weight:750;font-size:13px;margin:12px 0 7px}.onboardingQuestion select{width:100%;padding:14px;border:1px solid #d6e0d8;border-radius:11px;background:#fff;color:#173e2c}
+.onboardingActions{display:flex;justify-content:space-between;gap:12px;margin-top:30px;padding-top:20px;border-top:1px solid #edf1ed}.onboardingActions button{min-width:120px;min-height:44px}.onboardingError{color:#a22b25;background:#fff1ef;border:1px solid #f0cbc6;padding:10px 12px;border-radius:9px;font-size:13px}
+.onboardingPrivacy{display:block;color:#829087;font-size:11px;line-height:1.5;margin-top:17px}.onboardingFooter{margin-top:auto;min-height:62px;padding:0;background:transparent;border-top:1px solid #e1eae2;display:flex;justify-content:space-between;align-items:center;gap:12px;color:#829087;font-size:10px}.onboardingFooter span:first-child{font-weight:850;letter-spacing:.08em}
+@media(max-width:760px){.onboardingWelcome{grid-template-columns:1fr;padding:45px 0}.onboardingWelcomeArt{min-height:280px}.onboardingArtIcon{font-size:65px}.onboardingWelcomeCopy h1{font-size:46px}.onboardingWizard{margin:28px auto 38px}.onboardingFooter{padding:14px 0;align-items:flex-start;flex-direction:column;justify-content:center}}
+@media(max-width:520px){.onboardingTop{height:68px}.onboardingSecure{font-size:10px}.onboardingBrand img{width:40px}.onboardingChoices{grid-template-columns:1fr}.onboardingChoice{min-height:62px}.onboardingChoice small{max-width:55%}.onboardingProgressHead{align-items:flex-start;flex-direction:column}.onboardingWelcomeCopy h1{font-size:41px}.onboardingWelcomeCopy>p{font-size:15px}.onboardingWelcomeArt{padding:25px}.onboardingActions button{min-width:0;flex:1}}
+
+
+/* ShambaVet professional desktop and mobile navigation */
+.siteHeader{height:76px;min-height:76px;padding:0 clamp(16px,3vw,42px);gap:clamp(12px,1.7vw,25px);background:rgba(255,255,255,.97);border-bottom:1px solid #e3ebe5;box-shadow:0 3px 14px rgba(20,54,34,.045);backdrop-filter:blur(14px)}
+.siteHeader .brand{flex:0 0 auto;gap:10px;min-width:185px}
+.siteHeader .brandLogo{width:44px;height:43px}
+.siteHeader .brand b{font-size:14px;color:#173e2c;letter-spacing:1.35px}
+.siteHeader .brand small{font-size:9px;letter-spacing:.65px;margin-top:3px}
+.siteHeader .appNav{display:flex;align-items:center;justify-content:center;gap:3px;margin:0 auto;overflow:visible;max-width:none;min-width:0;flex:1}
+.siteHeader .navGroup{position:relative;display:block;flex:0 0 auto;padding:0;border:0}
+.siteHeader .navGroup>summary{list-style:none;display:flex;align-items:center;gap:6px;padding:11px 10px;border-radius:9px;color:#42574a;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;user-select:none}
+.siteHeader .navGroup>summary::-webkit-details-marker{display:none}
+.siteHeader .navGroup>summary:after{content:"";position:absolute;left:10px;right:10px;bottom:3px;height:2px;border-radius:3px;background:transparent}
+.siteHeader .navGroup.activeGroup>summary{color:#176b39;background:#f0f7f1}
+.siteHeader .navGroup[open]>summary{background:#edf6ef;color:#176b39}
+.siteHeader .navGroup>summary svg{transition:transform .16s ease;color:#829087}
+.siteHeader .navGroup[open]>summary svg{transform:rotate(180deg)}
+.siteHeader .navGroupItems{position:absolute;z-index:50;top:calc(100% + 12px);left:0;min-width:230px;display:grid;gap:4px;padding:9px;background:#fff;border:1px solid #e0e9e2;border-radius:14px;box-shadow:0 18px 42px rgba(19,49,30,.16)}
+.siteHeader .navGroupItems:before{content:"";position:absolute;left:0;right:0;top:-13px;height:13px}
+.siteHeader .navGroupItems button{width:100%;min-height:42px;padding:9px 11px;border:0;border-radius:9px;background:transparent;color:#405449;display:flex;align-items:center;gap:10px;text-align:left;font-size:12px;font-weight:650;white-space:nowrap}
+.siteHeader .navGroupItems button>svg:first-child{color:#718679;flex:0 0 auto}
+.siteHeader .navGroupItems button>svg:last-child{margin-left:auto;color:#168044}
+.siteHeader .navGroupItems button:hover{background:#f3f8f4;color:#176b39;transform:none}
+.siteHeader .navGroupItems button.active{background:#eaf5ec;color:#176b39}
+.siteHeader .headerActions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.siteHeader .installTop{margin:0;min-height:39px;padding:0 12px;display:flex;align-items:center;gap:7px;border:1px solid #dce8de;border-radius:10px;background:#fff;color:#365b43;font-size:11px;font-weight:750}
+.siteHeader .installTop:hover{background:#f3f8f4;transform:none}
+.siteHeader .accountTop{margin:0;min-height:41px;max-width:210px;padding:0 11px;display:flex;align-items:center;gap:8px;border:1px solid #dce8de;border-radius:11px;background:#f8fbf8;color:#294c36;font-size:11px;font-weight:750}
+.siteHeader .accountTop span{max-width:135px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.siteHeader .accountTop:hover{background:#f0f7f1;transform:none}
+.siteHeader .menu{display:none}
+@media(max-width:1250px) and (min-width:1051px){.siteHeader{gap:10px;padding-left:18px;padding-right:18px}.siteHeader .brand{min-width:160px}.siteHeader .brandLogo{width:39px}.siteHeader .navGroup>summary{font-size:10px;padding:10px 6px;gap:3px}.siteHeader .headerActions{gap:5px}.siteHeader .installTop{padding:0 8px}.siteHeader .accountTop{max-width:155px;padding:0 8px}.siteHeader .accountTop span{max-width:95px}}
+@media(max-width:1050px){.siteHeader{height:70px;min-height:70px;padding:0 18px;gap:10px}.siteHeader .brand{min-width:0}.siteHeader .appNav{display:none}.siteHeader .appNav.open{display:flex;position:absolute;top:70px;left:0;right:0;max-width:none;max-height:calc(100vh - 70px);overflow-y:auto;overflow-x:hidden;margin:0;padding:13px 16px 22px;background:#fff;box-shadow:0 20px 34px rgba(19,49,30,.16);border-bottom:1px solid #dce7de;align-items:stretch;justify-content:flex-start;flex-direction:column;gap:7px}.siteHeader .navGroup{width:100%;border:1px solid #e7eee8;border-radius:12px;background:#fff;overflow:visible}.siteHeader .navGroup>summary{min-height:48px;padding:12px 14px;justify-content:space-between;font-size:13px}.siteHeader .navGroup>summary svg{margin-left:auto}.siteHeader .navGroupItems{position:static;min-width:0;box-shadow:none;border:0;border-top:1px solid #edf2ee;border-radius:0 0 12px 12px;padding:7px;grid-template-columns:repeat(2,minmax(0,1fr));background:#fbfdfb}.siteHeader .navGroupItems:before{display:none}.siteHeader .navGroupItems button{white-space:normal;min-height:44px;font-size:12px;background:#fff}.siteHeader .headerActions{margin-left:auto}.siteHeader .menu{display:grid;place-items:center;width:41px;height:41px;margin:0;border:1px solid #dce8de;border-radius:10px;background:#fff;color:#244a32}.siteHeader .menu:hover{background:#f0f7f1;transform:none}}
+@media(max-width:560px){.siteHeader{padding:0 12px}.siteHeader .brandLogo{width:37px;height:38px}.siteHeader .brand b{font-size:12px}.siteHeader .brand small{font-size:8px}.siteHeader .headerActions{gap:5px}.siteHeader .installTop{width:38px;min-width:38px;padding:0;justify-content:center}.siteHeader .installTop span{display:none}.siteHeader .accountTop{max-width:43px;width:43px;min-width:43px;padding:0;justify-content:center;gap:0}.siteHeader .accountTop span,.siteHeader .accountTop>svg:last-child{display:none}.siteHeader .menu{width:39px;height:39px}.siteHeader .appNav.open{padding-left:11px;padding-right:11px}}
+@media(min-width:1051px){.siteHeader .navGroupItems{display:none}.siteHeader .navGroup[open] .navGroupItems{display:grid}}
+
+/* Photo accents in the primary navigation */
+.siteHeader .navGroup>summary{gap:8px}
+.siteHeader .navGroupImage{display:block;width:29px;height:29px;flex:0 0 29px;object-fit:cover;border-radius:8px;box-shadow:0 1px 4px rgba(20,54,34,.16);border:1px solid rgba(255,255,255,.8)}
+.siteHeader .navGroup>summary>span{display:inline-block}
+.siteHeader .navGroup.activeGroup .navGroupImage{outline:2px solid #b9dfc3;outline-offset:1px}
+@media(max-width:1050px){.siteHeader .navGroup>summary{gap:11px}.siteHeader .navGroupImage{width:36px;height:36px;flex-basis:36px;border-radius:10px}.siteHeader .navGroup>summary>span{flex:1}.siteHeader .navGroup>summary svg{margin-left:auto}}
+@media(max-width:560px){.siteHeader .navGroupImage{width:34px;height:34px;flex-basis:34px}}

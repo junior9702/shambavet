@@ -1,4 +1,60 @@
-const CACHE='shambavet-v4';
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['/','/index.html','/shambavet-logo.png','/shambavet-icon-192.png','/shambavet-icon-512.png']))));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).pathname.startsWith('/api/'))return;e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{if(r.ok&&new URL(e.request.url).origin===location.origin){const copy=r.clone();caches.open(CACHE).then(x=>x.put(e.request,copy))}return r}).catch(()=>c)))})
+const CACHE='shambavet-v6';
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll([
+        '/',
+        '/index.html',
+        '/shambavet-logo.png',
+        '/shambavet-icon-192.png',
+        '/shambavet-icon-512.png'
+      ]))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(
+        keys.filter(key => key !== CACHE).map(key => caches.delete(key))
+      ))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
+
+  // Do not intercept cross-origin requests, API calls, or the web manifest.
+  // Vercel preview protection can redirect the manifest to an SSO page.
+  if (
+    request.method !== 'GET' ||
+    url.origin !== self.location.origin ||
+    url.pathname === '/manifest.webmanifest' ||
+    url.pathname.startsWith('/api/')
+  ) {
+    return;
+  }
+
+  event.respondWith((async () => {
+    const cached = await caches.match(request);
+
+    try {
+      const response = await fetch(request);
+
+      if (response && response.ok) {
+        const copy = response.clone();
+        const cache = await caches.open(CACHE);
+        await cache.put(request, copy);
+      }
+
+      return response;
+    } catch (error) {
+      // Never return undefined from a service-worker fetch handler.
+      return cached || Response.error();
+    }
+  })());
+});

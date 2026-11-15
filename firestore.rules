@@ -5,7 +5,8 @@ service cloud.firestore {
     function isAdmin() {
       return signedIn() &&
         exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'developer';
     }
 
     match /admins/{uid} {
@@ -14,8 +15,77 @@ service cloud.firestore {
     }
 
     match /farmerProfiles/{uid} {
-      allow create, read, update: if signedIn() && (request.auth.uid == uid || isAdmin());
-      allow delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+      // Farmers may only manage their own profile document; admins may inspect/manage profiles.
+      allow create, read, update, delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+    }
+
+    // Public farmer map pins contain only non-sensitive location-directory fields.
+    // The private farmerProfiles document is never made publicly readable.
+    match /farmerLocations/{uid} {
+      allow read: if true;
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.locationVisible == true
+        && request.resource.data.lat is string
+        && request.resource.data.lng is string;
+      allow delete: if signedIn() && request.auth.uid == uid;
+    }
+
+    // Agrovet / agricultural supplier onboarding and self-managed product listings.
+    // Public map directory contains only approved shop location and contact fields.
+    match /agrovetLocations/{id} {
+      allow read: if true;
+      allow create, update: if isAdmin() || (signedIn()
+        && exists(/databases/$(database)/documents/agrovetApplications/$(id))
+        && get(/databases/$(database)/documents/agrovetApplications/$(id)).data.ownerUid == request.auth.uid
+        && get(/databases/$(database)/documents/agrovetApplications/$(id)).data.status == 'approved'
+        && request.resource.data.shopName is string
+        && request.resource.data.shopLat is string
+        && request.resource.data.shopLng is string);
+      allow delete: if isAdmin();
+    }
+
+    match /agrovetApplications/{id} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.shopName is string
+        && request.resource.data.phone is string;
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update: if isAdmin() || (signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && (resource.data.status == 'pending' || resource.data.status == 'approved')
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.status == resource.data.status);
+      allow delete: if isAdmin();
+    }
+
+    match /marketplaceProducts/{id} {
+      function approvedSupplier() {
+        return signedIn()
+          && request.resource.data.ownerUid == request.auth.uid
+          && request.resource.data.applicationId is string
+          && exists(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId))
+          && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.ownerUid == request.auth.uid
+          && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.status == 'approved';
+      }
+      allow read: if resource.data.status == 'approved' || isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      // Only an approved supplier can publish directly to the public marketplace.
+      allow create: if isAdmin() || (approvedSupplier()
+        && request.resource.data.status == 'approved'
+        && request.resource.data.available == true
+        && request.resource.data.name is string
+        && request.resource.data.category is string);
+      allow update: if isAdmin() || (signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.applicationId is string
+        && request.resource.data.status == 'approved'
+        && request.resource.data.available is bool
+        && exists(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId))
+        && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.ownerUid == request.auth.uid
+        && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.status == 'approved');
+      allow delete: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
     }
 
     match /organizationApplications/{id} {
@@ -30,6 +100,20 @@ service cloud.firestore {
     match /organizations/{id} {
       allow read: if resource.data.status == 'approved' || isAdmin();
       allow create, update, delete: if isAdmin();
+    }
+
+    match /farmerOrganizationRequests/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted'
+        && request.resource.data.message is string;
+      allow read: if isAdmin() || (signedIn() &&
+        (resource.data.ownerUid == request.auth.uid ||
+         resource.data.organizationOwnerUid == request.auth.uid));
+      allow update: if isAdmin() || (signedIn() &&
+        resource.data.organizationOwnerUid == request.auth.uid &&
+        request.resource.data.organizationId == resource.data.organizationId &&
+        request.resource.data.ownerUid == resource.data.ownerUid);
+      allow delete: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
     }
 
     match /fieldVisitReports/{id} {
@@ -52,6 +136,20 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    match /farmProjectRequests/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted';
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /expertVisitRequests/{id} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted';
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
     match /veterinarians/{id} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
@@ -62,10 +160,7 @@ service cloud.firestore {
         && request.resource.data.email is string;
       allow read, update, delete: if isAdmin();
     }
-    match /marketplaceProducts/{id} {
-      allow read: if true;
-      allow create, update, delete: if isAdmin();
-    }
+
     match /users/{uid}/{document=**} {
       allow read, write: if signedIn() && request.auth.uid == uid;
     }
