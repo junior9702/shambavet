@@ -83,7 +83,7 @@ function Farmer({animals:set,setAnimals,go,authUser}){
  const [f,setF]=useState({species:'goat',name:'',age:'',weight:'',tag:''});
  const [section,setSection]=useState('overview');
  const add=()=>{if(!f.name.trim())return;setAnimals(a=>[...a,{...f,id:'AN-'+Date.now(),createdAt:new Date().toISOString()}]);setF({species:'goat',name:'',age:'',weight:'',tag:''})};
- const tabs=[['overview','Farm overview'],['profile','Farm profile'],['livestock','Livestock records'],['health','Animal health records'],['crops','Crop production']];
+ const tabs=[['overview','Farm overview'],['profile','Farm profile'],['livestock','Livestock records'],['health','Animal health records'],['crops','Crop production'],['business','Farm business']];
  return <><Title I={UserRound} title="Farmer Portal" text="Your private farm workspace. Manage your profile, animals, animal health and crop records here."/>
  <div className="stats"><Stat n={set.length} t="Registered animals"/><Stat n={authUser?.isAnonymous?'Temporary account':'Farmer account'} t="Your workspace"/><Stat n="Private" t="Your farm records"/></div>{authUser?.isAnonymous&&<div className="hubNotice"><b>Protect your farm records:</b> this browser is using a temporary farmer account. Open <b>Farm Profile</b> and create a permanent account to keep this same farm data available when you change devices or browsers. Each farmer account has its own private records.</div>}
  <div className="hubActions farmerPortalTabs">{tabs.map(([id,label])=><button key={id} className={section===id?'primary':''} onClick={()=>setSection(id)}>{label}</button>)}</div>
@@ -92,6 +92,63 @@ function Farmer({animals:set,setAnimals,go,authUser}){
  {section==='livestock'&&<LivestockProduction authUser={authUser}/>}
  {section==='health'&&<FarmerAnimalHealthRecords authUser={authUser} animals={set}/>}
  {section==='crops'&&<CropProduction authUser={authUser}/>}
+ {section==='business'&&<FarmBusinessManager authUser={authUser}/>}
+ </>;
+}
+
+
+function FarmBusinessManager({authUser}){
+ const [transactions,setTransactions]=useState([]),[stock,setStock]=useState([]),[tasks,setTasks]=useState([]);
+ const [tx,setTx]=useState({type:'expense',category:'Animal feed',amount:'',date:new Date().toISOString().slice(0,10),description:''});
+ const [item,setItem]=useState({name:'',category:'Feed',quantity:'',unit:'kg',reorderLevel:'',supplier:''});
+ const [task,setTask]=useState({title:'',dueDate:'',priority:'Normal'});
+ const [busy,setBusy]=useState(false),[message,setMessage]=useState('');
+ useEffect(()=>{
+  const uid=authUser?.uid;if(!uid){setTransactions([]);setStock([]);setTasks([]);return}
+  const base=['farmTransactions','farmInventory','farmTasks'];
+  const unsubs=base.map((name,index)=>onSnapshot(query(collection(db,'users',uid,name),orderBy('createdAt','desc')),snap=>{
+   const rows=snap.docs.map(d=>({id:d.id,...d.data()}));
+   [setTransactions,setStock,setTasks][index](rows);
+  },e=>setMessage('Farm business records could not load: '+e.message)));
+  return()=>unsubs.forEach(fn=>fn());
+ },[authUser?.uid]);
+ const saveTransaction=async()=>{
+  if(!authUser?.uid)return setMessage('Sign in to save farm accounts.');
+  if(!tx.amount||Number(tx.amount)<=0||!tx.description.trim()||!tx.date)return setMessage('Enter a valid amount, description and date.');
+  setBusy(true);setMessage('');
+  try{await addDoc(collection(db,'users',authUser.uid,'farmTransactions'),{...tx,amount:Number(tx.amount),ownerUid:authUser.uid,createdAt:serverTimestamp()});setTx(x=>({...x,amount:'',description:''}));setMessage('Farm financial transaction recorded.')}
+  catch(e){setMessage('Could not save transaction: '+e.message)}finally{setBusy(false)}
+ };
+ const addInventory=async()=>{
+  if(!authUser?.uid)return setMessage('Sign in to manage farm inventory.');
+  if(!item.name.trim()||item.quantity===''||Number(item.quantity)<0)return setMessage('Enter an item name and a valid quantity.');
+  setBusy(true);setMessage('');
+  try{await addDoc(collection(db,'users',authUser.uid,'farmInventory'),{...item,quantity:Number(item.quantity),reorderLevel:Number(item.reorderLevel||0),ownerUid:authUser.uid,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});setItem({name:'',category:'Feed',quantity:'',unit:'kg',reorderLevel:'',supplier:''});setMessage('Inventory item added.')}
+  catch(e){setMessage('Could not add inventory item: '+e.message)}finally{setBusy(false)}
+ };
+ const addTask=async()=>{
+  if(!authUser?.uid)return setMessage('Sign in to manage farm tasks.');
+  if(!task.title.trim()||!task.dueDate)return setMessage('Enter a task and due date.');
+  setBusy(true);setMessage('');
+  try{await addDoc(collection(db,'users',authUser.uid,'farmTasks'),{...task,status:'open',ownerUid:authUser.uid,createdAt:serverTimestamp()});setTask({title:'',dueDate:'',priority:'Normal'});setMessage('Farm task scheduled.')}
+  catch(e){setMessage('Could not schedule task: '+e.message)}finally{setBusy(false)}
+ };
+ const toggleTask=async t=>{try{await updateDoc(doc(db,'users',authUser.uid,'farmTasks',t.id),{status:t.status==='done'?'open':'done',completedAt:t.status==='done'?null:serverTimestamp(),updatedAt:serverTimestamp()})}catch(e){setMessage('Could not update task: '+e.message)}};
+ const remove=async(collectionName,id)=>{if(!window.confirm('Delete this farm record?'))return;try{await deleteDoc(doc(db,'users',authUser.uid,collectionName,id));setMessage('Record deleted.')}catch(e){setMessage('Could not delete record: '+e.message)}};
+ const income=transactions.filter(x=>x.type==='income').reduce((n,x)=>n+Number(x.amount||0),0);
+ const expenses=transactions.filter(x=>x.type==='expense').reduce((n,x)=>n+Number(x.amount||0),0);
+ const lowStock=stock.filter(x=>Number(x.quantity||0)<=Number(x.reorderLevel||0));
+ const money=n=>'KSh '+Number(n||0).toLocaleString('en-KE',{maximumFractionDigits:2});
+ return <><Title I={Wallet} title="Farm business & operations" text="Track farm income, expenses, input stock and upcoming work in one private workspace."/>
+  <div className="stats"><Stat n={money(income)} t="Recorded income"/><Stat n={money(expenses)} t="Recorded expenses"/><Stat n={money(income-expenses)} t="Net recorded balance"/><Stat n={lowStock.length} t="Items at reorder level"/></div>
+  <div className="hubNotice"><b>Management note:</b> These totals are based only on transactions you record here. They are not bank balances, audited accounts or automatic M-PESA statements.</div>
+  <div className="businessGrid">
+   <section className="card"><h2><Wallet size={19}/> Record income or expense</h2><div className="formGrid"><label>Transaction type<select value={tx.type} onChange={e=>setTx({...tx,type:e.target.value})}><option value="expense">Expense</option><option value="income">Income</option></select></label><label>Category<select value={tx.category} onChange={e=>setTx({...tx,category:e.target.value})}>{['Animal feed','Veterinary care','Seeds','Fertilizer','Labour','Transport','Equipment','Milk sales','Egg sales','Livestock sales','Crop sales','Other'].map(x=><option key={x}>{x}</option>)}</select></label><label>Amount (KSh)<input type="number" min="0" step="0.01" value={tx.amount} onChange={e=>setTx({...tx,amount:e.target.value})} placeholder="0.00"/></label><label>Date<input type="date" value={tx.date} onChange={e=>setTx({...tx,date:e.target.value})}/></label></div><input placeholder="Description / reference" value={tx.description} onChange={e=>setTx({...tx,description:e.target.value})}/><button className="primary full" disabled={busy} onClick={saveTransaction}>Save transaction</button></section>
+   <section className="card"><h2><Boxes size={19}/> Farm input inventory</h2><div className="formGrid"><input placeholder="Item name (e.g. dairy meal)" value={item.name} onChange={e=>setItem({...item,name:e.target.value})}/><label>Category<select value={item.category} onChange={e=>setItem({...item,category:e.target.value})}>{['Feed','Veterinary supplies','Seeds','Fertilizer','Chemicals','Tools','Fuel','Other'].map(x=><option key={x}>{x}</option>)}</select></label><label>Quantity<input type="number" min="0" step="0.1" value={item.quantity} onChange={e=>setItem({...item,quantity:e.target.value})}/></label><label>Unit<select value={item.unit} onChange={e=>setItem({...item,unit:e.target.value})}>{['kg','bags','litres','pieces','bales','tonnes','packets'].map(x=><option key={x}>{x}</option>)}</select></label><label>Reorder when quantity reaches<input type="number" min="0" value={item.reorderLevel} onChange={e=>setItem({...item,reorderLevel:e.target.value})}/></label><input placeholder="Supplier (optional)" value={item.supplier} onChange={e=>setItem({...item,supplier:e.target.value})}/></div><button className="primary full" disabled={busy} onClick={addInventory}>Add inventory item</button></section>
+   <section className="card"><h2><CalendarCheck size={19}/> Schedule farm tasks</h2><input placeholder="Task (e.g. vaccinate poultry)" value={task.title} onChange={e=>setTask({...task,title:e.target.value})}/><div className="formGrid"><label>Due date<input type="date" value={task.dueDate} onChange={e=>setTask({...task,dueDate:e.target.value})}/></label><label>Priority<select value={task.priority} onChange={e=>setTask({...task,priority:e.target.value})}><option>Normal</option><option>High</option><option>Urgent</option></select></label></div><button className="primary full" disabled={busy} onClick={addTask}>Add farm task</button><h3>Upcoming and open tasks</h3>{tasks.length?tasks.map(t=><div className="row" key={t.id}><input aria-label="Mark task complete" type="checkbox" checked={t.status==='done'} onChange={()=>toggleTask(t)}/><div><b>{t.title}</b><small>Due {t.dueDate} · {t.priority} priority</small></div><span className="status">{t.status==='done'?'Completed':'Open'}</span><button onClick={()=>remove('farmTasks',t.id)} aria-label="Delete task"><Trash2 size={15}/></button></div>):<Empty text="No farm tasks scheduled yet."/>}</section>
+   <section className="card"><h2><Boxes size={19}/> Stock overview</h2>{stock.length?stock.map(x=><div className="row" key={x.id}><div><b>{x.name}</b><small>{x.category} · {x.supplier||'No supplier recorded'}</small></div><b>{x.quantity} {x.unit}</b>{Number(x.quantity)<=Number(x.reorderLevel||0)&&<span className="status stockLow">Reorder</span>}<button onClick={()=>remove('farmInventory',x.id)} aria-label="Delete inventory item"><Trash2 size={15}/></button></div>):<Empty text="No inventory recorded yet."/>}</section>
+   <section className="card businessWide"><h2>Recent farm transactions</h2>{transactions.length?transactions.slice(0,12).map(x=><div className="row" key={x.id}><div><b>{x.description}</b><small>{x.date} · {x.category}</small></div><strong className={x.type==='income'?'incomeValue':'expenseValue'}>{x.type==='income'?'+':'−'}{money(x.amount)}</strong><button onClick={()=>remove('farmTransactions',x.id)} aria-label="Delete transaction"><Trash2 size={15}/></button></div>):<Empty text="No income or expense entries recorded yet."/>}</section>
+  </div>{message&&<p className="hubMessage">{message}</p>}
  </>;
 }
 
