@@ -31,6 +31,19 @@ service cloud.firestore {
     }
 
     // Agrovet / agricultural supplier onboarding and self-managed product listings.
+    // Public map directory contains only approved shop location and contact fields.
+    match /agrovetLocations/{id} {
+      allow read: if true;
+      allow create, update: if isAdmin() || (signedIn()
+        && exists(/databases/$(database)/documents/agrovetApplications/$(id))
+        && get(/databases/$(database)/documents/agrovetApplications/$(id)).data.ownerUid == request.auth.uid
+        && get(/databases/$(database)/documents/agrovetApplications/$(id)).data.status == 'approved'
+        && request.resource.data.shopName is string
+        && request.resource.data.shopLat is string
+        && request.resource.data.shopLng is string);
+      allow delete: if isAdmin();
+    }
+
     match /agrovetApplications/{id} {
       allow create: if signedIn()
         && request.resource.data.ownerUid == request.auth.uid
