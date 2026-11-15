@@ -43,3 +43,18 @@
 
 /* Clear, readable feed formulation workflow */
 .feedIngredientRow{display:grid;grid-template-columns:minmax(190px,2fr) minmax(120px,1fr) minmax(145px,1fr) auto;gap:12px;align-items:end;padding:14px 0;border-bottom:1px solid #e6eee7}.feedIngredientRow label{display:flex;flex-direction:column;gap:6px}.feedIngredientRow small{color:#68776f;font-weight:400;line-height:1.4}.nutritionAnalysisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}.nutritionAnalysisGrid>div{background:#f3f8f3;border:1px solid #dfe9df;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:7px}.nutritionAnalysisGrid span{font-size:13px;color:#617166}.nutritionAnalysisGrid b{font-size:23px;color:#173e2c}.nutritionAnalysisGrid small{font-size:12px;color:#68776f;line-height:1.4}.farmerPortalTabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}.farmerPortalTabs button{min-height:42px}@media(max-width:760px){.feedIngredientRow{grid-template-columns:1fr 1fr}.feedIngredientRow label:first-child{grid-column:1/-1}.feedIngredientRow button{grid-column:1/-1}.nutritionAnalysisGrid{grid-template-columns:1fr 1fr}}@media(max-width:460px){.nutritionAnalysisGrid{grid-template-columns:1fr}.feedIngredientRow{grid-template-columns:1fr}}
+
+/* Compact expandable workflow cards */
+.nutritionStep{padding:0!important;overflow:hidden}
+.nutritionStep>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;font-size:15px}
+.nutritionStep>summary::-webkit-details-marker{display:none}
+.nutritionStep>summary:after{content:'+';font-size:22px;font-weight:700;color:#28734a}
+.nutritionStep[open]>summary:after{content:'−'}
+.nutritionStep>summary span{font-size:12px;color:#6a786f;font-weight:400;text-align:right}
+.nutritionStepBody{padding:0 18px 18px}
+.feedProcedure{padding-left:22px;display:grid;gap:12px;line-height:1.6}
+.feedProcedure li::marker{color:#28734a;font-weight:700}
+.marketSellerCta{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#f1f7f1;border:1px solid #dceade;border-radius:16px;padding:16px 18px;margin:0 0 18px}
+.marketSellerCta p{margin:5px 0 0;color:#607166;font-size:13px}
+.marketSellerCta button{white-space:nowrap}
+@media(max-width:650px){.marketSellerCta{align-items:stretch;flex-direction:column}.marketSellerCta button{width:100%}.nutritionStep>summary{align-items:flex-start;flex-direction:column}.nutritionStep>summary span{text-align:left}}
