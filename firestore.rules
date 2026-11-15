@@ -35,18 +35,31 @@ service cloud.firestore {
     }
 
     match /marketplaceProducts/{id} {
+      function approvedSupplier() {
+        return signedIn()
+          && request.resource.data.ownerUid == request.auth.uid
+          && request.resource.data.applicationId is string
+          && exists(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId))
+          && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.ownerUid == request.auth.uid
+          && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.status == 'approved';
+      }
       allow read: if resource.data.status == 'approved' || resource.data.available == true || isAdmin()
         || (signedIn() && resource.data.ownerUid == request.auth.uid);
-      allow create: if signedIn()
-        && request.resource.data.ownerUid == request.auth.uid
-        && request.resource.data.status == 'pending'
+      // Only an approved supplier can publish directly to the public marketplace.
+      allow create: if isAdmin() || (approvedSupplier()
+        && request.resource.data.status == 'approved'
+        && request.resource.data.available == true
         && request.resource.data.name is string
-        && request.resource.data.category is string;
+        && request.resource.data.category is string);
       allow update: if isAdmin() || (signedIn()
         && resource.data.ownerUid == request.auth.uid
-        && resource.data.status == 'pending'
         && request.resource.data.ownerUid == resource.data.ownerUid
-        && request.resource.data.status == 'pending');
+        && request.resource.data.applicationId == resource.data.applicationId
+        && request.resource.data.status == 'approved'
+        && request.resource.data.available is bool
+        && exists(/databases/$(database)/documents/agrovetApplications/$(resource.data.applicationId))
+        && get(/databases/$(database)/documents/agrovetApplications/$(resource.data.applicationId)).data.ownerUid == request.auth.uid
+        && get(/databases/$(database)/documents/agrovetApplications/$(resource.data.applicationId)).data.status == 'approved');
       allow delete: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
     }
 
