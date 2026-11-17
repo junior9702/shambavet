@@ -398,21 +398,14 @@ const expandLessonSections=(module,courseId)=>{
  const existing=Array.isArray(module.sections)?module.sections.slice(0,3):[];
  if(existing.length>=6)return {...module,sections:existing};
  const title=String(module.title||'this production topic');
- const focus=String(existing[0]?.[0]||ticonst buildModuleQuiz=(module,moduleIndex)=>{
- const sections=module.sections||[];
- const facts=sections.map(section=>String(section[1]||'').split(/(?<=[.!?])\s+/).find(x=>x.length>35)||String(section[1]||''));
- const selected=[0,2,4,5].filter(i=>sections[i]&&facts[i]);
- const questions=selected.slice(0,4).map((sectionIndex,questionIndex)=>{
-  const section=sections[sectionIndex],correct=facts[sectionIndex];
-  const distractors=facts.filter((fact,i)=>i!==sectionIndex&&fact&&fact!==correct);
-  return makeAssessmentQuestion('Applied farm scenario: '+section[0]+'. Which action best follows the guidance in this lesson?',correct,distractors[0]||'Skip the checks and proceed without recording results.',distractors[1]||'Copy a method without checking whether it suits this farm.',distractors[2]||'Ignore the relevant risk and wait until losses become severe.','Lesson explanation: '+correct+' Refer to "'+section[0]+'" in this module.',moduleIndex,questionIndex);
- });
- const task=String(module.task||'Complete the practical activity.');
- const taskWrong=facts.filter(Boolean).slice(0,2);
- questions.push(makeAssessmentQuestion('Which practical evidence should you produce after studying this module?',task,taskWrong[0]||'Make no written record.',taskWrong[1]||'Ignore the production plan.','Rely on memory instead of recording observations.','Practical requirement from this module: '+task,moduleIndex,4));
- return questions;
-};
-ts and sales. Inspect pens, drinkers, flooring and ventilation every day. Separate sick pigs, control visitors and animal movement, and seek professional advice when feed intake, growth or mortality changes unexpectedly.',
+ const focus=String(existing[0]?.[0]||title);
+ const crop=courseId==='crop'||['maize','beans','vegetable','root'].some(k=>String(courseId||'').toLowerCase().includes(k));
+ const profiles={
+ poultry:'Track flock numbers, daily feed and water use, mortality, body weight or egg output, litter condition and vaccination records. Compare weekly results with the breed or supplier guide and investigate sudden changes early. Keep sick birds separate where practical, maintain clean drinkers and feeders, and seek veterinary advice before treating a flock.',
+ dairy:'Record each cow’s identity, milk yield, feed offered, body condition, heat observations, service dates, calving dates and treatment history. Check udder health and milk quality at every milking, maintain clean milking equipment and observe medicine withdrawal periods. Review records to identify falling yield, poor fertility or health problems early.',
+ 'goat-sheep':'Keep individual breeding, kidding or lambing, growth, body-condition, hoof-care, parasite-control and treatment records. Inspect animals routinely for appetite, movement, coat condition and signs of illness. Provide clean water, suitable shelter and dry resting areas; isolate sick animals and seek veterinary guidance rather than relying on unverified remedies.',
+ rabbit:'Record mating, kindling, litter size, weaning numbers, growth, feed use and deaths for each doe and litter. Check nest boxes, ventilation, water delivery and hygiene daily. Prevent heat stress and overcrowding, separate animals by age or production group where practical, and obtain veterinary help for unexplained losses or digestive illness.',
+ pig:'Maintain records for breeding dates, farrowing, litter size, piglet survival, feed use, weight gain, treatments and sales. Inspect pens, drinkers, flooring and ventilation every day. Separate sick pigs, control visitors and animal movement, and seek professional advice when feed intake, growth or mortality changes unexpectedly.',
  fish:'Keep a pond or tank log for stocking numbers, estimated biomass, feed quantity, water temperature, dissolved oxygen where test equipment is available, water clarity and mortalities. Sample fish carefully and adjust feed to biomass and appetite rather than allowing uneaten feed to accumulate. Check water exchange and aeration, and act quickly when fish gasp or gather at the surface.',
  bee:'Maintain a hive inspection record covering colony strength, brood pattern, queen status, food stores, pests, disease signs, feeding and harvest dates. Inspect calmly in suitable weather, use protective clothing and avoid unnecessary disturbance. Follow locally recommended pest-management practices and harvest only mature honey while keeping equipment clean and dry.'
  };
@@ -438,18 +431,18 @@ const makeAssessmentQuestion=(stem,correct,wrongA,wrongB,wrongC,explanation,modu
  return [stem,options,answerIndex,explanation||correct];
 };
 const buildModuleQuiz=(module,moduleIndex)=>{
- const sections=module.sections||[],facts=sections.map(section=>String(section[1]).split(/(?<=[.!?])\s+/).filter(x=>x.length>35)[0]||section[1]);
- const questions=[];
- sections.forEach((section,index)=>{
-  const otherFacts=facts.filter((_,j)=>j!==index);
-  const distractors=[otherFacts[0]||'Skip the required checks and proceed without recording results.',otherFacts[1]||'Copy a method without checking whether it suits this farm.','Ignore the relevant risk and wait until losses become severe.'];
-  questions.push(makeAssessmentQuestion('Farm scenario: '+section[0]+'. Which decision is best supported by the lesson?',facts[index],distractors[0],distractors[1],distractors[2],'Why this is correct: '+facts[index]+' This is explained in the lesson "'+section[0]+'".',moduleIndex,index));
+ const sections=module.sections||[];
+ const facts=sections.map(section=>String(section[1]||'').split(/(?<=[.!?])\s+/).find(x=>x.length>35)||String(section[1]||''));
+ const selected=[0,2,4,5].filter(i=>sections[i]&&facts[i]);
+ const questions=selected.slice(0,4).map((sectionIndex,questionIndex)=>{
+  const section=sections[sectionIndex],correct=facts[sectionIndex];
+  const distractors=facts.filter((fact,i)=>i!==sectionIndex&&fact&&fact!==correct);
+  return makeAssessmentQuestion('Applied farm scenario: '+section[0]+'. Which action best follows the guidance in this lesson?',correct,distractors[0]||'Skip the checks and proceed without recording results.',distractors[1]||'Copy a method without checking whether it suits this farm.',distractors[2]||'Ignore the relevant risk and wait until losses become severe.','Lesson explanation: '+correct+' Refer to "'+section[0]+'" in this module.',moduleIndex,questionIndex);
  });
  const task=String(module.task||'Complete the practical activity.');
- questions.push(makeAssessmentQuestion('At the end of this module, which practical output should the learner complete?',task,facts[0]||'Make no written record.',facts[1]||'Ignore the production plan.','Rely on memory instead of recording observations.','Module practical: '+task,moduleIndex,3));
- const detail=facts[Math.min(1,facts.length-1)]||facts[0]||'Follow the module guidance and record the result.';
- questions.push(makeAssessmentQuestion('Applied knowledge: which statement accurately reflects the guidance taught in "'+(sections[1]?.[0]||sections[0]?.[0]||module.title)+'"?',detail,facts[0]||'Ignore the recommended process.',facts[2]||'Use an unverified method.', 'Skip follow-up checks and records.','The answer is taken from the module lesson: '+detail,moduleIndex,4));
- return questions.slice(0,5);
+ const taskWrong=facts.filter(Boolean).slice(0,2);
+ questions.push(makeAssessmentQuestion('Which practical evidence should you produce after studying this module?',task,taskWrong[0]||'Make no written record.',taskWrong[1]||'Ignore the production plan.','Rely on memory instead of recording observations.','Practical requirement from this module: '+task,moduleIndex,4));
+ return questions;
 };
 const makeCourse=(id,title,icon,summary,modules,quiz)=>({id,title,icon,summary,category:id==='crop'?'Crops':'Livestock',level:'Beginner',modules:modules.map((m,i)=>{const expanded=expandLessonSections(m,id);return {...expanded,id:id+'-'+i,quiz:buildModuleQuiz(expanded,i)}})});
 const modulePack=(id,items)=>items.map((m,i)=>({...m,id:id+'-advanced-'+i}));
