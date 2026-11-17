@@ -626,7 +626,7 @@ const cropSpecialistTracks=[
 ]}
 ];
 const cropSpecialistCourses=cropSpecialistTracks.map(course=>({...course,modules:course.modules.map((m,i)=>{const expanded=expandLessonSections(m,course.id);return {...expanded,id:course.id+'-'+i,quiz:buildModuleQuiz(expanded,i)}})}));
-\nconst academyCourses=[...extendAcademy(learningCourses),...cropSpecialistCourses];
+const academyCourses=[...extendAcademy(learningCourses),...cropSpecialistCourses];
 
 function TrainingEvents({authUser}){
  const [events,setEvents]=useState([]),[msg,setMsg]=useState(''),[busy,setBusy]=useState(false);
