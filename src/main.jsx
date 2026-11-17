@@ -400,7 +400,7 @@ const makeAssessmentQuestion=(stem,correct,wrongA,wrongB,wrongC,explanation,modu
  return [stem,options,answerIndex,explanation||correct];
 };
 const buildModuleQuiz=(module,moduleIndex)=>{
- const sections=module.sections||[],facts=sections.map(section=>String(section[1]).split(/(?<=[.!?])\\s+/).filter(x=>x.length>35)[0]||section[1]);
+ const sections=module.sections||[],facts=sections.map(section=>String(section[1]).split(/(?<=[.!?])\s+/).filter(x=>x.length>35)[0]||section[1]);
  const questions=[];
  sections.forEach((section,index)=>{
   const otherFacts=facts.filter((_,j)=>j!==index);
