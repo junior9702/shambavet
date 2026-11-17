@@ -320,3 +320,24 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 
 .homeBrandWordmark{margin:9px 0 15px;color:#17472f;font-size:clamp(12px,1.4vw,16px);font-weight:900;letter-spacing:.055em;line-height:1.35}
 .homeLogo{display:block;max-width:min(100%,310px);height:auto;object-fit:contain}
+
+/* Learning Academy: pathway grouping, detailed notes and assessment feedback */
+.learningCourseGroups{display:grid;gap:28px}
+.learningCourseGroup{min-width:0}
+.learningGroupHeading{margin:0 0 14px;padding:0 0 12px;border-bottom:1px solid #e1eae3}
+.learningGroupHeading h3{margin:0 0 5px;color:#17472f;font-size:20px;font-weight:850}
+.learningGroupHeading p{margin:0;color:#66786d;font-size:12px;line-height:1.6}
+.learningAnswerReview{margin:18px 0;padding:17px;border:1px solid #d8e6dc;border-radius:14px;background:#f7faf7}
+.learningAnswerReview h4{margin:0 0 12px;color:#1c5736;font-size:14px}
+.learningAnswerItem{padding:12px 0;border-top:1px solid #e0e9e2}
+.learningAnswerItem:first-of-type{border-top:0}
+.learningAnswerItem>b{display:block;color:#243d2d;font-size:13px;line-height:1.55}
+.learningAnswerItem p{margin:7px 0;color:#1f613c;font-size:12px;line-height:1.6}
+.learningAnswerItem small{display:block;color:#5b6d60;font-size:11px;line-height:1.65}
+.learningYourAnswer{display:block;margin-top:6px;color:#9a4d32;font-size:11px}
+.learningRetakeActions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.learningRetakeActions button{border:1px solid #b8cbbd;border-radius:9px;padding:10px 13px;background:#fff;color:#24583a;font-weight:700;font-size:12px;cursor:pointer}
+.learningModuleNav button:disabled{cursor:not-allowed;opacity:.52}
+.learningLessonBlock p{font-size:13px;line-height:1.85;white-space:normal}
+.learningPractical{line-height:1.75}
+@media(max-width:700px){.learningAnswerReview{padding:13px}.learningGroupHeading h3{font-size:18px}.learningRetakeActions{display:grid;grid-template-columns:1fr}.learningRetakeActions button{width:100%}}
