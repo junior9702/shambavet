@@ -400,7 +400,7 @@ const expandLessonSections=(module,courseId)=>{
  const title=String(module.title||'this production topic');
  const focus=String(existing[0]?.[0]||ticonst buildModuleQuiz=(module,moduleIndex)=>{
  const sections=module.sections||[];
- const facts=sections.map(section=>String(section[1]||'').split(/(?<=[.!?])\\s+/).find(x=>x.length>35)||String(section[1]||''));
+ const facts=sections.map(section=>String(section[1]||'').split(/(?<=[.!?])\s+/).find(x=>x.length>35)||String(section[1]||''));
  const selected=[0,2,4,5].filter(i=>sections[i]&&facts[i]);
  const questions=selected.slice(0,4).map((sectionIndex,questionIndex)=>{
   const section=sections[sectionIndex],correct=facts[sectionIndex];
