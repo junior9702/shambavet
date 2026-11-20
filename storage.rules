@@ -7,5 +7,18 @@ service firebase.storage {
         && request.resource.contentType.matches('image/.*');
       allow read: if request.auth != null && request.auth.uid == uid;
     }
+    // Learning Academy resources: signed-in learners may read course files.
+    // Only approved ShambaVet developers may upload, replace or remove materials.
+    match /academyMaterials/{courseId}/{moduleId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && firestore.get(/databases/(default)/documents/admins/$(request.auth.uid)).data.enabled == true
+        && firestore.get(/databases/(default)/documents/admins/$(request.auth.uid)).data.role == 'developer'
+        && request.resource.size < 20 * 1024 * 1024
+        && request.resource.contentType.matches('application/pdf|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.ms-powerpoint|application/vnd.openxmlformats-officedocument.presentationml.presentation|text/plain|application/rtf');
+      allow delete: if request.auth != null
+        && firestore.get(/databases/(default)/documents/admins/$(request.auth.uid)).data.enabled == true
+        && firestore.get(/databases/(default)/documents/admins/$(request.auth.uid)).data.role == 'developer';
+    }
   }
 }
