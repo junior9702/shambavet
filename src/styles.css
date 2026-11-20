@@ -359,3 +359,109 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .academyEditorBlock input,.academyEditorBlock textarea,.academyModuleEditor>label input,.academyModuleEditor>label textarea{box-sizing:border-box}
 .academyModuleEditor .formGrid{gap:9px}
 @media(max-width:650px){.academyAdminModules,.academyModuleEditor{padding:12px}.academyAdminModules .row{align-items:flex-start;flex-wrap:wrap}.academyAdminModules .row>div{flex-basis:100%}.academyAdmin>.adminHead{display:grid}}
+
+
+/* Learning Academy professional course studio */
+.academyAdmin{gap:18px;padding:clamp(16px,2.4vw,28px);border:1px solid #dce8df;box-shadow:0 12px 34px #183b2410}
+.academyManagerHero{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px;border-radius:18px;background:linear-gradient(120deg,#123e2b,#236743);color:#fff}
+.academyManagerHero h2{margin:7px 0 8px;font-size:clamp(22px,3vw,30px);color:#fff}
+.academyManagerHero p{max-width:720px;margin:0;color:#e0eee4;line-height:1.65;font-size:14px}
+.academyEyebrow,.academyPanelHeading>span,.academyEditorTitle>div>span,.academyContentSectionHead>div>span{font-size:10px;font-weight:800;letter-spacing:1.5px;color:#a9d6b6}
+.academyHeroMark{display:grid;place-items:center;flex:0 0 72px;width:72px;height:72px;border-radius:20px;background:#ffffff20;font-size:36px}
+.academyManagerToolbar{display:flex;justify-content:space-between;align-items:end;gap:14px;flex-wrap:wrap;padding:15px;border:1px solid #e1e9e3;border-radius:14px;background:#f8fbf8}
+.academyCoursePicker{display:grid;gap:6px;min-width:min(100%,340px);color:#63766a;font-size:10px;font-weight:800;letter-spacing:1px}
+.academyCoursePicker select{min-width:260px}
+.academyToolbarActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.academyStatus,.academyTotal{font-size:12px;font-weight:700;color:#65776a}
+.academyStatus{padding:7px 11px;border-radius:99px;background:#edf1ee}
+.academyStatus.published{color:#17623a;background:#e1f4e7}
+.academyStatus.draft{color:#7b5a16;background:#fff4d8}
+.academyStartPanel{display:flex;align-items:center;gap:18px;padding:26px;border:1px dashed #b8cdbd;border-radius:16px;background:#f8fbf8}
+.academyStartPanel h3{margin:0 0 7px;color:#1a4a30}
+.academyStartPanel p{max-width:720px;color:#617367;line-height:1.65}
+.academyStartIcon{display:grid;place-items:center;flex:0 0 60px;width:60px;height:60px;border-radius:16px;background:#e4f2e8;color:#236a42}
+.academyOverviewStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.academyOverviewStats>div{display:grid;gap:3px;padding:14px;border:1px solid #e3ebe5;border-radius:13px;background:#fbfdfb}
+.academyOverviewStats b{font-size:24px;color:#205b38}
+.academyOverviewStats span{font-size:11px;color:#6a7b70}
+.academyStudioTabs{display:flex;gap:6px;padding:6px;border-radius:13px;background:#edf3ee;overflow-x:auto}
+.academyStudioTabs button{flex:1;min-width:max-content;border:0;border-radius:9px;background:transparent;color:#4f6557;font-size:12px;font-weight:750;padding:12px 15px}
+.academyStudioTabs button.active{background:#fff;color:#1b6038;box-shadow:0 2px 8px #1a4b2c12}
+.academyStudioPanel{display:grid;gap:18px;padding:clamp(14px,2vw,22px);border:1px solid #e0e9e2;border-radius:15px;background:#fff}
+.academyPanelHeading{display:grid;gap:5px}
+.academyPanelHeading>span,.academyEditorTitle>div>span,.academyContentSectionHead>div>span{color:#388157}
+.academyPanelHeading h3,.academyEditorTitle h3{margin:0;color:#1b4d31;font-size:20px}
+.academyPanelHeading p,.academyEditorTitle p{margin:0;color:#718075;font-size:13px;line-height:1.55}
+.academyCourseForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.academyCourseForm label,.academyModuleTitleField{display:grid;gap:7px;color:#294c37;font-size:12px;font-weight:750}
+.academyCourseForm .academyCourseDescription{grid-column:1/-1}
+.academyPanelActions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding-top:12px;border-top:1px solid #e8eee9}
+.academyAdminModules{padding:16px;border:1px solid #e0e9e2;border-radius:14px;background:#fbfdfb}
+.academyAdminModules>.adminHead{align-items:center;margin-bottom:12px}
+.academyAdminModules>.adminHead h3{font-size:16px}
+.academyModuleListItem{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid #e9efea}
+.academyModuleIndex{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:11px;background:#e8f3eb;color:#21643d;font-size:13px;font-weight:850}
+.academyModuleSummary{display:grid;gap:4px;flex:1;min-width:0}
+.academyModuleSummary b{color:#234b32;font-size:13px}
+.academyModuleSummary span{color:#718075;font-size:11px}
+.academyModuleActions{display:flex;gap:5px;flex-wrap:wrap}
+.academyModuleActions button{padding:7px 10px;font-size:11px}
+.academyEmptyModules{display:grid;justify-items:center;gap:7px;padding:28px 12px;color:#718075;text-align:center}
+.academyEmptyModules svg{color:#5a9a70}
+.academyEmptyModules b{color:#355b40}
+.academyModuleEditor{display:grid;gap:18px;padding:clamp(14px,2vw,22px);border:1px solid #dce8df;border-radius:15px;background:#f8fbf8;scroll-margin-top:18px}
+.academyEditorTitle{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.academyEditorTitle h3{margin:4px 0}
+.academyEditorStep{padding:7px 10px;border-radius:8px;background:#e6f2e9;color:#286640;font-size:10px;font-weight:800;white-space:nowrap}
+.academyModuleTitleField{max-width:780px}
+.academyContentSection{display:grid;gap:13px;padding:16px;border:1px solid #e0e9e2;border-radius:13px;background:#fff}
+.academyContentSectionHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.academyContentSectionHead h4{margin:4px 0;color:#204b32;font-size:16px}
+.academyContentSectionHead p{margin:0;color:#718075;font-size:12px;line-height:1.5}
+.academyContentSectionHead>svg{flex:0 0 auto;color:#43835a}
+.academyLessonEntryList{display:grid;gap:10px}
+.academyContentActions{display:flex}
+.academyContentActions button,.academyContentSection>button{display:inline-flex;align-items:center;gap:6px;width:max-content}
+.academyUploadPanel{display:flex;align-items:center;gap:13px;padding:15px;border:1px dashed #a9c8b1;border-radius:12px;background:#f4faf5}
+.academyUploadIcon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:12px;background:#e0f1e5;color:#287046}
+.academyUploadCopy{display:grid;gap:3px;flex:1;min-width:0}
+.academyUploadCopy b{color:#244d34;font-size:13px}
+.academyUploadCopy span,.academyUploadCopy small{color:#6e7e72;font-size:11px;line-height:1.45}
+.academyUploadButton{position:relative;display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:9px;background:#236b42;color:#fff;font-size:12px;font-weight:750;cursor:pointer;white-space:nowrap}
+.academyUploadButton input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.academyResourceList{display:grid;gap:8px}
+.academyResourceList> b{color:#345c40;font-size:12px}
+.academyResourceList>div{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e5ece6;border-radius:10px;background:#fbfdfb}
+.academyResourceList>div>svg{color:#46815a;flex:0 0 auto}
+.academyResourceList>div>span{display:grid;gap:3px;flex:1;min-width:0}
+.academyResourceList>div>span b{overflow-wrap:anywhere;color:#31513b;font-size:12px}
+.academyResourceList small{color:#78867c;font-size:10px}
+.academyQuestionSection{border-color:#e4e6d8;background:#fffefa}
+.academyQuestionGuide{display:grid;gap:4px;padding:12px 14px;border-left:3px solid #c4a24c;border-radius:8px;background:#fff8e6}
+.academyQuestionGuide b{color:#6c531b;font-size:12px}
+.academyQuestionGuide span{color:#786b4c;font-size:11px;line-height:1.5}
+.academyQuestionEditor{background:#fff}
+.academyAnswerOptions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.academyAnswerOptions label{display:flex;align-items:center;gap:8px;min-width:0}
+.academyAnswerOptions label>span{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:8px;background:#edf3ee;color:#2d6842;font-size:11px;font-weight:850}
+.academyAnswerOptions input{min-width:0;flex:1}
+.academyCorrectAnswer{display:grid;gap:6px;max-width:520px;color:#31523b;font-size:12px;font-weight:750}
+.academyPublishChecklist{display:grid;gap:0}
+.academyPublishChecklist>div{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid #e8eee9}
+.academyPublishChecklist>div>div{display:grid;gap:4px;flex:1;min-width:0}
+.academyPublishChecklist b{color:#294d35;font-size:13px}
+.academyPublishChecklist small{color:#78867c;font-size:11px}
+.academyCheckGood,.academyCheckMissing{font-size:11px;font-weight:800;white-space:nowrap}
+.academyCheckGood{color:#1e7a43}.academyCheckMissing{color:#9a6a18}
+.academyPublishActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:15px;border-radius:12px;background:#f4f8f4}
+.academyPublishActions>div{display:grid;gap:4px;flex:1;min-width:180px}
+.academyPublishActions b{color:#2b5137;font-size:13px}
+.academyPublishActions span{color:#78867c;font-size:11px}
+.learningResources{display:grid;gap:9px;margin:18px 0;padding:16px;border:1px solid #dce9df;border-radius:13px;background:#f7fbf7}
+.learningResources h3{display:flex;align-items:center;gap:8px;margin:0;color:#245a38;font-size:15px}
+.learningResources>p{margin:0;color:#6e7e72;font-size:12px}
+.learningResources>a{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #e2ebe4;border-radius:10px;background:#fff;color:#2b5739;text-decoration:none}
+.learningResources>a>span{display:grid;gap:3px;flex:1;min-width:0}
+.learningResources>a b{font-size:12px;overflow-wrap:anywhere}
+.learningResources>a small{font-size:10px;color:#78867c}
+@media(max-width:700px){.academyOverviewStats{grid-template-columns:repeat(2,minmax(0,1fr))}.academyCourseForm,.academyAnswerOptions{grid-template-columns:1fr}.academyCourseForm .academyCourseDescription{grid-column:auto}.academyManagerHero{padding:18px}.academyHeroMark{flex-basis:48px;width:48px;height:48px;font-size:25px}.academyModuleListItem{align-items:flex-start;flex-wrap:wrap}.academyModuleSummary{flex-basis:calc(100% - 55px)}.academyModuleActions{width:100%;padding-left:50px}.academyUploadPanel{align-items:flex-start;flex-wrap:wrap}.academyUploadButton{margin-left:57px}.academyPublishChecklist>div{flex-wrap:wrap}.academyPublishChecklist>div>div{flex-basis:calc(100% - 55px)}.academyPublishActions{align-items:stretch}.academyStudioTabs button{padding:10px 12px;font-size:11px}}
