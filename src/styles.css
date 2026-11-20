@@ -341,3 +341,21 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .learningLessonBlock p{font-size:13px;line-height:1.85;white-space:normal}
 .learningPractical{line-height:1.75}
 @media(max-width:700px){.learningAnswerReview{padding:13px}.learningGroupHeading h3{font-size:18px}.learningRetakeActions{display:grid;grid-template-columns:1fr}.learningRetakeActions button{width:100%}}
+
+/* Admin-managed Learning Academy content editor */
+.academyAdmin{display:grid;gap:16px}
+.academyAdmin>.adminHead{align-items:flex-start}
+.academyAdmin>.adminHead p{margin:5px 0 0;color:#68796e;font-size:13px;line-height:1.6}
+.academyAdmin textarea,.academyModuleEditor textarea{width:100%;min-height:86px;resize:vertical}
+.academyAdminModules,.academyModuleEditor{display:grid;gap:13px;padding:17px;border:1px solid #dfe9e1;border-radius:14px;background:#fbfdfb}
+.academyAdminModules h3,.academyModuleEditor h3{margin:0;color:#1b4c32}
+.academyAdminModules .row{align-items:center;gap:10px}
+.academyAdminModules .row>div{flex:1;min-width:0}
+.academyAdminModules .row small{display:block;color:#6d7b71;margin-top:4px}
+.academyModuleEditor label{display:grid;gap:7px;color:#294c37;font-size:13px;font-weight:700}
+.academyEditorBlock{display:grid;gap:10px;padding:14px;border:1px solid #e0e9e2;border-radius:12px;background:#fff}
+.academyEditorBlock .adminHead{align-items:center;margin:0}
+.academyEditorBlock .adminHead b{color:#31543d;font-size:13px}
+.academyEditorBlock input,.academyEditorBlock textarea,.academyModuleEditor>label input,.academyModuleEditor>label textarea{box-sizing:border-box}
+.academyModuleEditor .formGrid{gap:9px}
+@media(max-width:650px){.academyAdminModules,.academyModuleEditor{padding:12px}.academyAdminModules .row{align-items:flex-start;flex-wrap:wrap}.academyAdminModules .row>div{flex-basis:100%}.academyAdmin>.adminHead{display:grid}}
