@@ -139,7 +139,7 @@ Return a structured JSON assessment with:
     const output = extractOutput(data);
     let result;
     try {
-      const cleaned = String(output).replace(/^\`\`\`json\\s*/i, "").replace(/\\s*\`\`\`$/, "").trim();
+      const cleaned = String(output).replace(/^\`\`\`json\s*/i, "").replace(/\s*\`\`\`$/, "").trim();
       result = JSON.parse(cleaned);
     } catch {
       return res.status(502).json({ error: "Gemini responded, but its assessment could not be read. Please try again." });
