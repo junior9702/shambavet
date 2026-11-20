@@ -145,6 +145,13 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    // Learning Academy content is public only after an administrator publishes a course.
+    // Only approved ShambaVet developers can create or edit course, module, lesson and quiz content.
+    match /academyCourses/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
     match /trainingEvents/{id} {
       allow read: if resource.data.status == 'published' || isAdmin();
       allow create, update, delete: if isAdmin();

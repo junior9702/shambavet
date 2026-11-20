@@ -285,3 +285,183 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .nutritionStep>summary:after{grid-column:2;grid-row:1 / span 2;align-self:center}
 .nutritionStep>summary:focus-visible{outline:3px solid #9bd4ae;outline-offset:-3px;border-radius:12px}
 @media(max-width:650px){.nutritionStep>summary{align-items:center;flex-direction:initial}.nutritionStep>summary span{text-align:left}}
+
+
+/* ShambaVet Learning Academy */
+.learningHero{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:22px;align-items:center;padding:26px 30px;margin:8px 0 24px;border-radius:20px;background:linear-gradient(120deg,#173e2c,#246c43);color:#fff}
+.learningHero h2{font-size:clamp(22px,3vw,30px);margin:10px 0 8px}.learningHero p{max-width:760px;color:#d5e6da;line-height:1.65;margin:0}.learningHero .hubTag{background:#e2f3e6;color:#176b38}
+.learningHeroStat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:16px}.learningHeroStat b{font-size:40px}.learningHeroStat span{font-size:12px;color:#d5e6da}
+.learningAuth{display:grid;grid-template-columns:1fr minmax(280px,390px);gap:25px;align-items:center;border-color:#cfe2d2}.learningAuth h2{margin:10px 0 6px}.learningAuth p{color:#66766d;line-height:1.6}.learningAuthForm{padding:18px;background:#f7faf7;border:1px solid #e1eae2;border-radius:15px}.learningAuthForm label{display:block;font-size:12px;font-weight:700;color:#52635a;margin:10px 0}.learningAuthForm input{display:block;width:100%;padding:11px;border:1px solid #d6e0d8;border-radius:9px;margin-top:5px}.learningAuthTabs{display:flex;gap:8px}.learningWelcome{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;background:#eef8f0;border:1px solid #d2e8d6;border-radius:12px;margin:0 0 22px}.learningWelcome b,.learningWelcome span{display:block}.learningWelcome span{font-size:12px;color:#63756a;margin-top:3px}
+.learningSectionHead{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:28px 0 15px}.learningSectionHead h2{margin:0 0 5px}.learningSectionHead p{margin:0;color:#69786f}.learningCount,.learningCategory{display:inline-flex;padding:5px 9px;border-radius:999px;background:#edf5ef;color:#286b43;font-size:11px;font-weight:800}
+.learningCourseGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.learningCourseCard{background:#fff;border:1px solid #dfe8e0;border-radius:17px;padding:19px;display:flex;flex-direction:column;min-height:275px}.learningCourseTop{display:flex;align-items:center;justify-content:space-between}.learningCourseIcon{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:#eff7f0;font-size:28px}.learningCourseCard h3{font-size:17px;margin:14px 0 7px}.learningCourseCard p{font-size:13px;color:#68776f;line-height:1.55;flex:1}.learningCourseMeta{display:flex;justify-content:space-between;color:#617268;font-size:11px;margin:9px 0}.learningCourseCard>small{color:#6a786f;font-size:11px}.learningProgressTrack{height:7px;background:#e9efea;border-radius:99px;overflow:hidden;margin:8px 0}.learningProgressTrack span{display:block;height:100%;background:#25814a;border-radius:99px;transition:width .2s}
+.learningWorkspace{margin-top:22px}.learningWorkspaceHead{display:grid;grid-template-columns:130px 1fr auto;gap:20px;align-items:center;padding:20px;background:#fff;border:1px solid #dfe8e0;border-radius:16px}.learningWorkspaceHead h2{margin:7px 0 5px}.learningWorkspaceHead p{margin:0;color:#6b7971;font-size:13px}.learningBack{white-space:nowrap}.learningCourseCompletion{display:flex;flex-direction:column;align-items:center;padding:12px 18px;border-radius:12px;background:#eef7ef}.learningCourseCompletion b{font-size:24px;color:#1b7540}.learningCourseCompletion span{font-size:11px;color:#607167}
+.learningModuleLayout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:17px;margin-top:16px;align-items:start}.learningModuleNav{position:sticky;top:88px;background:#fff;border:1px solid #dfe8e0;border-radius:15px;padding:15px}.learningModuleNav h3{margin:3px 0 12px;font-size:15px}.learningModuleNav>button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px;margin:5px 0;border:1px solid transparent;background:#f8faf8}.learningModuleNav>button:disabled{opacity:.5;cursor:not-allowed}.learningModuleNav>button.selected{border-color:#9acdaa;background:#eff8f0}.learningModuleNav>button.done .moduleNumber{background:#dff2e4;color:#176c3a}.moduleNumber{width:27px;height:27px;flex:0 0 27px;border-radius:50%;display:grid;place-items:center;background:#edf1ed;font-size:12px;font-weight:800}.learningModuleNav>button span:nth-child(2){min-width:0}.learningModuleNav>button b,.learningModuleNav>button small{display:block}.learningModuleNav>button b{font-size:11px}.learningModuleNav>button small{font-size:11px;line-height:1.35;color:#66766c;margin-top:3px}.learningModuleNav>small{font-size:11px;color:#66766c}
+.learningModuleContent{min-width:0;background:#fff;border:1px solid #dfe8e0;border-radius:16px;padding:23px}.learningModuleHeader{display:flex;justify-content:space-between;align-items:center;gap:10px}.learningModuleContent>h2{font-size:25px;margin:14px 0 7px}.learningModuleIntro{color:#69786f;line-height:1.6}.learningTimePlan{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 22px}.learningTimePlan span{padding:7px 10px;border-radius:9px;background:#f1f6f2;color:#42624d;font-size:11px;font-weight:700}.learningLessonBlock{display:grid;grid-template-columns:37px 1fr;gap:13px;padding:16px 0;border-top:1px solid #edf1ed}.learningLessonNumber{width:32px;height:32px;border-radius:10px;background:#eaf5ec;color:#1b7540;display:grid;place-items:center;font-weight:800;font-size:12px}.learningLessonBlock h3{margin:1px 0 6px;font-size:16px}.learningLessonBlock p,.learningPractical p{margin:0;color:#53655a;line-height:1.7;font-size:13px}.learningPractical{padding:17px;border:1px solid #d7e8d9;background:#f3faf4;border-radius:13px;margin:17px 0}.learningPractical h3{margin:0 0 8px;font-size:15px;color:#1d6c3b}.learningPractical small{display:block;color:#6d7c72;margin-top:9px;font-size:11px}
+.learningAssessment{border:1px solid #dfe8e0;border-radius:15px;padding:18px;margin-top:22px}.learningAssessmentHead{display:flex;justify-content:space-between;align-items:center;gap:15px}.learningAssessmentHead h3{margin:8px 0 3px}.learningAssessmentHead p{margin:0;color:#68776f;font-size:12px}.learningAssessmentHead>strong{font-size:28px;color:#1d7540;background:#eff8f0;border-radius:12px;padding:10px 14px;text-align:center}.learningAssessmentHead>strong small{display:block;font-size:9px;letter-spacing:1px}.learningQuestion{border:0;border-top:1px solid #edf1ed;margin:16px 0 0;padding:14px 0 0;min-width:0}.learningQuestion legend{font-weight:750;font-size:13px;line-height:1.5;padding:0 0 8px}.learningQuestion label{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;margin:5px 0;border:1px solid #e5ebe6;border-radius:9px;font-size:12px;line-height:1.45;cursor:pointer}.learningQuestion label.chosen{background:#eff8f0;border-color:#91c6a0}.learningQuestion input{margin:2px 0 0;accent-color:#218148}.learningPass,.learningFail{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:13px;border-radius:11px;margin:15px 0}.learningPass{background:#eaf7ed;border:1px solid #b9dfc2;color:#176b38}.learningFail{background:#fff5e8;border:1px solid #ecd2a8;color:#85571b}.learningPass strong,.learningFail strong{grid-column:2;grid-row:1 / span 2;font-size:25px}.learningPass span,.learningFail span{font-size:12px}.learningGraduation,.learningCertificateCard{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px;border-radius:12px;background:#eff8f0;border:1px solid #cfe5d3;margin-top:15px}.learningGraduation b,.learningGraduation span,.learningCertificateCard b,.learningCertificateCard span{display:block}.learningGraduation span,.learningCertificateCard span{font-size:12px;color:#617368;margin-top:4px}.learningCertificateCard{margin-top:14px}.learningDisclaimer{font-size:11px;line-height:1.6;color:#6d7a72;padding:13px 15px;border-left:3px solid #a9cbb0;background:#f7faf7;margin:22px 0}.learningEvents{margin-top:28px}
+@media(max-width:900px){.learningCourseGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.learningModuleLayout{grid-template-columns:220px minmax(0,1fr)}.learningAuth{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.learningHero{grid-template-columns:1fr;padding:20px}.learningHeroStat{flex-direction:row;justify-content:flex-start}.learningHeroStat b{font-size:30px}.learningAuth{grid-template-columns:1fr;padding:15px}.learningCourseGrid{grid-template-columns:1fr}.learningSectionHead{align-items:flex-start;flex-direction:column}.learningWorkspaceHead{grid-template-columns:1fr auto;gap:10px}.learningBack{grid-column:1/-1;justify-self:start}.learningModuleLayout{grid-template-columns:1fr}.learningModuleNav{position:static}.learningModuleContent{padding:15px}.learningModuleContent>h2{font-size:21px}.learningGraduation,.learningCertificateCard{align-items:stretch;flex-direction:column}.learningGraduation button,.learningCertificateCard button{width:100%}.learningWelcome{align-items:flex-start;flex-direction:column}.learningAssessmentHead{align-items:flex-start}.learningTimePlan span{flex:1 1 100%}}
+
+
+/* Learning Academy: clearer study notes and module outcomes */
+.learningOutcomes{margin:18px 0;padding:15px 18px;border:1px solid #d7e7da;border-left:4px solid #28784a;border-radius:12px;background:#f5faf6}
+.learningOutcomes>b{display:block;margin-bottom:8px;color:#1d5634;font-size:13px}
+.learningOutcomes ul{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:7px 22px;margin:0;padding-left:18px;color:#52675a;font-size:12px;line-height:1.5}
+.learningNoteLabel{display:inline-block;margin-top:10px;color:#28734a;font-size:9px;font-weight:850;letter-spacing:.09em}
+.learningLessonBlock>div{min-width:0}
+.learningLessonBlock p{font-size:13px;line-height:1.8;color:#465d4e}
+.learningQuestion legend{max-width:100%}
+.learningQuestion label span{overflow-wrap:anywhere}
+.siteHeader .brand{min-width:220px;max-width:290px}
+.siteHeader .brand>span{min-width:0}
+.siteHeader .brand b{display:block;font-size:11px;line-height:1.25;letter-spacing:.025em;white-space:normal}
+.siteHeader .brand small{display:block;font-size:8px;letter-spacing:.055em;line-height:1.3}
+@media(max-width:1250px) and (min-width:1051px){.siteHeader .brand{min-width:190px;max-width:210px}.siteHeader .brand b{font-size:9px}}
+@media(max-width:560px){.siteHeader .brand{max-width:170px}.siteHeader .brand b{font-size:9px}.siteHeader .brand small{font-size:7px}}
+
+.homeBrandWordmark{margin:9px 0 15px;color:#17472f;font-size:clamp(12px,1.4vw,16px);font-weight:900;letter-spacing:.055em;line-height:1.35}
+.homeLogo{display:block;max-width:min(100%,310px);height:auto;object-fit:contain}
+
+/* Learning Academy: pathway grouping, detailed notes and assessment feedback */
+.learningCourseGroups{display:grid;gap:28px}
+.learningCourseGroup{min-width:0}
+.learningGroupHeading{margin:0 0 14px;padding:0 0 12px;border-bottom:1px solid #e1eae3}
+.learningGroupHeading h3{margin:0 0 5px;color:#17472f;font-size:20px;font-weight:850}
+.learningGroupHeading p{margin:0;color:#66786d;font-size:12px;line-height:1.6}
+.learningAnswerReview{margin:18px 0;padding:17px;border:1px solid #d8e6dc;border-radius:14px;background:#f7faf7}
+.learningAnswerReview h4{margin:0 0 12px;color:#1c5736;font-size:14px}
+.learningAnswerItem{padding:12px 0;border-top:1px solid #e0e9e2}
+.learningAnswerItem:first-of-type{border-top:0}
+.learningAnswerItem>b{display:block;color:#243d2d;font-size:13px;line-height:1.55}
+.learningAnswerItem p{margin:7px 0;color:#1f613c;font-size:12px;line-height:1.6}
+.learningAnswerItem small{display:block;color:#5b6d60;font-size:11px;line-height:1.65}
+.learningYourAnswer{display:block;margin-top:6px;color:#9a4d32;font-size:11px}
+.learningRetakeActions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.learningRetakeActions button{border:1px solid #b8cbbd;border-radius:9px;padding:10px 13px;background:#fff;color:#24583a;font-weight:700;font-size:12px;cursor:pointer}
+.learningModuleNav button:disabled{cursor:not-allowed;opacity:.52}
+.learningLessonBlock p{font-size:13px;line-height:1.85;white-space:normal}
+.learningPractical{line-height:1.75}
+@media(max-width:700px){.learningAnswerReview{padding:13px}.learningGroupHeading h3{font-size:18px}.learningRetakeActions{display:grid;grid-template-columns:1fr}.learningRetakeActions button{width:100%}}
+
+/* Admin-managed Learning Academy content editor */
+.academyAdmin{display:grid;gap:16px}
+.academyAdmin>.adminHead{align-items:flex-start}
+.academyAdmin>.adminHead p{margin:5px 0 0;color:#68796e;font-size:13px;line-height:1.6}
+.academyAdmin textarea,.academyModuleEditor textarea{width:100%;min-height:86px;resize:vertical}
+.academyAdminModules,.academyModuleEditor{display:grid;gap:13px;padding:17px;border:1px solid #dfe9e1;border-radius:14px;background:#fbfdfb}
+.academyAdminModules h3,.academyModuleEditor h3{margin:0;color:#1b4c32}
+.academyAdminModules .row{align-items:center;gap:10px}
+.academyAdminModules .row>div{flex:1;min-width:0}
+.academyAdminModules .row small{display:block;color:#6d7b71;margin-top:4px}
+.academyModuleEditor label{display:grid;gap:7px;color:#294c37;font-size:13px;font-weight:700}
+.academyEditorBlock{display:grid;gap:10px;padding:14px;border:1px solid #e0e9e2;border-radius:12px;background:#fff}
+.academyEditorBlock .adminHead{align-items:center;margin:0}
+.academyEditorBlock .adminHead b{color:#31543d;font-size:13px}
+.academyEditorBlock input,.academyEditorBlock textarea,.academyModuleEditor>label input,.academyModuleEditor>label textarea{box-sizing:border-box}
+.academyModuleEditor .formGrid{gap:9px}
+@media(max-width:650px){.academyAdminModules,.academyModuleEditor{padding:12px}.academyAdminModules .row{align-items:flex-start;flex-wrap:wrap}.academyAdminModules .row>div{flex-basis:100%}.academyAdmin>.adminHead{display:grid}}
+
+
+/* Learning Academy professional course studio */
+.academyAdmin{gap:18px;padding:clamp(16px,2.4vw,28px);border:1px solid #dce8df;box-shadow:0 12px 34px #183b2410}
+.academyManagerHero{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px;border-radius:18px;background:linear-gradient(120deg,#123e2b,#236743);color:#fff}
+.academyManagerHero h2{margin:7px 0 8px;font-size:clamp(22px,3vw,30px);color:#fff}
+.academyManagerHero p{max-width:720px;margin:0;color:#e0eee4;line-height:1.65;font-size:14px}
+.academyEyebrow,.academyPanelHeading>span,.academyEditorTitle>div>span,.academyContentSectionHead>div>span{font-size:10px;font-weight:800;letter-spacing:1.5px;color:#a9d6b6}
+.academyHeroMark{display:grid;place-items:center;flex:0 0 72px;width:72px;height:72px;border-radius:20px;background:#ffffff20;font-size:36px}
+.academyManagerToolbar{display:flex;justify-content:space-between;align-items:end;gap:14px;flex-wrap:wrap;padding:15px;border:1px solid #e1e9e3;border-radius:14px;background:#f8fbf8}
+.academyCoursePicker{display:grid;gap:6px;min-width:min(100%,340px);color:#63766a;font-size:10px;font-weight:800;letter-spacing:1px}
+.academyCoursePicker select{min-width:260px}
+.academyToolbarActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.academyStatus,.academyTotal{font-size:12px;font-weight:700;color:#65776a}
+.academyStatus{padding:7px 11px;border-radius:99px;background:#edf1ee}
+.academyStatus.published{color:#17623a;background:#e1f4e7}
+.academyStatus.draft{color:#7b5a16;background:#fff4d8}
+.academyStartPanel{display:flex;align-items:center;gap:18px;padding:26px;border:1px dashed #b8cdbd;border-radius:16px;background:#f8fbf8}
+.academyStartPanel h3{margin:0 0 7px;color:#1a4a30}
+.academyStartPanel p{max-width:720px;color:#617367;line-height:1.65}
+.academyStartIcon{display:grid;place-items:center;flex:0 0 60px;width:60px;height:60px;border-radius:16px;background:#e4f2e8;color:#236a42}
+.academyOverviewStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.academyOverviewStats>div{display:grid;gap:3px;padding:14px;border:1px solid #e3ebe5;border-radius:13px;background:#fbfdfb}
+.academyOverviewStats b{font-size:24px;color:#205b38}
+.academyOverviewStats span{font-size:11px;color:#6a7b70}
+.academyStudioTabs{display:flex;gap:6px;padding:6px;border-radius:13px;background:#edf3ee;overflow-x:auto}
+.academyStudioTabs button{flex:1;min-width:max-content;border:0;border-radius:9px;background:transparent;color:#4f6557;font-size:12px;font-weight:750;padding:12px 15px}
+.academyStudioTabs button.active{background:#fff;color:#1b6038;box-shadow:0 2px 8px #1a4b2c12}
+.academyStudioPanel{display:grid;gap:18px;padding:clamp(14px,2vw,22px);border:1px solid #e0e9e2;border-radius:15px;background:#fff}
+.academyPanelHeading{display:grid;gap:5px}
+.academyPanelHeading>span,.academyEditorTitle>div>span,.academyContentSectionHead>div>span{color:#388157}
+.academyPanelHeading h3,.academyEditorTitle h3{margin:0;color:#1b4d31;font-size:20px}
+.academyPanelHeading p,.academyEditorTitle p{margin:0;color:#718075;font-size:13px;line-height:1.55}
+.academyCourseForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.academyCourseForm label,.academyModuleTitleField{display:grid;gap:7px;color:#294c37;font-size:12px;font-weight:750}
+.academyCourseForm .academyCourseDescription{grid-column:1/-1}
+.academyPanelActions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding-top:12px;border-top:1px solid #e8eee9}
+.academyAdminModules{padding:16px;border:1px solid #e0e9e2;border-radius:14px;background:#fbfdfb}
+.academyAdminModules>.adminHead{align-items:center;margin-bottom:12px}
+.academyAdminModules>.adminHead h3{font-size:16px}
+.academyModuleListItem{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid #e9efea}
+.academyModuleIndex{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:11px;background:#e8f3eb;color:#21643d;font-size:13px;font-weight:850}
+.academyModuleSummary{display:grid;gap:4px;flex:1;min-width:0}
+.academyModuleSummary b{color:#234b32;font-size:13px}
+.academyModuleSummary span{color:#718075;font-size:11px}
+.academyModuleActions{display:flex;gap:5px;flex-wrap:wrap}
+.academyModuleActions button{padding:7px 10px;font-size:11px}
+.academyEmptyModules{display:grid;justify-items:center;gap:7px;padding:28px 12px;color:#718075;text-align:center}
+.academyEmptyModules svg{color:#5a9a70}
+.academyEmptyModules b{color:#355b40}
+.academyModuleEditor{display:grid;gap:18px;padding:clamp(14px,2vw,22px);border:1px solid #dce8df;border-radius:15px;background:#f8fbf8;scroll-margin-top:18px}
+.academyEditorTitle{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.academyEditorTitle h3{margin:4px 0}
+.academyEditorStep{padding:7px 10px;border-radius:8px;background:#e6f2e9;color:#286640;font-size:10px;font-weight:800;white-space:nowrap}
+.academyModuleTitleField{max-width:780px}
+.academyContentSection{display:grid;gap:13px;padding:16px;border:1px solid #e0e9e2;border-radius:13px;background:#fff}
+.academyContentSectionHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.academyContentSectionHead h4{margin:4px 0;color:#204b32;font-size:16px}
+.academyContentSectionHead p{margin:0;color:#718075;font-size:12px;line-height:1.5}
+.academyContentSectionHead>svg{flex:0 0 auto;color:#43835a}
+.academyLessonEntryList{display:grid;gap:10px}
+.academyContentActions{display:flex}
+.academyContentActions button,.academyContentSection>button{display:inline-flex;align-items:center;gap:6px;width:max-content}
+.academyUploadPanel{display:flex;align-items:center;gap:13px;padding:15px;border:1px dashed #a9c8b1;border-radius:12px;background:#f4faf5}
+.academyUploadIcon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:12px;background:#e0f1e5;color:#287046}
+.academyUploadCopy{display:grid;gap:3px;flex:1;min-width:0}
+.academyUploadCopy b{color:#244d34;font-size:13px}
+.academyUploadCopy span,.academyUploadCopy small{color:#6e7e72;font-size:11px;line-height:1.45}
+.academyUploadButton{position:relative;display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:9px;background:#236b42;color:#fff;font-size:12px;font-weight:750;cursor:pointer;white-space:nowrap}
+.academyUploadButton input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.academyResourceList{display:grid;gap:8px}
+.academyResourceList> b{color:#345c40;font-size:12px}
+.academyResourceList>div{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e5ece6;border-radius:10px;background:#fbfdfb}
+.academyResourceList>div>svg{color:#46815a;flex:0 0 auto}
+.academyResourceList>div>span{display:grid;gap:3px;flex:1;min-width:0}
+.academyResourceList>div>span b{overflow-wrap:anywhere;color:#31513b;font-size:12px}
+.academyResourceList small{color:#78867c;font-size:10px}
+.academyQuestionSection{border-color:#e4e6d8;background:#fffefa}
+.academyQuestionGuide{display:grid;gap:4px;padding:12px 14px;border-left:3px solid #c4a24c;border-radius:8px;background:#fff8e6}
+.academyQuestionGuide b{color:#6c531b;font-size:12px}
+.academyQuestionGuide span{color:#786b4c;font-size:11px;line-height:1.5}
+.academyQuestionEditor{background:#fff}
+.academyAnswerOptions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.academyAnswerOptions label{display:flex;align-items:center;gap:8px;min-width:0}
+.academyAnswerOptions label>span{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:8px;background:#edf3ee;color:#2d6842;font-size:11px;font-weight:850}
+.academyAnswerOptions input{min-width:0;flex:1}
+.academyCorrectAnswer{display:grid;gap:6px;max-width:520px;color:#31523b;font-size:12px;font-weight:750}
+.academyPublishChecklist{display:grid;gap:0}
+.academyPublishChecklist>div{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid #e8eee9}
+.academyPublishChecklist>div>div{display:grid;gap:4px;flex:1;min-width:0}
+.academyPublishChecklist b{color:#294d35;font-size:13px}
+.academyPublishChecklist small{color:#78867c;font-size:11px}
+.academyCheckGood,.academyCheckMissing{font-size:11px;font-weight:800;white-space:nowrap}
+.academyCheckGood{color:#1e7a43}.academyCheckMissing{color:#9a6a18}
+.academyPublishActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:15px;border-radius:12px;background:#f4f8f4}
+.academyPublishActions>div{display:grid;gap:4px;flex:1;min-width:180px}
+.academyPublishActions b{color:#2b5137;font-size:13px}
+.academyPublishActions span{color:#78867c;font-size:11px}
+.learningResources{display:grid;gap:9px;margin:18px 0;padding:16px;border:1px solid #dce9df;border-radius:13px;background:#f7fbf7}
+.learningResources h3{display:flex;align-items:center;gap:8px;margin:0;color:#245a38;font-size:15px}
+.learningResources>p{margin:0;color:#6e7e72;font-size:12px}
+.learningResources>a{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #e2ebe4;border-radius:10px;background:#fff;color:#2b5739;text-decoration:none}
+.learningResources>a>span{display:grid;gap:3px;flex:1;min-width:0}
+.learningResources>a b{font-size:12px;overflow-wrap:anywhere}
+.learningResources>a small{font-size:10px;color:#78867c}
+@media(max-width:700px){.academyOverviewStats{grid-template-columns:repeat(2,minmax(0,1fr))}.academyCourseForm,.academyAnswerOptions{grid-template-columns:1fr}.academyCourseForm .academyCourseDescription{grid-column:auto}.academyManagerHero{padding:18px}.academyHeroMark{flex-basis:48px;width:48px;height:48px;font-size:25px}.academyModuleListItem{align-items:flex-start;flex-wrap:wrap}.academyModuleSummary{flex-basis:calc(100% - 55px)}.academyModuleActions{width:100%;padding-left:50px}.academyUploadPanel{align-items:flex-start;flex-wrap:wrap}.academyUploadButton{margin-left:57px}.academyPublishChecklist>div{flex-wrap:wrap}.academyPublishChecklist>div>div{flex-basis:calc(100% - 55px)}.academyPublishActions{align-items:stretch}.academyStudioTabs button{padding:10px 12px;font-size:11px}}
