@@ -229,7 +229,7 @@ function AI({cases,setCases}){
     setError('Payment confirmed. One AI consultation is ready. Press Analyse again to submit your case.');
     setPaymentRef('');
     await refreshUsage();
-   }else if(String(data.status||'').toUpperCase()==='FAILED'){setPaymentRef('');setPaymentMessage('The payment was cancelled or failed. You can request another STK prompt after the short safety cooldown.');}
+   }else if(String(data.status||'').toUpperCase()==='FAILED'){setPaymentRef('');const reason=String(data.failureReason||'').trim();setPaymentMessage(reason?'M-PESA reported: '+reason+' Wait at least 45 seconds before trying again, and check your M-PESA messages before retrying.':'The payment was cancelled or failed. Wait at least 45 seconds before requesting another STK prompt. Check your M-PESA messages before retrying.');}
    else setPaymentMessage('Payment status: '+String(data.status||'PENDING')+'. Complete the M-PESA prompt or check again shortly.');
   }catch(e){setPaymentMessage(e.message)}finally{setPaymentChecking(false)}
  };
@@ -519,7 +519,7 @@ function TrainingEvents({authUser}){
    if(data.paid){
     setCertificatePaidCourseId(activeCourse.id);setCertificatePayOpen(false);setCertificatePaymentRef('');
     setMsg('KSh 1,000 payment confirmed. Your certificate is unlocked. You can download it again anytime from this learner account.');
-   }else if(String(data.status||'').toUpperCase()==='FAILED'){setCertificatePaymentRef('');setCertificatePayMessage('The payment was cancelled or failed. You can request another STK prompt after the short safety cooldown.');}
+   }else if(String(data.status||'').toUpperCase()==='FAILED'){setCertificatePaymentRef('');const reason=String(data.failureReason||'').trim();setCertificatePayMessage(reason?'M-PESA reported: '+reason+' Wait at least 45 seconds before trying again, and check your M-PESA messages before retrying.':'The payment was cancelled or failed. Wait at least 45 seconds before requesting another STK prompt. Check your M-PESA messages before retrying.');}
    else setCertificatePayMessage('Payment status: '+String(data.status||'PENDING')+'. Complete the M-PESA prompt or check again shortly.');
   }catch(e){setCertificatePayMessage(e.message)}finally{setCertificatePayChecking(false)}
  };
