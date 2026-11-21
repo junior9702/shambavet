@@ -27,7 +27,7 @@ class AppErrorBoundary extends React.Component{constructor(props){super(props);t
 const navGroupImages={Overview:"https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=96&h=96&q=80","Farm services":"https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=96&h=96&q=80","Community & market":"https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=96&h=96&q=80",Support:"https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=96&h=96&q=80",Administration:"https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=96&h=96&q=80"};
 
 function App(){
- const[page,setPage]=useState('home'),[open,setOpen]=useState(false),[installOpen,setInstallOpen]=useState(false),[installEvent,setInstallEvent]=useState(null);
+ const[page,setPage]=useState(()=>{try{return new URLSearchParams(window.location.search).get('page')||'home'}catch{return 'home'}}),[open,setOpen]=useState(false),[installOpen,setInstallOpen]=useState(false),[installEvent,setInstallEvent]=useState(null);
  const[onboardingDone,setOnboardingDone]=useState(()=>{try{return localStorage.getItem('shambavet_onboarding_v1')==='complete'}catch{return false}});
  const completeOnboarding=profile=>{safeWrite('shambavet_onboarding_profile',profile);try{localStorage.setItem('shambavet_onboarding_v1','complete')}catch{}setOnboardingDone(true);setPage('home')};
  const[accountOpen,setAccountOpen]=useState(false),[authMode,setAuthMode]=useState('signin'),[authEmail,setAuthEmail]=useState(''),[authPassword,setAuthPassword]=useState(''),[authBusy,setAuthBusy]=useState(false),[authMessage,setAuthMessage]=useState('');
