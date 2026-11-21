@@ -19,8 +19,19 @@ export default async function handler(req, res) {
     if (payment.status === 'paid') {
       return res.status(200).json({ paid: true, status: 'SUCCESS', purpose: payment.purpose, amount: payment.amount });
     }
+    if (payment.status === 'failed' || payment.status === 'failed_to_initiate') {
+      return res.status(200).json({
+        paid: false,
+        status: 'FAILED',
+        failureReason: payment.failureReason || 'PayHero reported that the payment was not completed.'
+      });
+    }
     if (!payment.providerReference) {
-      return res.status(200).json({ paid: false, status: payment.status || 'PENDING' });
+      return res.status(200).json({
+        paid: false,
+        status: payment.status || 'PENDING',
+        failureReason: payment.failureReason || ''
+      });
     }
 
     const verified = await getPayHeroTransactionStatus(payment.providerReference);
@@ -30,13 +41,19 @@ export default async function handler(req, res) {
       return res.status(200).json({ paid, status, purpose: payment.purpose, amount: payment.amount });
     }
     if (status === 'FAILED') {
+      const failureReason = payment.failureReason || 'PayHero reported that the payment failed. Check the M-PESA message on your phone for more detail.';
       await firestoreSet('payheroPayments/' + reference, {
         status: 'failed',
-        failureReason: 'PayHero reported that the payment failed.',
+        failureReason,
         updatedAt: Date.now()
       });
+      return res.status(200).json({ paid: false, status, failureReason });
     }
-    return res.status(200).json({ paid: false, status });
+    return res.status(200).json({
+      paid: false,
+      status,
+      failureReason: payment.failureReason || ''
+    });
   } catch (error) {
     return sendApiError(res, error);
   }
