@@ -91,7 +91,7 @@ export default async function handler(req,res) {
     }
     const output=extractOutput(result);
     let assessment;
-    try{assessment=JSON.parse(String(output).replace(new RegExp("^"+String.fromCharCode(96).repeat(3)+"json\\\\s*","i"),"").replace(new RegExp("\\\\s*"+String.fromCharCode(96).repeat(3)+"$"),"").trim());}
+    try{assessment=JSON.parse(String(output).trim());}
     catch{await refundAIUsage(user.uid,reservation).catch(()=>{});reservation=null;return res.status(502).json({error:"The crop assessment could not be read. Please try again."});}
     reservation=null;
     return res.status(200).json({...assessment,modelUsed:result?.model||usedModel});
