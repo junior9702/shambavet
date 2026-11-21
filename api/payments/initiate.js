@@ -55,6 +55,11 @@ export default async function handler(req, res) {
 
     const phone = normalizeKenyanPhone(body.phone);
     getPayHeroChannelId();
+    if (!process.env.PAYHERO_API_USERNAME || !process.env.PAYHERO_API_PASSWORD) {
+      const error = new Error('PayHero API username and password are not configured in Vercel.');
+      error.status = 503;
+      throw error;
+    }
     const externalReference = 'SV-' + randomUUID().replace(/-/g, '').slice(0, 20).toUpperCase();
     const paymentRecord = {
       externalReference,

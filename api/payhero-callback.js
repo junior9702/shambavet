@@ -20,6 +20,7 @@ export default async function handler(req, res) {
     const callbackSucceeded = callbackStatus === 'success' || String(resultCode) === '0';
 
     if (!callbackSucceeded) {
+      if (payment.status === 'paid') return res.status(200).json({ received: true, paid: true });
       await firestoreSet('payheroPayments/' + externalReference, {
         status: 'failed',
         failureReason: String(callback.ResultDesc || callback.result_description || 'M-PESA payment was not completed').slice(0, 250),

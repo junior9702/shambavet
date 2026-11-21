@@ -169,6 +169,7 @@ Return a structured JSON assessment with:
   } catch (error) {
     if (user && reservation) await refundAIUsage(user.uid, reservation).catch(() => {});
     console.error("ShambaVet Gemini API error:", error?.name || "Error");
+    if (error?.status) return res.status(error.status).json({ error: error.message || "Authentication or quota service error." });
     if (error?.name === "TimeoutError" || error?.name === "AbortError") {
       return res.status(504).json({ error: "Gemini took too long to respond. Please try again." });
     }
