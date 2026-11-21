@@ -137,6 +137,7 @@ The AI route is `api/ai.js`. Add `GEMINI_API_KEY` in Vercel → Project → Sett
 The Agricultural Network adds the following moderated services:
 
 - County weather forecasts through Open-Meteo. Forecast locations represent county-level reference locations and are not farm-specific measurements.
+- AI Crop Advisor with optional crop photographs, county and growth-stage context, cautious integrated-pest-management guidance, and private assessment history. It shares the existing AI consultation allowance and requires the existing `GEMINI_API_KEY` configuration.
 - Veterinary consultation requests. Requests remain pending until an authorised administrator contacts the farmer; submitting a request does not confirm an appointment.
 - Farmer community posts, held for administrator moderation before publication.
 - Agricultural jobs, internships, grants, tenders, training and partnership listings, held for review before publication.
