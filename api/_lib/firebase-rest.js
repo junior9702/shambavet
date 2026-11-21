@@ -197,7 +197,7 @@ export async function firestoreTransaction(callback) {
 
 
 export async function firestoreListCollection(collectionName, limit = 500) {
-  const clean = String(collectionName || '').replace(/^\\/+|\\/+$/g, '');
+  const clean = String(collectionName || '').replace(/^\/+|\/+$/g, '');
   if (!clean || clean.includes('/')) throw new Error('Invalid Firestore collection name.');
   const url = documentsBase() + ':runQuery';
   const data = await firestoreRequest(url, {
