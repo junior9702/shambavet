@@ -464,7 +464,7 @@ function Crop({authUser,go}){
   </div><div className="card result">
    {result?<><span className="pill">PRELIMINARY CROP ASSESSMENT</span><h2>Possible explanation</h2><p>{result.assessment}</p><div className="warning"><AlertTriangle/>{result.urgency}</div><h3>Recommended next steps</h3><ul>{(result.recommendations||[]).map((x,i)=><li key={i}>{x}</li>)}</ul><h3>Precautions</h3><ul>{(result.precautions||[]).map((x,i)=><li key={i}>{x}</li>)}</ul><h3>Questions to clarify</h3><ul>{(result.questions||[]).map((x,i)=><li key={i}>{x}</li>)}</ul></>:<><Leaf/><h2>Crop assessment</h2><p>Choose a crop, describe the symptoms and optionally attach a clear photograph. Your assessment will appear here.</p></>}
   </div></div>
-  <div className="card"><h2>My crop assessment history</h2>{history.length?history.map(x=><div className="row" key={x.id}><div><b>{x.crop} · {x.county||'County not supplied'}</b><small>{x.createdAt?.toDate?x.createdAt.toDate().toLocaleString():'Saved assessment'} · {x.urgency||'Guidance saved'}</small><small>{x.assessment||x.symptoms}</small></div></div>):<Empty text="Your saved crop assessments will appear here after your first analysis."/></div>
+  <div className="card"><h2>My crop assessment history</h2>{history.map(item=><div className="row" key={item.id}><div><b>{item.crop} · {item.county||"County not supplied"}</b><small>{item.urgency||"Guidance saved"}</small><small>{item.assessment||item.symptoms}</small></div></div>)}{!history.length&&<Empty text="Your saved crop assessments will appear here after your first analysis."/>}</div>
  </>;
 }
 
