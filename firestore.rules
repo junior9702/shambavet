@@ -177,6 +177,27 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    // Farmer consultation requests: farmers may submit and read only their own requests.
+    // Only an enabled ShambaVet developer administrator may review or change request status.
+    match /vetAppointments/{id} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'submitted'
+        && request.resource.data.vetId is string
+        && request.resource.data.vetName is string
+        && request.resource.data.farmerPhone is string
+        && request.resource.data.preferredDate is string
+        && request.resource.data.serviceType is string
+        && request.resource.data.issue is string
+        && request.resource.data.issue.size() > 0
+        && request.resource.data.issue.size() <= 1500;
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.status == 'submitted');
+    }
+
     match /veterinarians/{id} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
