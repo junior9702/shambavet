@@ -1,1 +1,36 @@
-<html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="theme-color" content="#188344"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="description" content="ShambaVet Kenya Agricultural Hub — farmer production, veterinary services, training and agricultural organizations"/><title>ShambaVet Kenya Agricultural Hub</title><link rel="icon" href="/shambavet-icon-192.png"/></head><body><div id="root"></div><script src="https://applet.payherokenya.com/cdn/button_sdk.js"></script><script type="module" src="/src/main.jsx"></script></body></html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#188344"/>
+  <link rel="manifest" href="/manifest.webmanifest"/>
+  <meta name="description" content="ShambaVet Kenya Agricultural Hub — farmer production, veterinary services, training and agricultural organizations"/>
+  <title>ShambaVet Kenya Agricultural Hub</title>
+  <link rel="icon" href="/shambavet-icon-192.png"/>
+  <style>
+    html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f3f7f3;color:#183126}
+    .startup{min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box}
+    .startup-card{width:min(420px,100%);text-align:center;background:#fff;border:1px solid #dfe8e0;border-radius:20px;padding:30px 24px;box-sizing:border-box;box-shadow:0 12px 40px rgba(24,60,38,.07)}
+    .startup-logo{width:100px;height:76px;object-fit:contain}
+    .startup-spinner{width:28px;height:28px;margin:20px auto 12px;border:3px solid #dcebe0;border-top-color:#188344;border-radius:50%;animation:spin .8s linear infinite}
+    .startup-title{font-size:17px;font-weight:800;margin:8px 0}
+    .startup-copy{font-size:13px;line-height:1.55;color:#68776f;margin:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media(prefers-reduced-motion:reduce){.startup-spinner{animation:none;border-top-color:#188344}}
+  </style>
+</head>
+<body>
+  <div id="root">
+    <main class="startup" role="status" aria-live="polite">
+      <section class="startup-card">
+        <img class="startup-logo" src="/shambavet-logo.png" alt="ShambaVet"/>
+        <div class="startup-spinner" aria-hidden="true"></div>
+        <h1 class="startup-title">ShambaVet Kenya Agricultural Hub</h1>
+        <p class="startup-copy">Preparing your agricultural workspace. This should only take a moment.</p>
+      </section>
+    </main>
+  </div>
+  <script async src="https://applet.payherokenya.com/cdn/button_sdk.js"></script>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
