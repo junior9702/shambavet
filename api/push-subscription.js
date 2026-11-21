@@ -11,6 +11,11 @@ export default async function handler(req, res) {
       if (!subscription?.endpoint || !subscription?.keys?.p256dh || !subscription?.keys?.auth) {
         return res.status(400).json({ error: 'A valid browser push subscription is required.' });
       }
+      let endpointUrl;
+      try { endpointUrl = new URL(subscription.endpoint); } catch { return res.status(400).json({ error: 'Invalid push endpoint URL.' }); }
+      const host = endpointUrl.hostname.toLowerCase();
+      const allowedHost = host === 'fcm.googleapis.com' || host === 'web.push.apple.com' || host === 'push.services.mozilla.com' || host.endsWith('.push.services.mozilla.com') || host.endsWith('.notify.windows.com');
+      if (endpointUrl.protocol !== 'https:' || !allowedHost) return res.status(400).json({ error: 'Unsupported browser push provider endpoint.' });
       const id = createHash('sha256').update(user.uid + '|' + subscription.endpoint).digest('hex');
       await firestoreSet('pushSubscriptions/' + id, {
         uid: user.uid, subscription, active: true, updatedAt: new Date().toISOString()
