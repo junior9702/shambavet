@@ -491,3 +491,19 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .homeCommunityStrip>button{background:#fff;color:#24623b;border:1px solid #cbdccf}
 .whatsappFooter{margin-top:8px;width:max-content;background:#16834a}
 @media(max-width:600px){.notificationPageHead{align-items:stretch}.whatsappJoin{width:100%}.notificationPageItem{padding:13px}.notificationPageItem>i{display:none}.homeCommunityStrip>a,.homeCommunityStrip>button{width:100%}.whatsappFooter{width:100%}}
+
+
+/* Notification delivery channel controls */
+.notificationChannels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:2px 0 4px}
+.notificationChannelCard{display:flex;align-items:flex-start;gap:12px;padding:16px;border:1px solid #e0e9e2;border-radius:14px;background:#fff;min-width:0}
+.notificationChannelIcon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:11px;background:#edf4ef;color:#286b42}
+.notificationChannelIcon.whatsapp{background:#e7f6ec;color:#16834a}
+.notificationChannelBody{display:grid;gap:6px;flex:1;min-width:0}
+.notificationChannelBody b{font-size:14px;color:#214a31}
+.notificationChannelBody span{font-size:12px;line-height:1.5;color:#68786e}
+.notificationChannelBody small{font-size:11px;color:#718177}
+.notificationChannelBody em{font-size:11px;color:#27633c;font-style:normal;line-height:1.45}
+.notificationChannelBody input{width:100%;max-width:260px;border:1px solid #d8e3da;border-radius:8px;padding:9px 10px;font:inherit;font-size:13px}
+.notificationChannelCard>button{align-self:center;white-space:nowrap}
+.notificationChannelCard>button:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:760px){.notificationChannels{grid-template-columns:1fr}.notificationChannelCard{flex-wrap:wrap}.notificationChannelCard>button{margin-left:50px}}
