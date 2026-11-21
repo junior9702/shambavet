@@ -1,4 +1,4 @@
-const CACHE='shambavet-v7';
+const CACHE='shambavet-v8';
 
 self.addEventListener('install', event => {
   event.waitUntil(
