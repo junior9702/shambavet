@@ -8,7 +8,7 @@ import {
   addDoc, collection, limit, onSnapshot, query, serverTimestamp,
   updateDoc, doc, where
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { auth, db } from "./firebase";
 import "./expansion.css";
 
 const COUNTIES = [
@@ -240,7 +240,7 @@ function ModerationAdmin() {
   },[]);
   const change=async(collectionName,item,status)=>{
     setBusyId(item.id);setMessage("");
-    try{await updateDoc(doc(db,collectionName,item.id),{status,reviewedAt:serverTimestamp(),reviewedBy:"platform-admin",updatedAt:serverTimestamp()});setMessage("Record updated: "+status+".")}
+    try{await updateDoc(doc(db,collectionName,item.id),{status,reviewedAt:serverTimestamp(),reviewedBy:auth.currentUser?.uid || "admin",updatedAt:serverTimestamp()});setMessage("Record updated: "+status+".")}
     catch(e){setMessage("Could not update this record: "+e.message)}
     finally{setBusyId("")}
   };
