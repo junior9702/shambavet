@@ -216,6 +216,7 @@ service cloud.firestore {
         && request.resource.data.title is string
         && request.resource.data.message is string
         && request.resource.data.audience in ['all', 'admins']
+        && (request.resource.data.audience == 'admins' || isAdmin())
         && request.resource.data.read == false;
       allow read: if (resource.data.audience == 'all')
         || (signedIn() && resource.data.recipientUid == request.auth.uid)
