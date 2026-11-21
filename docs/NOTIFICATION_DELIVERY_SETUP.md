@@ -50,7 +50,7 @@ When a developer administrator publishes a public announcement, ShambaVet:
 2. Attempts a browser push broadcast to active registered devices.
 3. Attempts a WhatsApp template broadcast to active, consenting numbers.
 
-A channel that is not configured reports a delivery warning in the Vercel function logs; it does not prevent the in-app announcement from being saved. Delivery counts are returned by the channel endpoints. Private/admin notifications are not broadcast.
+A channel that is not configured reports a delivery warning in the Vercel function logs; it does not prevent the in-app announcement from being saved. Delivery counts are returned by the channel endpoints. Each Vercel invocation processes up to 200 opted-in devices/numbers in bounded batches; larger audiences report the remaining count as not processed. For a large-scale launch, move the send jobs to a durable queue so all recipients are processed with retries. Private/admin notifications are not broadcast.
 
 ## 4. Release checks
 
