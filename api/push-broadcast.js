@@ -15,20 +15,23 @@ export default async function handler(req, res) {
     if (!publicKey || !privateKey) return res.status(503).json({ error: 'Browser push is not configured yet. Add the VAPID keys in Vercel.' });
     const subscriptions = await firestoreListCollection('pushSubscriptions', 1000);
     let sent = 0, failed = 0, expired = 0;
+    const activeSubscriptions = subscriptions.filter(item => item.active && item.subscription?.endpoint);
+    const batch = activeSubscriptions.slice(0, 200);
     const payload = JSON.stringify({ title: String(title).slice(0, 100), body: String(message).slice(0, 220), url: String(link).startsWith('/') ? String(link) : '/' });
-    for (const record of subscriptions.filter(item => item.active && item.subscription?.endpoint)) {
-      try { await sendWebPush(record.subscription, payload, { ttl: 60 * 60 }); sent++; }
-      catch (error) {
-        failed++;
-        if (error.statusCode === 404 || error.statusCode === 410) {
-          expired++;
-          // A later re-subscription overwrites the same endpoint record.
-          const { firestoreSet } = await import('./_lib/firebase-rest.js');
-          await firestoreSet('pushSubscriptions/' + record.id, { ...record, active: false, updatedAt: new Date().toISOString() }).catch(() => {});
+    for (let i = 0; i < batch.length; i += 20) {
+      await Promise.all(batch.slice(i, i + 20).map(async record => {
+        try { await sendWebPush(record.subscription, payload, { ttl: 60 * 60 }); sent++; }
+        catch (error) {
+          failed++;
+          if (error.statusCode === 404 || error.statusCode === 410) {
+            expired++;
+            const { firestoreSet } = await import('./_lib/firebase-rest.js');
+            await firestoreSet('pushSubscriptions/' + record.id, { ...record, active: false, updatedAt: new Date().toISOString() }).catch(() => {});
+          }
         }
-      }
+      }));
     }
-    return res.status(200).json({ ok: true, sent, failed, expired });
+    return res.status(200).json({ ok: true, sent, failed, expired, eligibleDevices: activeSubscriptions.length, notProcessed: Math.max(0, activeSubscriptions.length - batch.length) });
   } catch (error) {
     return res.status(Number(error.status) || 500).json({ error: error.status ? error.message : 'Push delivery failed.' });
   }
