@@ -1,3 +1,6 @@
+import { requireFirebaseUser } from './_lib/firebase-rest.js';
+import { reserveAIUsage, refundAIUsage } from './_lib/ai-usage.js';
+
 const MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite"];
 const REQUEST_TIMEOUT_MS = 22000;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -65,7 +68,10 @@ export default async function handler(req, res) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) return res.status(500).json({ error: "GEMINI_API_KEY is not configured in Vercel." });
 
+  let user = null;
+  let reservation = null;
   try {
+    user = await requireFirebaseUser(req);
     const { animal, symptoms, duration, image } = req.body || {};
     if (!animal || !symptoms) return res.status(400).json({ error: "Animal and symptoms are required." });
     if (typeof symptoms !== "string" || symptoms.length > 5000) {
@@ -95,6 +101,14 @@ Return a structured JSON assessment with:
         return res.status(400).json({ error: "The image is too large. Please use an image under 5 MB." });
       }
       content.push({ type: "image", data: image.data, mime_type: image.mimeType });
+    }
+
+    reservation = await reserveAIUsage(user.uid);
+    if (!reservation) {
+      return res.status(402).json({
+        code: "PAYMENT_REQUIRED",
+        error: "Your two free AI consultations for this 24-hour period have been used. Pay KSh 49 to unlock one more consultation."
+      });
     }
 
     // Gemini Interactions expects text and image parts inside user_input.content.
@@ -128,6 +142,8 @@ Return a structured JSON assessment with:
     }
 
     if (!usedModel) {
+      await refundAIUsage(user.uid, reservation).catch(() => {});
+      reservation = null;
       const status = lastStatus || 503;
       const clientStatus = status === 400 ? 400 : status === 401 || status === 403 || status === 404 ? 502 : status === 504 ? 504 : 503;
       return res.status(clientStatus).json({
@@ -142,12 +158,16 @@ Return a structured JSON assessment with:
       const cleaned = String(output).replace(/^\`\`\`json\s*/i, "").replace(/\s*\`\`\`$/, "").trim();
       result = JSON.parse(cleaned);
     } catch {
+      await refundAIUsage(user.uid, reservation).catch(() => {});
+      reservation = null;
       return res.status(502).json({ error: "Gemini responded, but its assessment could not be read. Please try again." });
     }
 
     result.modelUsed = data?.model || usedModel;
+    reservation = null;
     return res.status(200).json(result);
   } catch (error) {
+    if (user && reservation) await refundAIUsage(user.uid, reservation).catch(() => {});
     console.error("ShambaVet Gemini API error:", error?.name || "Error");
     if (error?.name === "TimeoutError" || error?.name === "AbortError") {
       return res.status(504).json({ error: "Gemini took too long to respond. Please try again." });

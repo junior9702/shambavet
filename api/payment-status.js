@@ -1,19 +1,43 @@
-const BASE='https://backend.payhero.co.ke/api/v2/transaction-status';
-export default async function handler(req,res){
-  res.setHeader('Content-Type','application/json');
-  if(req.method!=='GET') return res.status(405).json({error:'GET required'});
-  const reference=String(req.query?.reference||'').trim();
-  if(!reference) return res.status(400).json({error:'Payment reference is required.'});
-  const user=process.env.PAYHERO_API_USERNAME, pass=process.env.PAYHERO_API_PASSWORD;
-  if(!user||!pass) return res.status(503).json({error:'PayHero API credentials are not configured in Vercel.'});
-  try{
-    const token=Buffer.from(`${user}:${pass}`).toString('base64');
-    const r=await fetch(`${BASE}?reference=${encodeURIComponent(reference)}`,{headers:{Authorization:`Basic ${token}`}});
-    const data=await r.json().catch(()=>({}));
-    if(!r.ok) return res.status(502).json({error:'PayHero could not verify this payment.',detail:data});
-    const status=String(data?.status||data?.data?.status||data?.transaction?.status||'').toLowerCase();
-    const resultCode=data?.result_code??data?.data?.result_code??data?.transaction?.result_code;
-    const paid=['success','successful','completed','complete','paid'].includes(status)||String(resultCode)==='0';
-    return res.status(200).json({paid,status,reference});
-  }catch(e){return res.status(500).json({error:e.message||'Unable to contact PayHero.'});}
+import { requireFirebaseUser, firestoreGet, firestoreSet, sendApiError } from './_lib/firebase-rest.js';
+import { getPayHeroTransactionStatus } from './_lib/payhero.js';
+import { finalizeConfirmedPayment } from './_lib/payments.js';
+
+export default async function handler(req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Cache-Control', 'no-store');
+  if (req.method !== 'GET') return res.status(405).json({ error: 'GET required' });
+
+  try {
+    const user = await requireFirebaseUser(req);
+    const reference = String(req.query?.reference || '').trim();
+    if (!reference || reference.length > 100) return res.status(400).json({ error: 'Payment reference is required.' });
+
+    const payment = await firestoreGet('payheroPayments/' + reference);
+    if (!payment || payment.ownerUid !== user.uid) {
+      return res.status(404).json({ error: 'This payment could not be found for your account.' });
+    }
+    if (payment.status === 'paid') {
+      return res.status(200).json({ paid: true, status: 'SUCCESS', purpose: payment.purpose, amount: payment.amount });
+    }
+    if (!payment.providerReference) {
+      return res.status(200).json({ paid: false, status: payment.status || 'PENDING' });
+    }
+
+    const verified = await getPayHeroTransactionStatus(payment.providerReference);
+    const status = String(verified.status || 'PENDING').toUpperCase();
+    if (status === 'SUCCESS') {
+      const paid = await finalizeConfirmedPayment(reference, verified);
+      return res.status(200).json({ paid, status, purpose: payment.purpose, amount: payment.amount });
+    }
+    if (status === 'FAILED') {
+      await firestoreSet('payheroPayments/' + reference, {
+        status: 'failed',
+        failureReason: 'PayHero reported that the payment failed.',
+        updatedAt: Date.now()
+      });
+    }
+    return res.status(200).json({ paid: false, status });
+  } catch (error) {
+    return sendApiError(res, error);
+  }
 }

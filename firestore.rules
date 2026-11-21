@@ -207,6 +207,28 @@ service cloud.firestore {
         || (signedIn() && resource.data.recipientUid == request.auth.uid);
     }
 
+    // Payment, certificate and AI entitlements are written only by trusted server endpoints.
+    // Learners can read only their own records; browser clients cannot grant themselves credit or completion.
+    match /academyProgress/{uid}/courses/{courseId} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if false;
+    }
+
+    match /aiAccounts/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if false;
+    }
+
+    match /certificateEntitlements/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /payheroPayments/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow write: if false;
+    }
+
     match /users/{uid}/{document=**} {
       allow read, write: if signedIn() && request.auth.uid == uid;
     }
