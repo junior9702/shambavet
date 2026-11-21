@@ -195,6 +195,28 @@ export async function firestoreTransaction(callback) {
   }
 }
 
+
+export async function firestoreListCollection(collectionName, limit = 500) {
+  const clean = String(collectionName || '').replace(/^\\/+|\\/+$/g, '');
+  if (!clean || clean.includes('/')) throw new Error('Invalid Firestore collection name.');
+  const url = documentsBase() + ':runQuery';
+  const data = await firestoreRequest(url, {
+    method: 'POST',
+    body: JSON.stringify({
+      structuredQuery: {
+        from: [{ collectionId: clean }],
+        limit: Math.max(1, Math.min(1000, Number(limit) || 500))
+      }
+    })
+  });
+  return (Array.isArray(data) ? data : [])
+    .filter(item => item.document?.name)
+    .map(item => ({
+      id: item.document.name.split('/').pop(),
+      ...decodeFields(item.document.fields || {})
+    }));
+}
+
 export async function firestoreSet(path, data) {
   return firestoreTransaction(async tx => {
     const current = await tx.get(path);
