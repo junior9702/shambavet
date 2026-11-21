@@ -507,3 +507,5 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .notificationChannelCard>button{align-self:center;white-space:nowrap}
 .notificationChannelCard>button:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:760px){.notificationChannels{grid-template-columns:1fr}.notificationChannelCard{flex-wrap:wrap}.notificationChannelCard>button{margin-left:50px}}
+
+.notificationChannelBody .waConsent{display:flex;align-items:flex-start;gap:8px;max-width:340px;font-size:11px;line-height:1.45;color:#56685d}.notificationChannelBody .waConsent input{width:auto;margin:2px 0 0;flex:0 0 auto}
