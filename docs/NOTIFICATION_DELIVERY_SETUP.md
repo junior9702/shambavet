@@ -15,7 +15,7 @@ In Vercel → Project → Settings → Environment Variables, set these for the 
 - `VITE_WEB_PUSH_PUBLIC_KEY`: generated public key (available to the browser at build time).
 - `WEB_PUSH_VAPID_PUBLIC_KEY`: same public key (server-side).
 - `WEB_PUSH_VAPID_PRIVATE_KEY`: generated private key (server-side secret; never prefix with VITE_).
-- `WEB_PUSH_SUBJECT`: a contact URI such as `mailto:support@shambavet.co.ke`.
+- `WEB_PUSH_SUBJECT`: a contact URI such as `mailto:your-email@example.com`.
 
 Redeploy after adding or changing the `VITE_` variable. Farmers then open Notifications and choose **Enable alerts** on each device/browser. They must grant browser permission. Push works on HTTPS; browser/device support and power-saving settings affect delivery.
 
