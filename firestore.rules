@@ -229,6 +229,89 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Farmer community posts are held for administrator review before public display.
+    match /communityPosts/{id} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 4
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.body is string
+        && request.resource.data.body.size() >= 20
+        && request.resource.data.body.size() <= 3000
+        && request.resource.data.county is string;
+      allow read: if resource.data.status == 'published' || isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.status == 'pending');
+    }
+
+    // Jobs, internships, grants and other opportunities require moderation.
+    match /agriculturalOpportunities/{id} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 4
+        && request.resource.data.title.size() <= 160
+        && request.resource.data.type is string
+        && request.resource.data.county is string
+        && request.resource.data.contact is string
+        && request.resource.data.description is string
+        && request.resource.data.description.size() >= 20
+        && request.resource.data.description.size() <= 2500;
+      allow read: if resource.data.status == 'published' || isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.status == 'pending');
+    }
+
+    // Market observations are community-submitted and never represented as official quotations.
+    match /marketPriceReports/{id} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.commodity is string
+        && request.resource.data.county is string
+        && request.resource.data.market is string
+        && request.resource.data.price is number
+        && request.resource.data.price > 0
+        && request.resource.data.unit is string
+        && request.resource.data.observedDate is string;
+      allow read: if resource.data.status == 'published' || isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.status == 'pending');
+    }
+
+    // Consultation requests are private to the farmer and authorised administrators.
+    // A request is not a confirmed appointment until a professional confirms availability.
+    match /vetAppointmentRequests/{id} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.farmerName is string
+        && request.resource.data.phone is string
+        && request.resource.data.county is string
+        && request.resource.data.animal is string
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() >= 15
+        && request.resource.data.reason.size() <= 1500;
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.status == 'pending');
+    }
+
     match /users/{uid}/{document=**} {
       allow read, write: if signedIn() && request.auth.uid == uid;
     }
