@@ -1,4 +1,4 @@
-import webpush from 'web-push';
+import { sendWebPush } from './_lib/web-push.js';
 import { requireFirebaseUser, firestoreGet, firestoreListCollection } from './_lib/firebase-rest.js';
 
 export default async function handler(req, res) {
@@ -12,14 +12,12 @@ export default async function handler(req, res) {
     if (!String(title || '').trim() || !String(message || '').trim()) return res.status(400).json({ error: 'Title and message are required.' });
     const publicKey = process.env.WEB_PUSH_VAPID_PUBLIC_KEY;
     const privateKey = process.env.WEB_PUSH_VAPID_PRIVATE_KEY;
-    const subject = process.env.WEB_PUSH_SUBJECT || 'mailto:support@shambavet.co.ke';
     if (!publicKey || !privateKey) return res.status(503).json({ error: 'Browser push is not configured yet. Add the VAPID keys in Vercel.' });
-    webpush.setVapidDetails(subject, publicKey, privateKey);
     const subscriptions = await firestoreListCollection('pushSubscriptions', 1000);
     let sent = 0, failed = 0, expired = 0;
     const payload = JSON.stringify({ title: String(title).slice(0, 100), body: String(message).slice(0, 220), url: String(link).startsWith('/') ? String(link) : '/' });
     for (const record of subscriptions.filter(item => item.active && item.subscription?.endpoint)) {
-      try { await webpush.sendNotification(record.subscription, payload, { TTL: 60 * 60 }); sent++; }
+      try { await sendWebPush(record.subscription, payload, { ttl: 60 * 60 }); sent++; }
       catch (error) {
         failed++;
         if (error.statusCode === 404 || error.statusCode === 410) {
