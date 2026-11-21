@@ -51,14 +51,14 @@ function App(){
  },[]);
  useEffect(()=>{
    if(!authUser?.uid){setNotifications([]);return;}
-   let feeds=[];const merge=()=>{const map=new Map();feeds.flat().forEach(n=>map.set(n.id,n));let localRead=[];try{localRead=JSON.parse(localStorage.getItem('shambavet_read_notifications_'+authUser.uid)||'[]')}catch{}setNotifications([...map.values()].map(n=>n.audience==='all'&&localRead.includes(n.id)?{...n,read:true}:n).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,40));};
+   let feeds=[];const merge=()=>{const map=new Map();feeds.flat().forEach(n=>map.set(n.id,n));let localRead=[];try{localRead=JSON.parse(localStorage.getItem('shambavet_read_notifications_'+authUser.uid)||'[]')}catch{}setNotifications([...map.values()].map(n=>localRead.includes(n.id)?{...n,read:true}:n).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,40));};
    const unsubs=[];const subscribe=q=>{const index=feeds.length;feeds.push([]);unsubs.push(onSnapshot(q,s=>{feeds[index]=s.docs.map(d=>({id:d.id,...d.data()}));merge();},e=>console.warn('Notification feed unavailable:',e.message)));};
    subscribe(query(collection(db,'platformNotifications'),where('audience','==','all'),limit(25)));
    subscribe(query(collection(db,'platformNotifications'),where('recipientUid','==',authUser.uid),limit(25)));
    if(developerAdmin)subscribe(query(collection(db,'platformNotifications'),where('audience','==','admins'),limit(25)));
    return()=>unsubs.forEach(fn=>fn());
  },[authUser?.uid,developerAdmin]);
- const markNotificationRead=async n=>{if(n.audience==='all'&&!developerAdmin){try{const key='shambavet_read_notifications_'+authUser.uid;const read=JSON.parse(localStorage.getItem(key)||'[]');if(!read.includes(n.id))localStorage.setItem(key,JSON.stringify([...read,n.id].slice(-300)));}catch{}setNotifications(prev=>prev.map(x=>x.id===n.id?{...x,read:true}:x));return;}try{await updateDoc(doc(db,'platformNotifications',n.id),{read:true,readAt:serverTimestamp()});setNotifications(prev=>prev.map(x=>x.id===n.id?{...x,read:true}:x));}catch(e){console.warn('Could not mark notification read:',e.message)}};
+ const markNotificationRead=async n=>{try{const key='shambavet_read_notifications_'+authUser.uid;const read=JSON.parse(localStorage.getItem(key)||'[]');if(!read.includes(n.id))localStorage.setItem(key,JSON.stringify([...read,n.id].slice(-300)));}catch{}setNotifications(prev=>prev.map(x=>x.id===n.id?{...x,read:true}:x));};
  useEffect(()=>{
    if(!authUser?.uid){setAnimalList([]);setCases([]);return;}
    setAnimalList([]);setCases([]);
