@@ -73,7 +73,12 @@ function documentName(path) {
   if (!clean || clean.split('/').length % 2 !== 0 || clean.split('/').some(part => !part || part === '.' || part === '..')) {
     throw new Error('Invalid Firestore document path.');
   }
-  return documentsBase() + '/' + clean.split('/').map(encodeURIComponent).join('/');
+  return 'projects/' + projectId() + '/databases/(default)/documents/' +
+    clean.split('/').map(encodeURIComponent).join('/');
+}
+
+function documentUrl(path) {
+  return 'https://firestore.googleapis.com/v1/' + documentName(path);
 }
 
 function encodeValue(value) {
@@ -137,7 +142,7 @@ async function firestoreRequest(url, options = {}) {
 }
 
 export async function firestoreGet(path, transaction) {
-  const url = documentName(path) + (transaction ? '?transaction=' + encodeURIComponent(transaction) : '');
+  const url = documentUrl(path) + (transaction ? '?transaction=' + encodeURIComponent(transaction) : '');
   const token = await getAdminAccessToken();
   const response = await fetch(url, {
     headers: { Authorization: 'Bearer ' + token }
