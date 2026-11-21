@@ -453,7 +453,7 @@ function Crop({authUser,go}){
   <div className="usageBar"><b>AI</b> agricultural decision support <span>• Uses the same ShambaVet AI consultation allowance as AI Vet.</span></div>
   <div className="two"><div className="card">
    <label>Crop</label><select value={crop} onChange={e=>setCrop(e.target.value)}>{['Maize','Beans','Tomatoes','Potatoes','Irish potatoes','Cassava','Bananas','Coffee','Tea','Avocado','Mango','Kale / Sukuma wiki','Cabbage','Onions','Rice','Wheat','Sorghum','Other crop'].map(x=><option key={x}>{x}</option>)}</select>
-   <label>County (optional)</label><CountySelect value={county} onChange={setCounty}/>
+   <label>County (optional)</label><select value={county} onChange={e=>setCounty(e.target.value)}><option value="">Select county (optional)</option>{KENYA_COUNTIES.map(item=><option key={item}>{item}</option>)}</select>
    <label>Growth stage</label><select value={stage} onChange={e=>setStage(e.target.value)}>{['Seedling / nursery','Vegetative growth','Flowering','Fruiting / grain filling','Maturity / harvest','Unknown'].map(x=><option key={x}>{x}</option>)}</select>
    <label>Describe what you observe</label><textarea value={symptoms} maxLength={3000} onChange={e=>setSymptoms(e.target.value)} placeholder="Describe leaf colour, spots, wilting, insects, affected area, when it started and recent weather or spraying."/>
    <label>Crop photograph (optional)</label><div className="upload"><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>setPhoto(e.target.files?.[0]||null)}/><Camera/><span>{photo?photo.name:'Upload a clear crop photo · max 5 MB'}</span></div>
