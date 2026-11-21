@@ -1,0 +1,70 @@
+.svx-growthHub{color:#183126}
+.svx-pageIntro{padding:30px 0 20px}
+.svx-pageIntro h1{font-size:clamp(30px,4vw,46px);line-height:1.08;margin:8px 0;color:#173e2c;letter-spacing:-1.2px}
+.svx-pageIntro>p{max-width:760px;color:#64756b;line-height:1.65;margin:0}
+.svx-eyebrow{display:block;font-size:10px;letter-spacing:1.3px;font-weight:850;color:#188344}
+.svx-introNote{display:flex;align-items:center;gap:8px;margin-top:16px;color:#41634e;font-size:13px}
+.svx-tabs,.svx-adminTabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px;margin-bottom:8px}
+.svx-tabs button,.svx-adminTabs button{display:flex;align-items:center;gap:8px;white-space:nowrap;border:1px solid #dce7de;background:#fff;color:#405448;border-radius:12px;padding:11px 14px;font-weight:750}
+.svx-tabs button.active,.svx-adminTabs button.active{background:#e7f5ea;border-color:#b9ddc1;color:#176b37}
+.svx-panel{background:#fff;border:1px solid #dfe8e0;border-radius:18px;padding:clamp(16px,3vw,25px);margin-bottom:24px}
+.svx-panelHead{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px;color:#188344}
+.svx-panelHead h2{margin:5px 0 7px;color:#183126;font-size:clamp(22px,3vw,29px)}
+.svx-panelHead p{margin:0;color:#6a7a70;line-height:1.55;max-width:760px;font-size:14px}
+.svx-toolbar{display:flex;gap:12px;align-items:end;justify-content:space-between;margin:16px 0}
+.svx-toolbar label,.svx-formGrid label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:750;color:#405448}
+.svx-toolbar select,.svx-formGrid input,.svx-formGrid select,.svx-blockLabel textarea{border:1px solid #d5e1d8;border-radius:10px;padding:11px 12px;background:#fff;color:#203b2d;min-width:0;width:100%;font:inherit}
+.svx-toolbar button,.svx-secondary{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #d6e2d9;background:#fff;color:#345340;border-radius:10px;padding:10px 13px;font-weight:750}
+.svx-weatherCurrent{display:grid;grid-template-columns:1fr 1.5fr;gap:18px;background:#f2f8f3;border:1px solid #e0eee2;border-radius:16px;padding:20px;margin:16px 0}
+.svx-muted,.svx-weatherMetrics span{color:#708076;font-size:12px}
+.svx-temp{font-size:52px;line-height:1.05;font-weight:850;letter-spacing:-2px;color:#173e2c;margin:8px 0}
+.svx-weatherMetrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.svx-weatherMetrics div{background:#fff;border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:5px}
+.svx-weatherMetrics b{font-size:18px;color:#203b2d}
+.svx-forecastGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.svx-forecastDay{border:1px solid #e0e9e2;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.svx-forecastDay>span{font-size:12px;color:#627267;min-height:30px}
+.svx-forecastDay strong{font-size:13px;color:#214b31}
+.svx-forecastDay small{font-size:10px;color:#748178}
+.svx-source{font-size:11px;color:#718076;line-height:1.6;margin-top:14px}
+.svx-source a{color:#16743a;font-weight:750}
+.svx-formGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:14px 0}
+.svx-blockLabel{display:flex;flex-direction:column;gap:7px;margin:12px 0;font-size:12px;font-weight:750;color:#405448}
+.svx-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#188344;color:#fff;border:1px solid #188344;border-radius:10px;padding:11px 15px;font-weight:800}
+.svx-primary:disabled,.svx-secondary:disabled{opacity:.55;cursor:not-allowed}
+.svx-notice{display:flex;align-items:flex-start;gap:8px;border-radius:11px;padding:11px 13px;margin:12px 0;background:#f0f6f1;color:#46604e;font-size:13px;line-height:1.5}
+.svx-notice.warning{background:#fff7e3;border:1px solid #f0dfad;color:#72561c}
+.svx-subhead{display:flex;justify-content:space-between;align-items:center;margin:24px 0 10px}
+.svx-subhead h3,.svx-panel>h3{margin:0;color:#203b2d}
+.svx-subhead span{font-size:12px;color:#718076}
+.svx-listCard,.svx-priceCard{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:14px;border:1px solid #e1eae3;border-radius:12px;margin:9px 0}
+.svx-listCard p,.svx-post p,.svx-opportunity p{color:#53675a;line-height:1.55;margin:8px 0}
+.svx-listCard small,.svx-post small{color:#7b887f;font-size:11px}
+.svx-status{font-size:10px;font-weight:800;text-transform:capitalize;background:#fff4d9;color:#806019;border-radius:30px;padding:6px 9px}
+.svx-status.contacted{background:#e6f1ff;color:#285d8e}
+.svx-post,.svx-opportunity{border:1px solid #e0e9e2;border-radius:13px;padding:16px;margin:10px 0}
+.svx-post h3,.svx-opportunity h3{margin:9px 0 5px;color:#203b2d}
+.svx-postMeta{display:flex;gap:12px;flex-wrap:wrap;color:#728176;font-size:11px}
+.svx-postMeta span{display:inline-flex;align-items:center;gap:4px}
+.svx-postMeta span:first-child{color:#16743a;font-weight:800}
+.svx-ownPending{background:#f6f9f6;border:1px solid #e1eae3;border-radius:11px;padding:12px;margin-top:14px;font-size:12px;color:#53675a}
+.svx-ownPending p{margin:7px 0}
+.svx-divider{height:1px;background:#e6ece7;margin:24px 0}
+.svx-opportunityFoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#46604e;font-size:12px}
+.svx-opportunityFoot small{color:#78857b}
+.svx-priceCard{align-items:center}
+.svx-priceCard>div{display:flex;flex-direction:column;gap:5px}
+.svx-priceCard>div span{font-size:12px;color:#53675a}
+.svx-priceCard>div small{font-size:10px;color:#7b887f}
+.svx-priceCard>strong{color:#16743a;font-size:19px;white-space:nowrap}
+.svx-priceCard>strong small{font-size:10px;color:#748178;font-weight:600}
+.svx-empty{padding:24px;text-align:center;color:#758278;border:1px dashed #d5e1d8;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:8px;margin:12px 0;font-size:13px}
+.svx-adminTabs button span{background:#eaf1eb;color:#52685a;border-radius:30px;padding:2px 7px;font-size:10px}
+.svx-reviewCard{display:flex;justify-content:space-between;gap:18px;padding:15px;border:1px solid #e0e9e2;border-radius:13px;margin:10px 0}
+.svx-reviewContent{min-width:0;flex:1}
+.svx-reviewContent h3{margin:8px 0;color:#203b2d}
+.svx-reviewContent p{color:#53675a;line-height:1.5;margin:7px 0}
+.svx-reviewContent small{color:#78857b;font-size:11px;overflow-wrap:anywhere}
+.svx-reviewActions{display:flex;flex-direction:column;gap:7px;min-width:145px}
+@media(max-width:760px){.svx-weatherCurrent{grid-template-columns:1fr}.svx-forecastGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.svx-reviewCard{flex-direction:column}.svx-reviewActions{flex-direction:row;flex-wrap:wrap}.svx-reviewActions button{flex:1}.svx-toolbar{align-items:stretch;flex-direction:column}.svx-toolbar button{align-self:flex-start}}
+@media(max-width:480px){.svx-formGrid{grid-template-columns:1fr}.svx-tabs button{padding:10px 11px;font-size:12px}.svx-weatherMetrics{gap:8px}.svx-temp{font-size:44px}.svx-priceCard{align-items:flex-start;flex-direction:column}.svx-panelHead>svg{width:23px;flex-shrink:0}}
