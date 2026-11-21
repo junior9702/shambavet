@@ -130,3 +130,31 @@ The AI route is `api/ai.js`. Add `GEMINI_API_KEY` in Vercel → Project → Sett
 - Upload errors: enable Firebase Storage and verify the configured bucket.
 - Vercel API errors: add `GEMINI_API_KEY` if using AI; other app sections do not require it.
 - If the browser shows an old version after deployment, hard-refresh or clear the installed PWA's cached site data; the service-worker cache version is incremented in this release.
+
+
+## Agricultural Network expansion
+
+The Agricultural Network adds the following moderated services:
+
+- County weather forecasts through Open-Meteo. Forecast locations represent county-level reference locations and are not farm-specific measurements.
+- Veterinary consultation requests. Requests remain pending until an authorised administrator contacts the farmer; submitting a request does not confirm an appointment.
+- Farmer community posts, held for administrator moderation before publication.
+- Agricultural jobs, internships, grants, tenders, training and partnership listings, held for review before publication.
+- Community-submitted market price observations. These are labelled as indicative reports and are not official market quotations.
+- Administrator moderation queues for appointment requests, community posts, opportunities and market observations.
+
+### New Firestore collections
+
+- `vetAppointmentRequests`
+- `communityPosts`
+- `agriculturalOpportunities`
+- `marketPriceReports`
+
+The matching Firestore rules restrict private appointment requests to their owner and authorised administrators. Public community, opportunity and market entries are visible only after an administrator changes their status to `published`. Only authorised developer administrators can moderate records.
+
+### Operational notes
+
+- Weather forecasts require an internet connection and are supplied by Open-Meteo.
+- Appointment requests require manual follow-up by the ShambaVet team until a verified professional scheduling workflow is implemented.
+- Market observations are community submitted and should be independently confirmed before commercial decisions.
+- New modules use the existing Firebase Authentication and Firestore setup; no new paid service or API key is required for these additions.
