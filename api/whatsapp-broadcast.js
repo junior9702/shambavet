@@ -17,21 +17,26 @@ export default async function handler(req, res) {
     const language = process.env.WHATSAPP_TEMPLATE_LANGUAGE || 'en';
     const recipients = (await firestoreListCollection('whatsappOptIns', 1000)).filter(item => item.active === true && item.consent === true && item.phone);
     let sent = 0, failed = 0;
-    for (const recipient of recipients) {
-      const response = await fetch('https://graph.facebook.com/' + version + '/' + phoneNumberId + '/messages', {
-        method: 'POST',
-        headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messaging_product: 'whatsapp', recipient_type: 'individual', to: recipient.phone, type: 'template',
-          template: { name: templateName, language: { code: language }, components: [{ type: 'body', parameters: [
-            { type: 'text', text: String(title).slice(0, 100) },
-            { type: 'text', text: String(message).slice(0, 900) }
-          ] }] }
-        })
-      });
-      if (response.ok) sent++; else failed++;
+    const batch = recipients.slice(0, 200);
+    for (let i = 0; i < batch.length; i += 10) {
+      await Promise.all(batch.slice(i, i + 10).map(async recipient => {
+        try {
+          const response = await fetch('https://graph.facebook.com/' + version + '/' + phoneNumberId + '/messages', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              messaging_product: 'whatsapp', recipient_type: 'individual', to: recipient.phone, type: 'template',
+              template: { name: templateName, language: { code: language }, components: [{ type: 'body', parameters: [
+                { type: 'text', text: String(title).slice(0, 100) },
+                { type: 'text', text: String(message).slice(0, 900) }
+              ] }] }
+            })
+          });
+          if (response.ok) sent++; else failed++;
+        } catch { failed++; }
+      }));
     }
-    return res.status(200).json({ ok: true, sent, failed, optedInRecipients: recipients.length });
+    return res.status(200).json({ ok: true, sent, failed, optedInRecipients: recipients.length, notProcessed: Math.max(0, recipients.length - batch.length) });
   } catch (error) {
     return res.status(Number(error.status) || 500).json({ error: error.status ? error.message : 'WhatsApp broadcast failed.' });
   }
