@@ -465,3 +465,29 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .learningResources>a b{font-size:12px;overflow-wrap:anywhere}
 .learningResources>a small{font-size:10px;color:#78867c}
 @media(max-width:700px){.academyOverviewStats{grid-template-columns:repeat(2,minmax(0,1fr))}.academyCourseForm,.academyAnswerOptions{grid-template-columns:1fr}.academyCourseForm .academyCourseDescription{grid-column:auto}.academyManagerHero{padding:18px}.academyHeroMark{flex-basis:48px;width:48px;height:48px;font-size:25px}.academyModuleListItem{align-items:flex-start;flex-wrap:wrap}.academyModuleSummary{flex-basis:calc(100% - 55px)}.academyModuleActions{width:100%;padding-left:50px}.academyUploadPanel{align-items:flex-start;flex-wrap:wrap}.academyUploadButton{margin-left:57px}.academyPublishChecklist>div{flex-wrap:wrap}.academyPublishChecklist>div>div{flex-basis:calc(100% - 55px)}.academyPublishActions{align-items:stretch}.academyStudioTabs button{padding:10px 12px;font-size:11px}}
+
+
+/* Discoverable notifications and ShambaVet community */
+.notificationPage{max-width:1120px;margin:0 auto;padding:clamp(18px,3vw,34px) 18px 48px;display:grid;gap:22px}
+.notificationPageHead{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.notificationPageHead h1{display:flex;align-items:center;gap:10px;margin:12px 0 7px;color:#173e2c;font-size:clamp(27px,4vw,38px)}
+.notificationPageHead p{max-width:680px;margin:0;color:#68786e;line-height:1.6;font-size:14px}
+.whatsappJoin,.whatsappFooter,.homeCommunityStrip>a,.homeCommunityStrip>button,.notificationCommunityCard>a{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border:0;border-radius:10px;background:#16834a;color:#fff;padding:11px 15px;font-size:13px;font-weight:800}
+.notificationPageList{display:grid;gap:9px}
+.notificationPageItem{display:flex;align-items:flex-start;gap:13px;width:100%;padding:16px;border:1px solid #e1eae3;border-radius:14px;background:#fff;text-align:left;color:#233b2d;cursor:pointer}
+.notificationPageItem.unread{border-color:#b9d9c1;background:#f4faf5}
+.notificationPageIcon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:#e8f3eb;color:#267044}
+.notificationPageCopy{display:grid;gap:6px;flex:1;min-width:0}
+.notificationPageCopy strong{font-size:14px;color:#234b32}
+.notificationPageCopy>span{font-size:13px;color:#607168;line-height:1.5}
+.notificationPageCopy small{font-size:11px;color:#849188}
+.notificationPageItem>i{font-size:10px;font-style:normal;font-weight:850;color:#176c3d;background:#e0f2e5;border-radius:99px;padding:5px 8px}
+.notificationCommunityCard,.homeCommunityStrip{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:17px 19px;border:1px solid #dce9df;border-radius:15px;background:#f5faf6}
+.notificationCommunityCard>div,.homeCommunityStrip>div{display:grid;gap:5px;flex:1;min-width:200px}
+.notificationCommunityCard b,.homeCommunityStrip b{color:#204b32;font-size:14px}
+.notificationCommunityCard span,.homeCommunityStrip span{color:#6c7c71;font-size:12px;line-height:1.5}
+.homeCommunityStrip{margin:0 0 22px}
+.notificationCommunityCard>a,.homeCommunityStrip>a{background:#16834a}
+.homeCommunityStrip>button{background:#fff;color:#24623b;border:1px solid #cbdccf}
+.whatsappFooter{margin-top:8px;width:max-content;background:#16834a}
+@media(max-width:600px){.notificationPageHead{align-items:stretch}.whatsappJoin{width:100%}.notificationPageItem{padding:13px}.notificationPageItem>i{display:none}.homeCommunityStrip>a,.homeCommunityStrip>button{width:100%}.whatsappFooter{width:100%}}
