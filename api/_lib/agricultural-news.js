@@ -187,7 +187,7 @@ async function scrapeItem(item) {
     return {
       id: Buffer.from(finalUrl.href).toString("base64url").slice(0, 32),
       title: title.slice(0, 240), summary, fullText, source, url: finalUrl.href,
-      image: item.image || parsed.image || "", videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
+      image: [item.image, parsed.image].find(value => value && !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar)/i.test(value)) || "", videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
       category: classify(title + " " + summary + " " + fullText.slice(0, 1200)),
       readMinutes: Math.max(1, Math.ceil(words / 220))
     };
