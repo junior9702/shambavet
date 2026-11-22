@@ -405,7 +405,7 @@ export async function getAgriculturalNews(req, res) {
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
       const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size, diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length } };
       globalThis.__shambavetAgriculturalNews = { version: 7, time: Date.now(), data };
-      sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
+      sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, diagnostics: data.diagnostics, sourceVisibility: isAdmin ? "admin" : "restricted" });
       return res.end();
     } catch (error) {
       sendEvent(res, { type: "error", error: "The agricultural news sources could not be reached. Please try again shortly." });
