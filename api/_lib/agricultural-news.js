@@ -210,13 +210,68 @@ async function getFeedItems(url) {
     }).filter(x => x.title && x.url);
   } catch { return []; }
 }
+function publicArticle(article, isAdmin) {
+  if (isAdmin) return article;
+  const { source, url, ...safe } = article;
+  return safe;
+}
+function sendEvent(res, payload) {
+  res.write(JSON.stringify(payload) + "\n");
+}
 export async function getAgriculturalNews(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
   const force = req.query?.refresh === "1";
+  const stream = req.query?.stream === "1";
+  const isAdmin = req.newsAdmin === true;
   const cached = globalThis.__shambavetAgriculturalNews;
+  res.setHeader("Cache-Control", "private, no-store");
+  if (stream) {
+    res.setHeader("Content-Type", "application/x-ndjson; charset=utf-8");
+    res.setHeader("X-Accel-Buffering", "no");
+    if (typeof res.flushHeaders === "function") res.flushHeaders();
+    try {
+      if (!force && cached && Date.now() - cached.time < 10 * 60 * 1000) {
+        sendEvent(res, { type: "progress", message: "Loading the latest saved stories…", completed: 0, total: cached.data.articles.length });
+        for (let i = 0; i < cached.data.articles.length; i += 4) {
+          sendEvent(res, { type: "articles", articles: cached.data.articles.slice(i, i + 4).map(a => publicArticle(a, isAdmin)), cached: true });
+        }
+        sendEvent(res, { type: "done", fetchedAt: cached.data.fetchedAt, sourceCount: cached.data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
+        return res.end();
+      }
+      sendEvent(res, { type: "progress", message: "Connecting to agricultural news feeds…", completed: 0, total: FEEDS.length });
+      const feedResults = await Promise.all(FEEDS.map(async (feed, index) => {
+        const items = await getFeedItems(feed);
+        sendEvent(res, { type: "progress", message: "Checking news feeds…", completed: index + 1, total: FEEDS.length });
+        return items;
+      }));
+      const seen = new Set(), items = [];
+      for (const item of feedResults.flat()) {
+        try {
+          const key = new URL(item.url).href.split("#")[0];
+          if (!seen.has(key) && allowedHost(new URL(key).hostname)) { seen.add(key); items.push({ ...item, url: key }); }
+        } catch {}
+      }
+      const selected = items.slice(0, 16);
+      sendEvent(res, { type: "progress", message: selected.length ? "Stories found. Extracting articles and media…" : "No new stories were found in the available feeds.", completed: 0, total: selected.length });
+      const articles = [];
+      for (let i = 0; i < selected.length; i += 4) {
+        const batch = await Promise.all(selected.slice(i, i + 4).map(scrapeItem));
+        const ready = batch.filter(Boolean);
+        articles.push(...ready);
+        sendEvent(res, { type: "articles", articles: ready.map(a => publicArticle(a, isAdmin)), completed: Math.min(i + 4, selected.length), total: selected.length });
+      }
+      articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
+      const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size };
+      globalThis.__shambavetAgriculturalNews = { time: Date.now(), data };
+      sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
+      return res.end();
+    } catch (error) {
+      sendEvent(res, { type: "error", error: "The agricultural news sources could not be reached. Please try again shortly." });
+      return res.end();
+    }
+  }
   if (!force && cached && Date.now() - cached.time < 10 * 60 * 1000) {
-    res.setHeader("Cache-Control", "private, no-store");
-    return res.status(200).json({ ...cached.data, cached: true });
+    return res.status(200).json({ ...cached.data, articles: cached.data.articles.map(a => publicArticle(a, isAdmin)), sourceVisibility: isAdmin ? "admin" : "restricted", cached: true });
   }
   try {
     const feedResults = await Promise.all(FEEDS.map(getFeedItems));
@@ -227,16 +282,11 @@ export async function getAgriculturalNews(req, res) {
         if (!seen.has(key) && allowedHost(new URL(key).hostname)) { seen.add(key); items.push({ ...item, url: key }); }
       } catch {}
     }
-    const selected = items.slice(0, 16);
-    const scraped = await Promise.all(selected.map(scrapeItem));
-    const articles = scraped.filter(Boolean).sort((a, b) => {
-      const ta = Date.parse(a.publishedAt || "") || 0, tb = Date.parse(b.publishedAt || "") || 0;
-      return tb - ta;
-    });
+    const scraped = await Promise.all(items.slice(0, 16).map(scrapeItem));
+    const articles = scraped.filter(Boolean).sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
     const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size };
     globalThis.__shambavetAgriculturalNews = { time: Date.now(), data };
-    res.setHeader("Cache-Control", "private, no-store");
-    return res.status(200).json(data);
+    return res.status(200).json({ ...data, articles: articles.map(a => publicArticle(a, isAdmin)), sourceVisibility: isAdmin ? "admin" : "restricted" });
   } catch (error) {
     return res.status(502).json({ error: "The agricultural news sources could not be reached. Please try again shortly." });
   }
