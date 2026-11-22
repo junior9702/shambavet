@@ -148,26 +148,54 @@ function structuredMedia(html, baseUrl) {
   return { image: absolute(image), videoUrl: absolute(video) };
 }
 function readArticle(html, baseUrl) {
-  let area = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1]
-    || html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1]
-    || html.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1] || html;
-  area = area.replace(/<(script|style|noscript|svg|nav|header|footer|aside|form|button)\b[\s\S]*?<\/\1>/gi, " ");
-  area = area.replace(/<\/(?:p|div|h[1-6]|li|blockquote|section)\s*>/gi, "\n");
-  const paragraphs = area.split(/\n+/).map(cleanText).filter(p => p.length > 35);
-  const unique = [...new Set(paragraphs)];
-  const fullText = extractWords(unique.join("\n\n"), 900);
+  const removeNoise = value => String(value || "")
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/<(script|style|noscript|svg|nav|header|footer|aside|form|button|iframe|dialog)\b[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<(?:div|section|ul|ol)[^>]*(?:class|id)=["'][^"']*(?:cookie|consent|newsletter|subscribe|advert|promo|social|share|related|recommend|breadcrumb|navigation|menu|footer|header|sidebar|app-download|epaper|logo)[^"']*["'][^>]*>[\s\S]*?<\/(?:div|section|ul|ol)>/gi, " ");
+  const cleanRegion = value => {
+    let area = removeNoise(value);
+    area = area.replace(/<\/(?:p|h[1-6]|li|blockquote|figure|figcaption|div|section|article)\s*>/gi, "\n");
+    const reject = /^(?:advertisement|subscribe|sign up|download our app|read more|related (?:stories|articles)|share this|follow us|advert|cookie policy|privacy policy|terms and conditions|the standard group plc|standard media group|contact us|all rights reserved|home|news|business|sports|entertainment|opinion|epaper)\b/i;
+    const paragraphs = area.split(/\n+/).map(cleanText)
+      .filter(p => p.length > 55 && !reject.test(p) &&
+        !/^(?:https?:\/\/|©\s*\d{4}|telephone number:|email:|mombasa road|download the app)/i.test(p) &&
+        !/^(?:the standard group plc|the standard group center|follow us on)/i.test(p));
+    return [...new Set(paragraphs)];
+  };
+  const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1] || "";
+  const candidates = [
+    article,
+    ...[...html.matchAll(/<(?:div|section|main)\b([^>]*)>([\s\S]*?)<\/(?:div|section|main)>/gi)]
+      .filter(m => /(?:article|story|post|entry)[-_ ]?(?:body|content|text)?|(?:body|content)[-_ ]?(?:article|story|post)?/i.test(m[1]) && !/(?:footer|header|related|sidebar|navigation)/i.test(m[1]))
+      .map(m => m[2])
+  ].filter(Boolean);
+  let paragraphs = [];
+  for (const candidate of candidates) {
+    const found = cleanRegion(candidate);
+    if (found.join(" ").length > paragraphs.join(" ").length) paragraphs = found;
+  }
+  if (paragraphs.join(" ").length < 180) {
+    const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1] || "";
+    const fallback = cleanRegion(main || article);
+    if (fallback.join(" ").length > paragraphs.join(" ").length) paragraphs = fallback;
+  }
+  const fullText = extractWords(paragraphs.join("\n\n"), 900);
   const media = structuredMedia(html, baseUrl);
-  const imageCandidates = [meta(html, "og:image"), meta(html, "twitter:image"), media.image, firstImage(html, area, baseUrl)].filter(Boolean);
-  const image = imageCandidates.find(value => !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar|logo\.(png|svg))/i.test(value)) || "";
-  const video = meta(html, "og:video:secure_url") || meta(html, "og:video") ||
-    media.videoUrl ||
-    area.match(/<(?:video|source)[^>]+(?:src|data-src)=["']([^"']+)["']/i)?.[1] ||
-    area.match(/<iframe[^>]+src=["']([^"']*(?:youtube|youtu\.be|vimeo)[^"']*)["']/i)?.[1] || "";
+  const articleImage = candidates.flatMap(region => [...region.matchAll(/<(?:img|source)\b[^>]*>/gi)].map(m => m[0]))
+    .map(tag => tag.match(/(?:data-lazy-src|data-original|data-src|src)=["']([^"']+)["']/i)?.[1] || "")
+    .filter(Boolean);
+  const imageCandidates = [...articleImage, media.image, meta(html, "og:image"), meta(html, "twitter:image")].filter(Boolean);
+  const image = imageCandidates.map(value => {
+    try { return new URL(value, baseUrl).href; } catch { return ""; }
+  }).find(value => value && !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar|logo|epaper|play-lh\.googleusercontent)/i.test(value)) || "";
+  const video = meta(html, "og:video:secure_url") || meta(html, "og:video") || media.videoUrl ||
+    article.match(/<(?:video|source)[^>]+(?:src|data-src)=["']([^"']+)["']/i)?.[1] ||
+    article.match(/<iframe[^>]+src=["']([^"']*(?:youtube|youtu\.be|vimeo)[^"']*)["']/i)?.[1] || "";
   const title = meta(html, "og:title") || cleanText(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "");
-  const description = meta(html, "og:description") || meta(html, "description");
+  const description = cleanText(meta(html, "og:description") || meta(html, "description"));
   const published = meta(html, "article:published_time") || meta(html, "date");
   const absolute = value => { try { return value ? new URL(value, baseUrl).href : ""; } catch { return ""; } };
-  return { fullText, image: absolute(image), videoUrl: absolute(video), pageTitle: title, description, published };
+  return { fullText, image, videoUrl: absolute(video), pageTitle: title, description, published };
 }
 async function resolveGoogleNewsUrl(value) {
   let parsed;
@@ -232,8 +260,12 @@ async function scrapeItem(item) {
     const parsed = readArticle(page.text, finalUrl.href);
     const title = item.title || parsed.pageTitle;
     if (!title) return null;
-    const fullText = extractWords(parsed.fullText.length >= 80 ? parsed.fullText : [item.summary, parsed.description].filter(Boolean).join(" "), 900);
-    const summary = extractWords(item.summary || parsed.description || fullText, 55);
+    const candidateText = parsed.fullText || "";
+    const boilerplate = /the standard group plc|download our app|telephone number:|corporate@standardmedia|all rights reserved|the standard group center/i.test(candidateText);
+    if (boilerplate || candidateText.split(/\s+/).filter(Boolean).length < 35) return null;
+    const fullText = extractWords(candidateText, 900);
+    const summary = extractWords(fullText || parsed.description, 55);
+    if (!fullText || fullText.split(/\s+/).filter(Boolean).length < 35) return null;
     const publishedAt = item.publishedAt || parsed.published || null;
     const words = fullText.split(/\s+/).filter(Boolean).length;
     const host = finalUrl.hostname.replace(/^www\./, "");
@@ -242,7 +274,7 @@ async function scrapeItem(item) {
     return {
       id: Buffer.from(finalUrl.href).toString("base64url").slice(0, 32),
       title: title.slice(0, 240), summary, fullText, source, url: finalUrl.href,
-      image: [item.image, parsed.image].find(value => value && !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar)/i.test(value)) || "", videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
+      image: [parsed.image, item.image].find(value => value && !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar|logo|epaper|play-lh\.googleusercontent)/i.test(value)) || "", videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
       category: classify(title + " " + summary + " " + fullText.slice(0, 1200)),
       readMinutes: Math.max(1, Math.ceil(words / 220))
     };
@@ -295,7 +327,7 @@ export async function getAgriculturalNews(req, res) {
         for (let i = 0; i < cached.data.articles.length; i += 4) {
           sendEvent(res, { type: "articles", articles: cached.data.articles.slice(i, i + 4).map(a => publicArticle(a, isAdmin)), cached: true });
         }
-        sendEvent(res, { type: "done", fetchedAt: cached.data.fetchedAt, sourceCount: cached.data.sourceCount, diagnostics: data.diagnostics, sourceVisibility: isAdmin ? "admin" : "restricted" });
+        sendEvent(res, { type: "done", fetchedAt: cached.data.fetchedAt, sourceCount: cached.data.sourceCount, diagnostics: cached.data.diagnostics, sourceVisibility: isAdmin ? "admin" : "restricted" });
         return res.end();
       }
       sendEvent(res, { type: "progress", message: "Connecting to agricultural news feeds…", completed: 0, total: FEEDS.length });
