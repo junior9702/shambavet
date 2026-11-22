@@ -11,11 +11,20 @@ export default async function handler(req, res) {
     const user = await requireFirebaseUser(req);
     const body = req.body || {};
     const purpose = String(body.purpose || '');
-    if (!['ai_credit', 'certificate'].includes(purpose)) {
+    const jobPlans = {
+      job_ad_monthly: { audience: 'employer', plan: 'monthly', amount: 200 },
+      job_ad_annual: { audience: 'employer', plan: 'annual', amount: 450 },
+      job_ad_premium: { audience: 'employer', plan: 'premium', amount: 1000 },
+      job_unlock_monthly: { audience: 'seeker', plan: 'monthly', amount: 150 },
+      job_unlock_annual: { audience: 'seeker', plan: 'annual', amount: 250 },
+      job_unlock_premium: { audience: 'seeker', plan: 'premium', amount: 500 }
+    };
+    const jobPlan = jobPlans[purpose];
+    if (!['ai_credit', 'certificate'].includes(purpose) && !jobPlan) {
       return res.status(400).json({ error: 'Choose a valid ShambaVet payment purpose.' });
     }
 
-    let amount = purpose === 'ai_credit' ? 49 : 1000;
+    let amount = jobPlan ? jobPlan.amount : purpose === 'ai_credit' ? 49 : 1000;
     let course = null;
     if (purpose === 'certificate') {
       if (!user.email && !(user.providerUserInfo || []).length) {
@@ -41,7 +50,7 @@ export default async function handler(req, res) {
       if (!course.modules.every(module => completed.includes(module.id))) {
         return res.status(403).json({ error: 'Your course completion record is incomplete. Please refresh your learning dashboard.' });
       }
-    } else {
+    } else if (purpose === 'ai_credit') {
       const account = await firestoreGet('aiAccounts/' + user.uid) || {};
       if (Number(account.paidCredits || 0) > 0) {
         return res.status(200).json({ alreadyHasCredit: true, message: 'You already have an unused AI consultation credit.' });
@@ -70,6 +79,7 @@ export default async function handler(req, res) {
       phone,
       courseId: course ? String(body.courseId) : '',
       courseTitle: course?.title || '',
+      ...(jobPlan ? { audience: jobPlan.audience, plan: jobPlan.plan } : {}),
       status: 'initiating',
       createdAt: Date.now()
     };

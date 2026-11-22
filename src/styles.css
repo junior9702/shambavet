@@ -648,3 +648,57 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .jobsTickerItem i{color:#c49b32;font-style:normal;font-size:12px}
 @keyframes shambavetJobsTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.jobsTickerTrack{animation:none}.jobsTickerViewport{overflow-x:auto;mask-image:none}}
+
+
+/* ShambaVet Careers — refined professional presentation */
+.jobsPage{max-width:1240px;padding:30px 24px 72px;color:#193b2a}
+.jobsHero{position:relative;isolation:isolate;min-height:290px;padding:clamp(28px,4vw,52px);border-radius:26px;background:radial-gradient(circle at 88% 12%,#2b9860 0,transparent 34%),linear-gradient(118deg,#0b3021 0%,#105b36 58%,#087447 100%);box-shadow:0 18px 45px rgba(13,65,38,.16)}
+.jobsHero:after{content:"";position:absolute;z-index:-1;right:10%;bottom:-90px;width:260px;height:260px;border:1px solid #ffffff1c;border-radius:50%;box-shadow:0 0 0 34px #ffffff09,0 0 0 68px #ffffff07}
+.jobsHero h1{max-width:680px;font-size:clamp(38px,5vw,58px);letter-spacing:-.045em}
+.jobsHero p{font-size:15px;max-width:610px}
+.jobsHeroArt{min-height:210px;border-radius:22px;background:linear-gradient(145deg,#ffffff20,#ffffff09);box-shadow:inset 0 1px #ffffff30;backdrop-filter:blur(8px)}
+.jobsHeroArt svg{width:58px;height:58px;padding:13px;border-radius:18px;background:#f2c95a;color:#17452e}
+.jobsHeroArt b{max-width:220px;line-height:1.35}
+.jobsPage .myJobs{padding:clamp(20px,3vw,30px);border-color:#e1eae3;border-radius:22px;box-shadow:0 12px 34px rgba(24,63,39,.055)}
+.jobFormHeading{align-items:flex-start}
+.jobFormHeading h2,.jobsToolbar h2,.myJobs h2{letter-spacing:-.025em;color:#183e2a}
+.jobFormHeading p,.jobsToolbar p{font-size:13px;line-height:1.65}
+.jobReviewStatus{white-space:nowrap;letter-spacing:.045em}
+.jobsPage .jobsFilters>button{min-height:40px;padding:10px 16px;border-radius:10px;font-size:13px}
+.jobsPage .myJobs>.jobsGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+.jobsPage .myJobs>.jobsGrid .jobCard{position:relative;min-height:190px;padding:22px;border-radius:17px;background:linear-gradient(180deg,#fff 0%,#fbfdfb 100%);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.jobsPage .myJobs>.jobsGrid .jobCard:hover{transform:translateY(-3px);border-color:#a9c9b2;box-shadow:0 12px 28px rgba(24,82,45,.09)}
+.jobsPage .myJobs>.jobsGrid .jobCard h3{margin:17px 0 2px;font-size:clamp(25px,3vw,31px);letter-spacing:-.035em;color:#145b35}
+.jobsPage .myJobs>.jobsGrid .jobCard p{margin:5px 0 18px;color:#748278;font-size:13px}
+.jobsPage .myJobs>.jobsGrid .jobCard button{margin-top:auto;align-self:flex-start}
+.jobsPage .jobFormGrid{gap:18px 20px}
+.jobsPage .jobFormGrid label{font-size:12px;letter-spacing:.01em}
+.jobsPage .jobFormGrid input,.jobsPage .jobFormGrid select,.jobsPage .jobFormGrid textarea{min-height:45px;border-color:#d9e4dc;border-radius:11px;background:#fcfdfc;transition:border-color .15s,box-shadow .15s}
+.jobsPage .jobFormGrid textarea{min-height:unset}
+.jobsPage .jobFormGrid input:focus,.jobsPage .jobFormGrid select:focus,.jobsPage .jobFormGrid textarea:focus,.jobsPage .jobsFilters input:focus,.jobsPage .jobsFilters select:focus{outline:0;border-color:#388657;box-shadow:0 0 0 3px rgba(56,134,87,.12)}
+.jobsPage .jobFormActions{padding-top:17px;border-top:1px solid #edf2ee}
+.jobsPage .jobFormActions button,.jobsPage .jobCardFoot button{min-height:42px;border-radius:10px}
+.jobsPage .jobsNotice{display:flex;align-items:flex-start;gap:10px;padding:15px 18px;border-radius:13px;box-shadow:0 5px 16px rgba(20,80,42,.04);line-height:1.55}
+.jobsToolbar{margin:38px 0 18px;align-items:flex-end}
+.jobsToolbar>div:first-child{min-width:200px}
+.jobsToolbar .jobsFilters{flex:1;justify-content:flex-end}
+.jobsToolbar .jobSearch{min-height:43px;max-width:440px;background:#fff}
+.jobsToolbar .jobsFilters select{width:auto;min-width:170px;min-height:43px}
+.jobsGrid:not(.myJobs .jobsGrid){gap:18px}
+.jobsPage .jobCard{padding:22px;border-radius:18px;box-shadow:0 7px 22px rgba(24,63,39,.045);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.jobsPage .jobCard:hover{transform:translateY(-2px);border-color:#b9d1bf;box-shadow:0 13px 28px rgba(24,63,39,.08)}
+.jobsPage .jobCard h3{letter-spacing:-.02em;line-height:1.25}
+.jobsPage .jobDescription{line-height:1.75}
+.jobsPage .jobCardFoot{gap:14px}
+.jobsPage .jobCardFoot small{line-height:1.5}
+.jobsPage .jobEmpty,.jobsPage .jobsEmpty{background:linear-gradient(180deg,#fff,#f9fcf9)}
+.jobsPage .jobSearch:focus-within{border-color:#388657;box-shadow:0 0 0 3px rgba(56,134,87,.1)}
+.jobsPage .myJobRow{gap:14px;padding:17px 2px}
+.jobsPage .myJobRow>div:first-child{flex:1}
+.jobsPage .myJobRow b,.jobsPage .adminJobRow b{color:#214a32}
+.jobsPage .adminJobRow{padding:20px 0}
+.jobsPage .adminJobRow>div:last-child button{min-height:39px;border-radius:9px}
+.jobsPage button:focus-visible{outline:3px solid rgba(45,130,75,.28);outline-offset:2px}
+@media(max-width:900px){.jobsPage .myJobs>.jobsGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.jobsHero{gap:18px}.jobsHeroArt{min-height:180px}}
+@media(max-width:700px){.jobsPage{padding:18px 14px 48px}.jobsHero{min-height:unset;padding:25px 21px;border-radius:20px}.jobsHero h1{font-size:clamp(35px,10vw,46px)}.jobsHeroArt{min-height:145px}.jobsPage .myJobs{padding:19px 16px;border-radius:17px}.jobsPage .myJobs>.jobsGrid{grid-template-columns:1fr;gap:11px}.jobsPage .myJobs>.jobsGrid .jobCard{min-height:unset;padding:18px}.jobsPage .myJobs>.jobsGrid .jobCard h3{font-size:27px}.jobsToolbar{gap:15px}.jobsToolbar .jobsFilters{width:100%;flex-direction:column;align-items:stretch}.jobsToolbar .jobsFilters select{width:100%}.jobsToolbar .jobSearch{max-width:none}.jobsPage .jobCard{padding:18px}.jobsPage .jobCardFoot{align-items:flex-start;flex-direction:column}.jobsPage .jobCardFoot button{width:100%}.jobsPage .jobFormActions{align-items:stretch}.jobsPage .jobFormActions button{width:100%}.jobsPage .jobReviewStatus{align-self:flex-start}}
+@media(prefers-reduced-motion:reduce){.jobsPage .jobCard,.jobsPage .myJobs>.jobsGrid .jobCard{transition:none}.jobsPage .jobCard:hover,.jobsPage .myJobs>.jobsGrid .jobCard:hover{transform:none}}
