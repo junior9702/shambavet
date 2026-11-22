@@ -39,7 +39,7 @@ function AgriculturalNewsPage({authUser}){
   while(true){const {value,done}=await reader.read();buffer+=decoder.decode(value||new Uint8Array(),{stream:!done});const lines=buffer.split('\n');buffer=lines.pop()||'';for(const line of lines){if(!line.trim())continue;const event=JSON.parse(line);
    if(event.type==='progress'){setProgress(event.message||'Gathering agricultural stories…');setProgressCount({completed:event.completed||0,total:event.total||0})}
    else if(event.type==='articles'){setArticles(prev=>{const map=new Map(prev.map(x=>[x.id||x.url,x]));(event.articles||[]).forEach(x=>map.set(x.id||x.url,x));return [...map.values()]});if(event.total)setProgressCount({completed:event.completed||0,total:event.total});setLoading(false)}
-   else if(event.type==='done'){setSourceVisible(event.sourceVisibility==='admin');setLastUpdated(event.fetchedAt?new Date(event.fetchedAt):new Date());setLoading(false);setRefreshing(false)}
+   else if(event.type==='done'){setSourceVisible(event.sourceVisibility==='admin');setLastUpdated(event.fetchedAt?new Date(event.fetchedAt):new Date());if(event.diagnostics?.articlesExtracted===0)setError('News feed check: '+event.diagnostics.feedEntries+' feed entries received from '+event.diagnostics.feedsChecked+' feeds, but no publisher articles could be extracted. Try refresh again shortly.');setLoading(false);setRefreshing(false)}
    else if(event.type==='error')throw new Error(event.error||'Unable to load agricultural news.');
   }if(done)break;}
   if(buffer.trim()){const event=JSON.parse(buffer);if(event.type==='error')throw new Error(event.error);if(event.type==='done'){setSourceVisible(event.sourceVisibility==='admin');setLastUpdated(event.fetchedAt?new Date(event.fetchedAt):new Date())}}
