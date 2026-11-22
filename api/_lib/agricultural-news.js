@@ -3,7 +3,10 @@ const FEEDS = [
   "https://www.kenyanews.go.ke/category/agriculture/feed/",
   "https://www.kenyanews.go.ke/category/food/feed/",
   "https://news.google.com/rss/search?q=Kenya+agriculture+OR+livestock+OR+farming&hl=en-KE&gl=KE&ceid=KE:en",
-  "https://news.google.com/rss/search?q=East+Africa+agriculture+farmers+livestock&hl=en-KE&gl=KE&ceid=KE:en"
+  "https://news.google.com/rss/search?q=East+Africa+agriculture+farmers+livestock&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+crops+maize+horticulture+farmers&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+poultry+dairy+livestock+markets&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+agricultural+research+climate+irrigation&hl=en-KE&gl=KE&ceid=KE:en"
 ];
 
 const ALLOWED_HOSTS = [
@@ -148,9 +151,9 @@ function readArticle(html, baseUrl) {
   area = area.replace(/<\/(?:p|div|h[1-6]|li|blockquote|section)\s*>/gi, "\n");
   const paragraphs = area.split(/\n+/).map(cleanText).filter(p => p.length > 35);
   const unique = [...new Set(paragraphs)];
-  const fullText = extractWords(unique.join("\n\n"), 400);
+  const fullText = extractWords(unique.join("\n\n"), 900);
   const media = structuredMedia(html, baseUrl);
-  const image = meta(html, "og:image") || meta(html, "twitter:image") || media.image || firstImage(html, area, baseUrl);
+  const imageCandidates = [meta(html, "og:image"), meta(html, "twitter:image"), media.image, firstImage(html, area, baseUrl)].filter(Boolean);\n  const image = imageCandidates.find(value => !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar|logo\\.(png|svg))/i.test(value)) || "";
   const video = meta(html, "og:video:secure_url") || meta(html, "og:video") ||
     media.videoUrl ||
     area.match(/<(?:video|source)[^>]+(?:src|data-src)=["']([^"']+)["']/i)?.[1] ||
@@ -167,7 +170,7 @@ async function scrapeItem(item) {
   if (!allowedHost(target.hostname)) return null;
   if (!(await robotsAllows(target.href))) return null;
   try {
-    const page = await fetchText(target.href, 5200);
+    const page = await fetchText(target.href, 4800);
     const finalUrl = new URL(page.url);
     if (!allowedHost(finalUrl.hostname) || !(await robotsAllows(finalUrl.href))) return null;
     const parsed = readArticle(page.text, finalUrl.href);
@@ -245,11 +248,16 @@ export async function getAgriculturalNews(req, res) {
         return items;
       }));
       const seen = new Set(), items = [];
-      for (const item of feedResults.flat()) {
-        try {
-          const key = new URL(item.url).href.split("#")[0];
-          if (!seen.has(key) && allowedHost(new URL(key).hostname)) { seen.add(key); items.push({ ...item, url: key }); }
-        } catch {}
+      const maxFeedItems = Math.max(0, ...feedResults.map(feed => feed.length));
+      for (let index = 0; index < maxFeedItems; index++) {
+        for (const feed of feedResults) {
+          const item = feed[index];
+          if (!item) continue;
+          try {
+            const key = new URL(item.url).href.split("#")[0];
+            if (!seen.has(key) && allowedHost(new URL(key).hostname)) { seen.add(key); items.push({ ...item, url: key }); }
+          } catch {}
+        }
       }
       const selected = items.slice(0, 16);
       sendEvent(res, { type: "progress", message: selected.length ? "Stories found. Extracting articles and media…" : "No new stories were found in the available feeds.", completed: 0, total: selected.length });
