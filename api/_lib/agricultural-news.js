@@ -330,9 +330,10 @@ async function getFeedItems(url) {
   } catch { return []; }
 }
 function publicArticle(article, isAdmin) {
-  if (isAdmin) return article;
-  const { source, url, ...safe } = article;
-  return safe;
+  // Publisher attribution and the original article URL are public metadata.
+  // Keep the full extracted content identical for all readers, while admin
+  // authorization remains enforced for moderation and platform controls.
+  return article;
 }
 function sendEvent(res, payload) {
   res.write(JSON.stringify(payload) + "\n");
