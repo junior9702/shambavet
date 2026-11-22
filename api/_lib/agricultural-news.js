@@ -2,6 +2,10 @@ const FEEDS = [
   "https://www.kenyanews.go.ke/category/agri/feed/",
   "https://www.kenyanews.go.ke/category/agriculture/feed/",
   "https://www.kenyanews.go.ke/category/food/feed/",
+  "https://www.kenyanews.go.ke/feed/",
+  "https://www.standardmedia.co.ke/rss/agriculture.php",
+  "https://www.fao.org/feeds/fao-newsroom-rss",
+  "https://eastleighvoice.co.ke/rss/agriculture",
   "https://news.google.com/rss/search?q=Kenya+agriculture+OR+livestock+OR+farming&hl=en-KE&gl=KE&ceid=KE:en",
   "https://news.google.com/rss/search?q=East+Africa+agriculture+farmers+livestock&hl=en-KE&gl=KE&ceid=KE:en",
   "https://news.google.com/rss/search?q=Kenya+crops+maize+horticulture+farmers&hl=en-KE&gl=KE&ceid=KE:en",
@@ -15,7 +19,7 @@ const ALLOWED_HOSTS = [
   "nation.africa", "standardmedia.co.ke", "the-star.co.ke",
   "businessdailyafrica.com", "allafrica.com", "agriculture.com",
   "reliefweb.int", "theeastafrican.co.ke", "capitalfm.co.ke",
-  "news.google.com"
+  "news.google.com", "eastleighvoice.co.ke"
 ];
 const ROBOTS_CACHE = new Map();
 const FETCH_HEADERS = {
@@ -172,7 +176,9 @@ async function resolveGoogleNewsUrl(value) {
   const articleId = parsed.pathname.split("/").filter(Boolean).pop();
   if (!articleId) return "";
   try {
-    const page = await fetchText("https://news.google.com/articles/" + articleId, 3500);
+    const page = await fetchText(value, 5000);
+    const redirected = new URL(page.url);
+    if (redirected.hostname !== "news.google.com" && allowedHost(redirected.hostname) && redirected.protocol === "https:") return redirected.href;
     const signature = page.text.match(/data-n-a-sg=["']([^"']+)["']/i)?.[1];
     const timestamp = page.text.match(/data-n-a-ts=["'](\d+)["']/i)?.[1];
     if (!signature || !timestamp) return "";
@@ -220,7 +226,7 @@ async function scrapeItem(item) {
   if (!allowedHost(target.hostname)) return null;
   if (!(await robotsAllows(target.href))) return null;
   try {
-    const page = await fetchText(target.href, 3500);
+    const page = await fetchText(target.href, 7000);
     const finalUrl = new URL(page.url);
     if (!allowedHost(finalUrl.hostname) || !(await robotsAllows(finalUrl.href))) return null;
     const parsed = readArticle(page.text, finalUrl.href);
@@ -289,7 +295,7 @@ export async function getAgriculturalNews(req, res) {
         for (let i = 0; i < cached.data.articles.length; i += 4) {
           sendEvent(res, { type: "articles", articles: cached.data.articles.slice(i, i + 4).map(a => publicArticle(a, isAdmin)), cached: true });
         }
-        sendEvent(res, { type: "done", fetchedAt: cached.data.fetchedAt, sourceCount: cached.data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
+        sendEvent(res, { type: "done", fetchedAt: cached.data.fetchedAt, sourceCount: cached.data.sourceCount, diagnostics: data.diagnostics, sourceVisibility: isAdmin ? "admin" : "restricted" });
         return res.end();
       }
       sendEvent(res, { type: "progress", message: "Connecting to agricultural news feeds…", completed: 0, total: FEEDS.length });
@@ -310,7 +316,7 @@ export async function getAgriculturalNews(req, res) {
           } catch {}
         }
       }
-      const selected = items.slice(0, 12);
+      const selected = items.slice(0, 8);
       sendEvent(res, { type: "progress", message: selected.length ? "Stories found. Extracting articles and media…" : "No new stories were found in the available feeds.", completed: 0, total: selected.length });
       const articles = [];
       for (let i = 0; i < selected.length; i += 4) {
@@ -325,7 +331,7 @@ export async function getAgriculturalNews(req, res) {
         else if (article.image) seenImages.add(article.image);
       }
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
-      const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size };
+      const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size, diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length } };
       globalThis.__shambavetAgriculturalNews = { version: 2, time: Date.now(), data };
       sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
       return res.end();
