@@ -38,18 +38,9 @@ function cleanText(html = "") {
     .replace(/<[^>]+>/g, " ").replace(/\s+/g, " ")).trim();
 }
 function meta(html, key) {
-  const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\function meta(html, key) {
-  const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const patterns = [
-    new RegExp('<meta[^>]+(?:property|name)=["\\']' + escaped + '["\\'][^>]+content=["\\']([^"\\']+)["\\']', "i"),
-    new RegExp('<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+(?:property|name)=["\\']' + escaped + '["\\']', "i")
-  ];
-  for (const re of patterns) { const match = html.match(re); if (match) return decode(match[1]); }
-  return "";
-}");
-  const patterns = [
-    new RegExp(`<meta[^>]+(?:property|name)=["']${escaped}["'][^>]+content=["']([^"']+)["']`, "i"),
-    new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']${escaped}["']`, "i")
+    new RegExp("<meta[^>]+(?:property|name)=[\"']" + key + "[\"'][^>]+content=[\"']([^\"']+)[\"']", "i"),
+    new RegExp("<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+(?:property|name)=[\"']" + key + "[\"']", "i")
   ];
   for (const re of patterns) { const match = html.match(re); if (match) return decode(match[1]); }
   return "";
