@@ -16,18 +16,8 @@ export default async function handler(req, res) {
         if (Number(error.status) !== 401) return res.status(Number(error.status) || 500).json({ error: "Could not verify your ShambaVet account." });
       }
     }
-    const originalJson = res.json.bind(res);
-    res.json = payload => {
-      if (!isDeveloperAdmin && payload && Array.isArray(payload.articles)) {
-        const safe = {
-          ...payload,
-          articles: payload.articles.map(({ source, url, ...article }) => article),
-          sourceVisibility: "restricted"
-        };
-        return originalJson(safe);
-      }
-      return originalJson({ ...payload, sourceVisibility: "admin" });
-    };
+    // Agricultural news applies the same admin check to every response shape.
+    // Do not decorate or expose source metadata in this route layer.
     req.newsAdmin = isDeveloperAdmin;
     return getAgriculturalNews(req, res);
   }
