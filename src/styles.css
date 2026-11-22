@@ -768,3 +768,57 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 @media(max-width:900px){.jobsPlanGrid{gap:10px}.jobsPlanCard{padding:18px 15px}.jobsPlanCard.isSelected{padding:17px 14px}.jobsCheckoutFields{grid-template-columns:1fr 1fr}.jobsCheckoutButton{grid-column:1/-1;width:100%}}
 @media(max-width:650px){.jobsPlansPanel{padding:19px 14px;border-radius:19px}.jobsPlansIntro{display:grid;gap:15px}.jobsTrustNote{min-width:0}.jobsPlanSwitch{margin:18px 0 22px}.jobsPlanSwitch button{padding:11px 9px;font-size:12px}.jobsPlanContext{display:grid;gap:11px}.jobsPlanContext h3{font-size:17px}.jobsCurrentStatus{justify-self:start}.jobsPlanGrid{grid-template-columns:1fr}.jobsPlanCard,.jobsPlanCard.isSelected{min-height:unset;padding:19px}.jobsPlanPrice{margin:13px 0 7px;font-size:32px}.jobsPlanDescription{min-height:0}.jobsPlanDivider{margin:12px 0}.jobsPlanCard ul{gap:8px}.jobsPlanChoose{padding-top:10px}.jobsCheckout{padding:16px}.jobsCheckoutFields{grid-template-columns:1fr}.jobsCheckoutButton{grid-column:auto;width:100%}}
 @media(prefers-reduced-motion:reduce){.jobsPlanCard,.jobsCheckoutButton{transition:none}.jobsPlanCard:hover,.jobsCheckoutButton:hover{transform:none}}
+
+
+/* Distinct visual identities for employer and job-seeker subscription journeys */
+.jobsPlansPanel--employer{border-color:#cbd8f0;background:linear-gradient(145deg,#f3f6ff 0%,#fff 48%,#fffaf2 100%)}
+.jobsPlansPanel--employer .jobsEyebrow{color:#3658a6}
+.jobsPlansPanel--employer .jobsPlansIntro{border-bottom-color:#dfe6f5}
+.jobsPlansPanel--employer .jobsTrustNote{border-color:#d6e0f4;background:linear-gradient(135deg,#eaf0ff,#fff);color:#3e5da6}
+.jobsPlansPanel--employer .jobsTrustNote b{color:#273f78}
+.jobsPlansPanel--employer .jobsPlanSwitch{border-color:#d8e0f0;background:#e9eef8}
+.jobsPlansPanel--employer .jobsPlanSwitch button.active{border-color:#aebfe7;color:#294c9a;box-shadow:0 5px 14px rgba(43,72,139,.12)}
+.jobsPlansPanel--employer .jobsPlanContext h3{color:#243f7c}
+.jobsPlansPanel--employer .jobsCurrentStatus.isActive{border-color:#b8c8ec;background:#eaf0ff;color:#3155a0}
+.jobsPlansPanel--employer .jobsPlanCard{border-color:#dce3f1;background:linear-gradient(180deg,#fff,#f9faff)}
+.jobsPlansPanel--employer .jobsPlanCard:hover{border-color:#9eafe0;box-shadow:0 13px 28px rgba(47,75,145,.11)}
+.jobsPlansPanel--employer .jobsPlanCard.isSelected{border-color:#4569bd;background:linear-gradient(180deg,#eef3ff,#fff 68%);box-shadow:0 0 0 4px rgba(69,105,189,.10),0 12px 28px rgba(47,75,145,.09)}
+.jobsPlansPanel--employer .jobsPlanName,.jobsPlansPanel--employer .jobsPlanChoose{color:#3456a0}
+.jobsPlansPanel--employer .jobsPlanPrice{color:#243f82}
+.jobsPlansPanel--employer .jobsPlanCard li svg{color:#4269bd}
+.jobsPlansPanel--employer .jobsPlanChoose span{background:#edf1fc;color:#3456a0}
+.jobsPlansPanel--employer .jobsPlanCard.isSelected .jobsPlanChoose{color:#fff}
+.jobsPlansPanel--employer .jobsPlanCard.isSelected .jobsPlanChoose span{background:#3459ad;color:#fff}
+.jobsPlansPanel--employer .jobsCheckout{border-color:#d6e0f2;background:linear-gradient(115deg,#edf2ff,#fff 70%)}
+.jobsPlansPanel--employer .jobsCheckoutIcon{background:#dfe8ff;color:#3459a7}
+.jobsPlansPanel--employer .jobsCheckoutFields input:focus{border-color:#5575c1;box-shadow:0 0 0 3px rgba(69,105,189,.13)}
+.jobsPlansPanel--employer .jobsCheckoutSummary strong{color:#2e50a0}
+.jobsPlansPanel--employer .jobsCheckoutButton{background:linear-gradient(110deg,#294b9a,#5274c8);box-shadow:0 6px 14px rgba(41,75,154,.2)}
+.jobsPlansPanel--employer .jobsCheckoutFoot svg{color:#4569bd}
+.jobsPlansPanel--seeker{border-color:#c8e7e1;background:linear-gradient(145deg,#effaf8 0%,#fff 48%,#f5fcf7 100%)}
+.jobsPlansPanel--seeker .jobsEyebrow{color:#087c70}
+.jobsPlansPanel--seeker .jobsPlansIntro{border-bottom-color:#d9eee8}
+.jobsPlansPanel--seeker .jobsTrustNote{border-color:#cce9e2;background:linear-gradient(135deg,#e3f6f1,#fff);color:#087c70}
+.jobsPlansPanel--seeker .jobsTrustNote b{color:#155b54}
+.jobsPlansPanel--seeker .jobsPlanSwitch{border-color:#cfe8e1;background:#e6f4f0}
+.jobsPlansPanel--seeker .jobsPlanSwitch button.active{border-color:#9ed8ca;color:#08796c;box-shadow:0 5px 14px rgba(8,124,112,.11)}
+.jobsPlansPanel--seeker .jobsPlanContext h3{color:#155b50}
+.jobsPlansPanel--seeker .jobsCurrentStatus.isActive{border-color:#a9dfd1;background:#e5f8f1;color:#08796c}
+.jobsPlansPanel--seeker .jobsPlanCard{border-color:#d4eae3;background:linear-gradient(180deg,#fff,#f8fdfb)}
+.jobsPlansPanel--seeker .jobsPlanCard:hover{border-color:#8bcdbb;box-shadow:0 13px 28px rgba(8,111,91,.10)}
+.jobsPlansPanel--seeker .jobsPlanCard.isSelected{border-color:#15917d;background:linear-gradient(180deg,#e9f8f3,#fff 68%);box-shadow:0 0 0 4px rgba(21,145,125,.09),0 12px 28px rgba(8,111,91,.08)}
+.jobsPlansPanel--seeker .jobsPlanName,.jobsPlansPanel--seeker .jobsPlanChoose{color:#087c70}
+.jobsPlansPanel--seeker .jobsPlanPrice{color:#11675b}
+.jobsPlansPanel--seeker .jobsPlanCard li svg{color:#15917d}
+.jobsPlansPanel--seeker .jobsPlanChoose span{background:#e6f6f1;color:#087c70}
+.jobsPlansPanel--seeker .jobsPlanCard.isSelected .jobsPlanChoose{color:#fff}
+.jobsPlansPanel--seeker .jobsPlanCard.isSelected .jobsPlanChoose span{background:#087c70;color:#fff}
+.jobsPlansPanel--seeker .jobsCheckout{border-color:#cce8df;background:linear-gradient(115deg,#e9f8f3,#fff 70%)}
+.jobsPlansPanel--seeker .jobsCheckoutIcon{background:#d8f1e9;color:#087c70}
+.jobsPlansPanel--seeker .jobsCheckoutFields input:focus{border-color:#15917d;box-shadow:0 0 0 3px rgba(21,145,125,.12)}
+.jobsPlansPanel--seeker .jobsCheckoutSummary strong{color:#087c70}
+.jobsPlansPanel--seeker .jobsCheckoutButton{background:linear-gradient(110deg,#087c70,#19a18a);box-shadow:0 6px 14px rgba(8,124,112,.19)}
+.jobsPlansPanel--seeker .jobsCheckoutFoot svg{color:#15917d}
+.jobsPlanCard--employer .jobsPlanRibbon{background:#e9c46a;color:#3e3218}
+.jobsPlanCard--seeker .jobsPlanRibbon{background:#bce8dc;color:#145c50}
+@media(max-width:650px){.jobsPlansPanel--employer,.jobsPlansPanel--seeker{background:#fff}}
