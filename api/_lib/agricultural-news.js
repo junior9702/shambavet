@@ -195,12 +195,17 @@ async function getFeedItems(url) {
     return [...text.matchAll(/<item\b[\s\S]*?<\/item>/gi)].map(match => {
       const block = match[0];
       const rawLink = xmlField(block, "link") || block.match(/<link[^>]+href=["']([^"']+)/i)?.[1] || "";
+      const mediaImage = block.match(/<(?:media:thumbnail|media:content)[^>]+url=["']([^"']+)["'][^>]*(?:type=["']image\/[^"']+["'])?/i)?.[1] || "";
+      const enclosure = block.match(/<enclosure[^>]+url=["']([^"']+)["'][^>]*(?:type=["']([^"']+)["'])?/i);
+      const videoUrl = enclosure && /^video\//i.test(enclosure[2] || "") ? enclosure[1] : "";
       return {
         title: cleanText(xmlField(block, "title")),
         url: decode(rawLink).trim(),
         summary: cleanText(xmlField(block, "description") || xmlField(block, "content:encoded")).slice(0, 650),
         publishedAt: xmlField(block, "pubDate") || xmlField(block, "published") || null,
-        source: cleanText(xmlField(block, "source")) || ""
+        source: cleanText(xmlField(block, "source")) || "",
+        image: decode(mediaImage),
+        videoUrl: decode(videoUrl)
       };
     }).filter(x => x.title && x.url);
   } catch { return []; }
