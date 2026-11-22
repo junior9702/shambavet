@@ -172,7 +172,7 @@ async function resolveGoogleNewsUrl(value) {
   const articleId = parsed.pathname.split("/").filter(Boolean).pop();
   if (!articleId) return "";
   try {
-    const page = await fetchText("https://news.google.com/articles/" + articleId, 6500);
+    const page = await fetchText("https://news.google.com/articles/" + articleId, 3500);
     const signature = page.text.match(/data-n-a-sg=["']([^"']+)["']/i)?.[1];
     const timestamp = page.text.match(/data-n-a-ts=["'](\d+)["']/i)?.[1];
     if (!signature || !timestamp) return "";
@@ -182,7 +182,7 @@ async function resolveGoogleNewsUrl(value) {
       method: "POST",
       headers: { ...FETCH_HEADERS, "content-type": "application/x-www-form-urlencoded;charset=UTF-8" },
       body,
-      signal: AbortSignal.timeout(6500)
+      signal: AbortSignal.timeout(3500)
     });
     if (!response.ok) return "";
     const result = await response.text();
@@ -220,7 +220,7 @@ async function scrapeItem(item) {
   if (!allowedHost(target.hostname)) return null;
   if (!(await robotsAllows(target.href))) return null;
   try {
-    const page = await fetchText(target.href, 4800);
+    const page = await fetchText(target.href, 3500);
     const finalUrl = new URL(page.url);
     if (!allowedHost(finalUrl.hostname) || !(await robotsAllows(finalUrl.href))) return null;
     const parsed = readArticle(page.text, finalUrl.href);
@@ -254,7 +254,7 @@ async function getFeedItems(url) {
       return {
         title: cleanText(xmlField(block, "title")),
         url: decode(rawLink).trim(),
-        summary: cleanText(xmlField(block, "description") || xmlField(block, "content:encoded")).slice(0, 650),
+        summary: /^https?:\/\/news\.google\.com\//i.test(rawLink) ? "" : cleanText(xmlField(block, "description") || xmlField(block, "content:encoded")).slice(0, 650),
         publishedAt: xmlField(block, "pubDate") || xmlField(block, "published") || null,
         source: cleanText(xmlField(block, "source")) || "",
         image: decode(mediaImage),
@@ -310,7 +310,7 @@ export async function getAgriculturalNews(req, res) {
           } catch {}
         }
       }
-      const selected = items.slice(0, 16);
+      const selected = items.slice(0, 12);
       sendEvent(res, { type: "progress", message: selected.length ? "Stories found. Extracting articles and media…" : "No new stories were found in the available feeds.", completed: 0, total: selected.length });
       const articles = [];
       for (let i = 0; i < selected.length; i += 4) {
@@ -318,6 +318,11 @@ export async function getAgriculturalNews(req, res) {
         const ready = batch.filter(Boolean);
         articles.push(...ready);
         sendEvent(res, { type: "articles", articles: ready.map(a => publicArticle(a, isAdmin)), completed: Math.min(i + 4, selected.length), total: selected.length });
+      }
+      const seenImages = new Set();
+      for (const article of articles) {
+        if (article.image && seenImages.has(article.image)) article.image = "";
+        else if (article.image) seenImages.add(article.image);
       }
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
       const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size };
