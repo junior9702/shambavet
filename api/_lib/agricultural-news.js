@@ -105,22 +105,34 @@ function extractWords(text, limit = 400) {
   const words = String(text || "").trim().split(/\s+/).filter(Boolean);
   return words.slice(0, limit).join(" ");
 }
+function usableArticleImage(value, baseUrl, hint = "") {
+  if (!value || /^data:/i.test(value)) return "";
+  try {
+    const url = new URL(value, baseUrl);
+    if (!/^https?:$/.test(url.protocol)) return "";
+    const probe = (url.pathname + " " + url.search + " " + hint).toLowerCase();
+    if (/(facebook|fb[-_]?icon|twitter|instagram|whatsapp|linkedin|social|share|comment|avatar|author|profile|logo|favicon|sprite|placeholder|default[-_]?image|epaper|app[-_]?store|play-lh\\.googleusercontent|badge|icon|\\.svg(?:$|[?#]))/i.test(probe)) return "";
+    if (/(1x1|pixel|tracking)/i.test(probe)) return "";
+    return url.href;
+  } catch { return ""; }
+}
 function firstImage(html, area, baseUrl) {
-  const fromMeta = meta(html, "og:image") || meta(html, "og:image:url") || meta(html, "twitter:image");
   const candidates = [];
-  if (fromMeta) candidates.push(fromMeta);
-  const imgTags = [...area.matchAll(/<(?:img|source)\b[^>]*>/gi)].map(m => m[0]);
+  for (const key of ["og:image", "og:image:url", "twitter:image"]) {
+    const value = meta(html, key);
+    if (value) candidates.push({ value, hint: key });
+  }
+  const imgTags = [...area.matchAll(/<(?:img|source)\\b[^>]*>/gi)].map(m => m[0]);
   for (const tag of imgTags) {
+    const hint = [tag.match(/alt=["']([^"']*)["']/i)?.[1], tag.match(/(?:class|id)=["']([^"']*)["']/i)?.[1]].filter(Boolean).join(" ");
     const srcset = tag.match(/(?:srcset|data-srcset)=["']([^"']+)["']/i)?.[1];
-    if (srcset) candidates.push(srcset.split(",").pop().trim().split(/\s+/)[0]);
+    if (srcset) candidates.push({ value: srcset.split(",")[0].trim().split(/\\s+/)[0], hint });
     const src = tag.match(/(?:data-lazy-src|data-original|data-src|src)=["']([^"']+)["']/i)?.[1];
-    if (src) candidates.push(src);
+    if (src) candidates.push({ value: src, hint });
   }
   for (const candidate of candidates) {
-    try {
-      const url = new URL(candidate, baseUrl);
-      if (/^https?:$/.test(url.protocol) && !/data:image/i.test(candidate)) return url.href;
-    } catch {}
+    const accepted = usableArticleImage(candidate.value, baseUrl, candidate.hint);
+    if (accepted) return accepted;
   }
   return "";
 }
@@ -181,13 +193,12 @@ function readArticle(html, baseUrl) {
   }
   const fullText = extractWords(paragraphs.join("\n\n"), 900);
   const media = structuredMedia(html, baseUrl);
-  const articleImage = candidates.flatMap(region => [...region.matchAll(/<(?:img|source)\b[^>]*>/gi)].map(m => m[0]))
-    .map(tag => tag.match(/(?:data-lazy-src|data-original|data-src|src)=["']([^"']+)["']/i)?.[1] || "")
-    .filter(Boolean);
-  const imageCandidates = [...articleImage, media.image, meta(html, "og:image"), meta(html, "twitter:image")].filter(Boolean);
-  const image = imageCandidates.map(value => {
-    try { return new URL(value, baseUrl).href; } catch { return ""; }
-  }).find(value => value && !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar|logo|epaper|play-lh\.googleusercontent)/i.test(value)) || "";
+  // Prefer a real image embedded in the article body. Social/profile icons and
+  // publisher logos are common in page metadata and must never become story art.
+  const image = firstImage(html, candidates.join(" "), baseUrl) ||
+    usableArticleImage(media.image, baseUrl, "structured article image") ||
+    usableArticleImage(meta(html, "og:image"), baseUrl, "open graph image") ||
+    usableArticleImage(meta(html, "twitter:image"), baseUrl, "twitter image");
   const video = meta(html, "og:video:secure_url") || meta(html, "og:video") || media.videoUrl ||
     article.match(/<(?:video|source)[^>]+(?:src|data-src)=["']([^"']+)["']/i)?.[1] ||
     article.match(/<iframe[^>]+src=["']([^"']*(?:youtube|youtu\.be|vimeo)[^"']*)["']/i)?.[1] || "";
@@ -315,7 +326,7 @@ export async function getAgriculturalNews(req, res) {
   const stream = req.query?.stream === "1";
   const isAdmin = req.newsAdmin === true;
   const cached = globalThis.__shambavetAgriculturalNews;
-  const cacheIsCurrent = cached?.version === 5;
+  const cacheIsCurrent = cached?.version === 6;
   res.setHeader("Cache-Control", "private, no-store");
   if (stream) {
     res.setHeader("Content-Type", "application/x-ndjson; charset=utf-8");
@@ -348,23 +359,27 @@ export async function getAgriculturalNews(req, res) {
           } catch {}
         }
       }
-      const selected = items.slice(0, 8);
+      const selected = items.slice(0, 20);
       sendEvent(res, { type: "progress", message: selected.length ? "Stories found. Extracting articles and media…" : "No new stories were found in the available feeds.", completed: 0, total: selected.length });
       const articles = [];
       let checkedStories = 0;
-      // Scrape all selected stories concurrently. Sequential batches can consume the
-      // entire Vercel function window when publishers are slow or Google News redirects.
-      await Promise.all(selected.map(async item => {
-        const article = await scrapeItem(item);
-        checkedStories += 1;
-        if (article) articles.push(article);
-        sendEvent(res, {
-          type: "articles",
-          articles: article ? [publicArticle(article, isAdmin)] : [],
-          completed: checkedStories,
-          total: selected.length
-        });
-      }));
+      // Bounded concurrency keeps feed extraction fast without flooding publishers.
+      let nextIndex = 0;
+      const workers = Array.from({ length: Math.min(5, selected.length) }, async () => {
+        while (nextIndex < selected.length) {
+          const item = selected[nextIndex++];
+          const article = await scrapeItem(item);
+          checkedStories += 1;
+          if (article) articles.push(article);
+          sendEvent(res, {
+            type: "articles",
+            articles: article ? [publicArticle(article, isAdmin)] : [],
+            completed: checkedStories,
+            total: selected.length
+          });
+        }
+      });
+      await Promise.all(workers);
       const seenImages = new Set();
       for (const article of articles) {
         if (article.image && seenImages.has(article.image)) article.image = "";
@@ -372,7 +387,7 @@ export async function getAgriculturalNews(req, res) {
       }
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
       const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size, diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length } };
-      globalThis.__shambavetAgriculturalNews = { version: 5, time: Date.now(), data };
+      globalThis.__shambavetAgriculturalNews = { version: 6, time: Date.now(), data };
       sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
       return res.end();
     } catch (error) {
@@ -392,10 +407,12 @@ export async function getAgriculturalNews(req, res) {
         if (!seen.has(key) && allowedHost(new URL(key).hostname)) { seen.add(key); items.push({ ...item, url: key }); }
       } catch {}
     }
-    const scraped = await Promise.all(items.slice(0, 16).map(scrapeItem));
+    const selected = items.slice(0, 20);
+    const scraped = [];
+    for (let i = 0; i < selected.length; i += 5) scraped.push(...await Promise.all(selected.slice(i, i + 5).map(scrapeItem)));
     const articles = scraped.filter(Boolean).sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
     const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size };
-    globalThis.__shambavetAgriculturalNews = { time: Date.now(), data };
+    globalThis.__shambavetAgriculturalNews = { version: 6, time: Date.now(), data };
     return res.status(200).json({ ...data, articles: articles.map(a => publicArticle(a, isAdmin)), sourceVisibility: isAdmin ? "admin" : "restricted" });
   } catch (error) {
     return res.status(502).json({ error: "The agricultural news sources could not be reached. Please try again shortly." });
