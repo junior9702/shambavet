@@ -165,9 +165,58 @@ function readArticle(html, baseUrl) {
   const absolute = value => { try { return value ? new URL(value, baseUrl).href : ""; } catch { return ""; } };
   return { fullText, image: absolute(image), videoUrl: absolute(video), pageTitle: title, description, published };
 }
+async function resolveGoogleNewsUrl(value) {
+  let parsed;
+  try { parsed = new URL(value); } catch { return ""; }
+  if (parsed.hostname !== "news.google.com" || !/\/(?:rss\/)?articles\//.test(parsed.pathname)) return value;
+  const articleId = parsed.pathname.split("/").filter(Boolean).pop();
+  if (!articleId) return "";
+  try {
+    const page = await fetchText("https://news.google.com/articles/" + articleId, 6500);
+    const signature = page.text.match(/data-n-a-sg=["']([^"']+)["']/i)?.[1];
+    const timestamp = page.text.match(/data-n-a-ts=["'](\d+)["']/i)?.[1];
+    if (!signature || !timestamp) return "";
+    const rpc = ["Fbv4je", JSON.stringify(["garturlreq", [["X","X",["X","X"],null,null,1,1,"KE:en",null,1,null,null,null,null,null,0,1],"X","X",1,[1,1,1],1,1,null,0,0,null,0], articleId, Number(timestamp), signature])];
+    const body = new URLSearchParams({ "f.req": JSON.stringify([[rpc]]) });
+    const response = await fetch("https://news.google.com/_/DotsSplashUi/data/batchexecute", {
+      method: "POST",
+      headers: { ...FETCH_HEADERS, "content-type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body,
+      signal: AbortSignal.timeout(6500)
+    });
+    if (!response.ok) return "";
+    const result = await response.text();
+    const marker = result.indexOf("garturlres");
+    if (marker >= 0) {
+      const tail = result.slice(marker + 10);
+      const match = tail.match(/https?:\\?\/\\?\/[^"\\]+/);
+      if (match) {
+        const url = match[0].replace(/\\\//g, "/").replace(/\\u003d/g, "=");
+        const resolved = new URL(url);
+        return resolved.protocol === "https:" ? resolved.href : "";
+      }
+    }
+    const rows = result.split("\n").filter(line => line.trim().startsWith("["));
+    for (const line of rows) {
+      try {
+        const parsedRows = JSON.parse(line);
+        for (const row of parsedRows) {
+          if (Array.isArray(row) && row[0] === "wrb.fr" && row[2]) {
+            const decoded = JSON.parse(row[2]);
+            if (typeof decoded?.[1] === "string" && decoded[1].startsWith("https://")) return decoded[1];
+          }
+        }
+      } catch {}
+    }
+    return "";
+  } catch { return ""; }
+}
 async function scrapeItem(item) {
+  let resolvedUrl = item.url;
+  try { if (new URL(item.url).hostname === "news.google.com") resolvedUrl = await resolveGoogleNewsUrl(item.url); } catch { return null; }
+  if (!resolvedUrl) return null;
   let target;
-  try { target = new URL(item.url); } catch { return null; }
+  try { target = new URL(resolvedUrl); } catch { return null; }
   if (!allowedHost(target.hostname)) return null;
   if (!(await robotsAllows(target.href))) return null;
   try {
@@ -228,13 +277,14 @@ export async function getAgriculturalNews(req, res) {
   const stream = req.query?.stream === "1";
   const isAdmin = req.newsAdmin === true;
   const cached = globalThis.__shambavetAgriculturalNews;
+  const cacheIsCurrent = cached?.version === 2;
   res.setHeader("Cache-Control", "private, no-store");
   if (stream) {
     res.setHeader("Content-Type", "application/x-ndjson; charset=utf-8");
     res.setHeader("X-Accel-Buffering", "no");
     if (typeof res.flushHeaders === "function") res.flushHeaders();
     try {
-      if (!force && cached && Date.now() - cached.time < 10 * 60 * 1000) {
+      if (!force && cacheIsCurrent && cached && Date.now() - cached.time < 2 * 60 * 1000) {
         sendEvent(res, { type: "progress", message: "Loading the latest saved stories…", completed: 0, total: cached.data.articles.length });
         for (let i = 0; i < cached.data.articles.length; i += 4) {
           sendEvent(res, { type: "articles", articles: cached.data.articles.slice(i, i + 4).map(a => publicArticle(a, isAdmin)), cached: true });
@@ -271,7 +321,7 @@ export async function getAgriculturalNews(req, res) {
       }
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
       const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size };
-      globalThis.__shambavetAgriculturalNews = { time: Date.now(), data };
+      globalThis.__shambavetAgriculturalNews = { version: 2, time: Date.now(), data };
       sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
       return res.end();
     } catch (error) {
