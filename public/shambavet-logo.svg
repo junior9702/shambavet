@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+<title id="title">ShambaVet Kenya Agricultural Hub</title><desc id="desc">Green and gold agricultural logo with livestock and leaf emblem.</desc>
+<defs>
+ <linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#249653"/><stop offset="1" stop-color="#07552e"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#f4c542"/><stop offset="1" stop-color="#d99a12"/></linearGradient>
+</defs>
+<g transform="translate(18 18)">
+ <circle cx="150" cy="150" r="137" fill="#f7fbf7" stroke="url(#green)" stroke-width="13"/>
+ <path d="M48 206 Q150 264 252 206 L239 232 Q150 290 61 232Z" fill="url(#gold)"/>
+ <path d="M63 218 Q150 266 237 218" fill="none" stroke="#fff" stroke-width="5" opacity=".9"/>
+ <path d="M73 70 Q40 33 34 26 Q72 25 91 57 Q105 27 139 22 Q129 60 103 82" fill="#198447"/>
+ <path d="M92 87 Q150 53 210 88 Q237 109 225 158 Q214 202 168 218 L132 218 Q86 199 75 157 Q64 111 92 87Z" fill="url(#green)"/>
+ <path d="M93 91 Q72 65 66 54 Q100 54 119 81 M209 91 Q230 65 237 54 Q203 54 184 81" fill="none" stroke="#07552e" stroke-width="13" stroke-linecap="round"/>
+ <path d="M101 130 Q119 112 136 130 M164 130 Q181 112 199 130" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+ <ellipse cx="150" cy="165" rx="47" ry="34" fill="#f4f8f2"/>
+ <ellipse cx="132" cy="164" rx="6" ry="9" fill="#07552e"/><ellipse cx="168" cy="164" rx="6" ry="9" fill="#07552e"/>
+ <path d="M140 187 Q150 194 160 187" fill="none" stroke="#07552e" stroke-width="5" stroke-linecap="round"/>
+ <path d="M118 213 Q150 232 182 213" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+ <path d="M48 249 Q150 300 252 249" fill="none" stroke="#168344" stroke-width="7" stroke-linecap="round"/>
+</g>
+<g font-family="Arial, Helvetica, sans-serif" font-weight="900">
+ <text x="330" y="190" font-size="148" letter-spacing="-5" fill="#126b3a">SHAMBA</text>
+ <text x="865" y="190" font-size="148" letter-spacing="-5" fill="#e5ad24">VET</text>
+</g>
+<path d="M334 224 H1125" stroke="#168344" stroke-width="8" stroke-linecap="round"/>
+<path d="M334 251 H414" stroke="url(#gold)" stroke-width="8" stroke-linecap="round"/>
+<text x="435" y="276" font-family="Arial, Helvetica, sans-serif" font-size="43" font-weight="800" letter-spacing="5" fill="#175d36">KENYA AGRICULTURAL HUB</text>
+</svg>
