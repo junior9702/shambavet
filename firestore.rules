@@ -251,6 +251,30 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Job board: authenticated employers submit pending adverts; only approved adverts are public.
+    match /jobListings/{id} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 2
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.organization is string
+        && request.resource.data.organization.size() > 1
+        && request.resource.data.description is string
+        && request.resource.data.description.size() > 20
+        && request.resource.data.description.size() <= 5000
+        && request.resource.data.county is string
+        && request.resource.data.county.size() <= 80;
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid)
+        || resource.data.status == 'approved';
+      allow update: if isAdmin();
+      allow delete: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid
+          && resource.data.status == 'pending');
+    }
+
     match /users/{uid}/{document=**} {
       allow read, write: if signedIn() && request.auth.uid == uid;
     }
