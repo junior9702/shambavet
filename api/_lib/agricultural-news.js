@@ -7,6 +7,8 @@ const FEEDS = [
   "https://www.standardmedia.co.ke/rss/agriculture.php",
   "https://www.fao.org/feeds/fao-newsroom-rss",
   "https://eastleighvoice.co.ke/rss/agriculture",
+  "https://farmbizafrica.com/feed/",
+  "https://farmersreviewafrica.com/feed/",
   "https://news.google.com/rss/search?q=Kenya+agriculture+OR+livestock+OR+farming&hl=en-KE&gl=KE&ceid=KE:en",
   "https://news.google.com/rss/search?q=East+Africa+agriculture+farmers+livestock&hl=en-KE&gl=KE&ceid=KE:en",
   "https://news.google.com/rss/search?q=Kenya+crops+maize+horticulture+farmers&hl=en-KE&gl=KE&ceid=KE:en",
