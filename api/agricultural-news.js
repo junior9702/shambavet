@@ -38,10 +38,18 @@ function cleanText(html = "") {
     .replace(/<[^>]+>/g, " ").replace(/\s+/g, " ")).trim();
 }
 function meta(html, key) {
+  const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\function meta(html, key) {
   const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const patterns = [
     new RegExp('<meta[^>]+(?:property|name)=["\\']' + escaped + '["\\'][^>]+content=["\\']([^"\\']+)["\\']', "i"),
     new RegExp('<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+(?:property|name)=["\\']' + escaped + '["\\']', "i")
+  ];
+  for (const re of patterns) { const match = html.match(re); if (match) return decode(match[1]); }
+  return "";
+}");
+  const patterns = [
+    new RegExp(`<meta[^>]+(?:property|name)=["']${escaped}["'][^>]+content=["']([^"']+)["']`, "i"),
+    new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']${escaped}["']`, "i")
   ];
   for (const re of patterns) { const match = html.match(re); if (match) return decode(match[1]); }
   return "";
@@ -86,7 +94,8 @@ async function robotsAllows(url) {
 }
 function classify(text = "") {
   const t = text.toLowerCase();
-  if (/dairy|milk|cattle|beef|goat|sheep|livestock|veterinar|animal health/.test(t)) return "Livestock";
+  if (/dairy|milk|milk cooling|dairy cooperative/.test(t)) return "Dairy";
+  if (/cattle|beef|goat|sheep|livestock|veterinar|animal health/.test(t)) return "Livestock";
   if (/poultry|chicken|broiler|egg|hatchery/.test(t)) return "Poultry";
   if (/coffee|tea|maize price|market price|export|commodity|auction|trade/.test(t)) return "Markets";
   if (/rain|drought|weather|climate|flood|irrigation/.test(t)) return "Weather & climate";
@@ -94,7 +103,7 @@ function classify(text = "") {
   if (/crop|maize|wheat|rice|potato|seed|fertili|horticulture|farming/.test(t)) return "Crops";
   return "Agriculture";
 }
-function readArticle(html) {
+function readArticle(html, baseUrl) {
   let area = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1]
     || html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1]
     || html.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1] || html;
@@ -111,7 +120,7 @@ function readArticle(html) {
   const title = meta(html, "og:title") || cleanText(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "");
   const description = meta(html, "og:description") || meta(html, "description");
   const published = meta(html, "article:published_time") || meta(html, "date");
-  const absolute = (value) => { try { return value ? new URL(value, "https://invalid.local").href : ""; } catch { return ""; } };
+  const absolute = (value) => { try { return value ? new URL(value, baseUrl).href : ""; } catch { return ""; } };
   return { fullText, image: absolute(image), videoUrl: absolute(video), pageTitle: title, description, published };
 }
 async function scrapeItem(item) {
@@ -123,7 +132,7 @@ async function scrapeItem(item) {
     const page = await fetchText(target.href, 8500);
     const finalUrl = new URL(page.url);
     if (!allowedHost(finalUrl.hostname) || !(await robotsAllows(finalUrl.href))) return null;
-    const parsed = readArticle(page.text);
+    const parsed = readArticle(page.text, finalUrl.href);
     const title = item.title || parsed.pageTitle;
     if (!title) return null;
     const fullText = parsed.fullText.length >= 250 ? parsed.fullText : (item.summary || parsed.description || "");
