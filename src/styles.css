@@ -702,3 +702,69 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 @media(max-width:900px){.jobsPage .myJobs>.jobsGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.jobsHero{gap:18px}.jobsHeroArt{min-height:180px}}
 @media(max-width:700px){.jobsPage{padding:18px 14px 48px}.jobsHero{min-height:unset;padding:25px 21px;border-radius:20px}.jobsHero h1{font-size:clamp(35px,10vw,46px)}.jobsHeroArt{min-height:145px}.jobsPage .myJobs{padding:19px 16px;border-radius:17px}.jobsPage .myJobs>.jobsGrid{grid-template-columns:1fr;gap:11px}.jobsPage .myJobs>.jobsGrid .jobCard{min-height:unset;padding:18px}.jobsPage .myJobs>.jobsGrid .jobCard h3{font-size:27px}.jobsToolbar{gap:15px}.jobsToolbar .jobsFilters{width:100%;flex-direction:column;align-items:stretch}.jobsToolbar .jobsFilters select{width:100%}.jobsToolbar .jobSearch{max-width:none}.jobsPage .jobCard{padding:18px}.jobsPage .jobCardFoot{align-items:flex-start;flex-direction:column}.jobsPage .jobCardFoot button{width:100%}.jobsPage .jobFormActions{align-items:stretch}.jobsPage .jobFormActions button{width:100%}.jobsPage .jobReviewStatus{align-self:flex-start}}
 @media(prefers-reduced-motion:reduce){.jobsPage .jobCard,.jobsPage .myJobs>.jobsGrid .jobCard{transition:none}.jobsPage .jobCard:hover,.jobsPage .myJobs>.jobsGrid .jobCard:hover{transform:none}}
+
+
+/* Careers subscription experience — premium pricing and M-PESA checkout */
+.jobsPlansPanel{margin:24px 0 28px;padding:clamp(20px,3vw,34px);border:1px solid #dce8df;border-radius:25px;background:linear-gradient(180deg,#fff 0%,#fbfdfb 100%);box-shadow:0 18px 48px rgba(21,65,39,.075);color:#193d2a}
+.jobsPlansIntro{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding-bottom:25px;border-bottom:1px solid #e8efe9}
+.jobsEyebrow{display:inline-flex;align-items:center;gap:7px;color:#277346;font-size:10px;font-weight:900;letter-spacing:.12em}
+.jobsPlansIntro h2{max-width:650px;margin:12px 0 8px;color:#153c28;font-size:clamp(25px,3vw,35px);line-height:1.12;letter-spacing:-.04em}
+.jobsPlansIntro p{max-width:660px;margin:0;color:#6d7e72;font-size:13px;line-height:1.7}
+.jobsTrustNote{display:flex;align-items:center;gap:11px;min-width:225px;padding:14px 16px;border:1px solid #dceadf;border-radius:14px;background:#f5faf6;color:#287448}
+.jobsTrustNote span{display:grid;gap:4px}.jobsTrustNote b{font-size:12px;color:#244d34}.jobsTrustNote small{max-width:190px;color:#718176;font-size:10px;line-height:1.5}
+.jobsPlanSwitch{display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:520px;margin:22px auto 25px;padding:6px;border:1px solid #e0e9e2;border-radius:15px;background:#f3f7f3}
+.jobsPlanSwitch button{display:grid;grid-template-columns:22px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:8px;padding:12px 15px;border:1px solid transparent;border-radius:11px;background:transparent;color:#65766a;text-align:left;font-size:13px;font-weight:850;cursor:pointer}
+.jobsPlanSwitch button svg{grid-row:1/3}.jobsPlanSwitch button small{margin-top:3px;color:#8a978e;font-size:10px;font-weight:600}
+.jobsPlanSwitch button.active{border-color:#c7dfcd;background:#fff;color:#17663a;box-shadow:0 3px 12px rgba(24,78,42,.07)}
+.jobsPlanSwitch button.active small{color:#688374}
+.jobsPlanContext{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:17px}
+.jobsPlanContext h3{margin:7px 0 5px;color:#1a432d;font-size:19px;letter-spacing:-.025em}
+.jobsPlanContext p{max-width:690px;margin:0;color:#718076;font-size:12px;line-height:1.65}
+.jobsCurrentStatus{display:inline-flex;align-items:center;gap:6px;flex:none;padding:8px 11px;border:1px solid #e4e9e5;border-radius:999px;background:#f7f9f7;color:#7a877e;font-size:9px;font-weight:900;letter-spacing:.07em}
+.jobsCurrentStatus.isActive{border-color:#b9ddc2;background:#edf8ef;color:#217344}
+.jobsPlanGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+.jobsPlanCard{position:relative;display:flex;flex-direction:column;min-width:0;min-height:340px;padding:22px 20px 18px;border:1px solid #dfe8e1;border-radius:18px;background:#fff;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s}
+.jobsPlanCard:hover{transform:translateY(-3px);border-color:#a9cdb2;box-shadow:0 12px 28px rgba(24,75,42,.08)}
+.jobsPlanCard.isSelected{border:2px solid #2d8550;padding:21px 19px 17px;background:linear-gradient(180deg,#f8fcf8,#fff 45%);box-shadow:0 0 0 4px rgba(45,133,80,.08),0 12px 28px rgba(24,75,42,.07)}
+.jobsPlanCard.isPremium{background:linear-gradient(180deg,#f4faf5 0%,#fff 52%)}
+.jobsPlanRibbon{position:absolute;right:15px;top:-1px;padding:6px 10px;border-radius:0 0 9px 9px;background:#d5ad46;color:#253b29;font-size:9px;font-weight:950;letter-spacing:.08em}
+.jobsPlanCardTop{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:25px}
+.jobsPlanName{color:#385b43;font-size:13px;font-weight:900}
+.jobsPlanSelected{display:inline-flex;align-items:center;gap:3px;color:#237448;font-size:8px;font-weight:900;letter-spacing:.06em}
+.jobsPlanPrice{margin:18px 0 8px;color:#164b2e;font-size:clamp(26px,3vw,34px);font-weight:950;letter-spacing:-.05em;white-space:nowrap}
+.jobsPlanPrice small{color:#829087;font-size:10px;font-weight:650;letter-spacing:0}
+.jobsPlanDescription{min-height:42px;margin:0;color:#77857b;font-size:11px;line-height:1.6}
+.jobsPlanDivider{height:1px;margin:16px 0 13px;background:#edf1ed}
+.jobsPlanCard ul{display:grid;gap:10px;margin:0 0 18px;padding:0;list-style:none}
+.jobsPlanCard li{display:flex;align-items:flex-start;gap:8px;color:#53675a;font-size:10px;line-height:1.45}
+.jobsPlanCard li svg{flex:none;color:#2e8a50}
+.jobsPlanChoose{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:13px;border-top:1px solid #edf1ed;color:#287448;font-size:11px;font-weight:900}
+.jobsPlanChoose span{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:#edf6ef;font-size:15px}
+.jobsPlanCard.isSelected .jobsPlanChoose{color:#fff}
+.jobsPlanCard.isSelected .jobsPlanChoose span{background:#277849;color:#fff}
+.jobsCheckout{margin-top:22px;padding:21px;border:1px solid #dce8df;border-radius:17px;background:linear-gradient(115deg,#f5faf6,#fff 68%)}
+.jobsCheckoutTitle{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.jobsCheckoutIcon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#e4f2e7;color:#247246}
+.jobsCheckoutTitle h3{margin:0 0 4px;color:#1d472f;font-size:15px}
+.jobsCheckoutTitle p{margin:0;color:#78877d;font-size:11px}
+.jobsCheckoutFields{display:grid;grid-template-columns:minmax(180px,1.2fr) minmax(150px,.8fr) auto;gap:13px;align-items:end}
+.jobsCheckoutFields label{display:grid;gap:7px;color:#526a59;font-size:11px;font-weight:800}
+.jobsCheckoutFields input{width:100%;min-height:46px;padding:0 13px;border:1px solid #d6e3d9;border-radius:10px;background:#fff;color:#244832;font-size:13px;outline:none}
+.jobsCheckoutFields input:focus{border-color:#378653;box-shadow:0 0 0 3px rgba(55,134,83,.12)}
+.jobsCheckoutSummary{display:grid;gap:4px;min-height:46px;padding:8px 12px;border:1px solid #e1eae3;border-radius:10px;background:#fff}
+.jobsCheckoutSummary small{color:#839087;font-size:8px;font-weight:900;letter-spacing:.1em}
+.jobsCheckoutSummary b{color:#31573d;font-size:10px}
+.jobsCheckoutSummary strong{color:#17633a;font-size:16px;line-height:1.1}
+.jobsCheckoutSummary span{color:#839087;font-size:9px}
+.jobsCheckoutButton{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 19px;border:0;border-radius:10px;background:linear-gradient(110deg,#17683b,#25864d);color:#fff;font-size:11px;font-weight:900;white-space:nowrap;cursor:pointer;box-shadow:0 6px 14px rgba(27,110,59,.18);transition:transform .15s,box-shadow .15s}
+.jobsCheckoutButton:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 9px 18px rgba(27,110,59,.24)}
+.jobsCheckoutButton:disabled{opacity:.55;cursor:not-allowed}
+.jobsCheckoutHint{margin:11px 0 0;color:#8a6a2c;font-size:10px}
+.jobsCheckoutFoot{display:flex;align-items:center;gap:7px;margin-top:14px;padding-top:12px;border-top:1px solid #e8eee9;color:#75847a;font-size:10px}
+.jobsCheckoutFoot svg{color:#368653}
+.jobsActivePlan{display:flex;align-items:center;gap:12px;margin-top:16px;padding:14px 16px;border:1px solid #b9ddc2;border-radius:13px;background:#f0f9f1;color:#25804a}
+.jobsActivePlan div{display:grid;gap:4px}.jobsActivePlan b{color:#245a36;font-size:12px}.jobsActivePlan small{color:#718176;font-size:10px}
+.jobsPlanCard:focus-visible,.jobsPlanSwitch button:focus-visible{outline:3px solid rgba(45,130,75,.25);outline-offset:3px}
+@media(max-width:900px){.jobsPlanGrid{gap:10px}.jobsPlanCard{padding:18px 15px}.jobsPlanCard.isSelected{padding:17px 14px}.jobsCheckoutFields{grid-template-columns:1fr 1fr}.jobsCheckoutButton{grid-column:1/-1;width:100%}}
+@media(max-width:650px){.jobsPlansPanel{padding:19px 14px;border-radius:19px}.jobsPlansIntro{display:grid;gap:15px}.jobsTrustNote{min-width:0}.jobsPlanSwitch{margin:18px 0 22px}.jobsPlanSwitch button{padding:11px 9px;font-size:12px}.jobsPlanContext{display:grid;gap:11px}.jobsPlanContext h3{font-size:17px}.jobsCurrentStatus{justify-self:start}.jobsPlanGrid{grid-template-columns:1fr}.jobsPlanCard,.jobsPlanCard.isSelected{min-height:unset;padding:19px}.jobsPlanPrice{margin:13px 0 7px;font-size:32px}.jobsPlanDescription{min-height:0}.jobsPlanDivider{margin:12px 0}.jobsPlanCard ul{gap:8px}.jobsPlanChoose{padding-top:10px}.jobsCheckout{padding:16px}.jobsCheckoutFields{grid-template-columns:1fr}.jobsCheckoutButton{grid-column:auto;width:100%}}
+@media(prefers-reduced-motion:reduce){.jobsPlanCard,.jobsCheckoutButton{transition:none}.jobsPlanCard:hover,.jobsCheckoutButton:hover{transform:none}}
