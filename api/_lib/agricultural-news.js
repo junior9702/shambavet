@@ -251,7 +251,7 @@ export async function getAgriculturalNews(req, res) {
           if (!seen.has(key) && allowedHost(new URL(key).hostname)) { seen.add(key); items.push({ ...item, url: key }); }
         } catch {}
       }
-      const selected = items.slice(0, 16);
+      const selected = items.slice(0, 8);
       sendEvent(res, { type: "progress", message: selected.length ? "Stories found. Extracting articles and media…" : "No new stories were found in the available feeds.", completed: 0, total: selected.length });
       const articles = [];
       for (let i = 0; i < selected.length; i += 4) {
