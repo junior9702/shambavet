@@ -283,7 +283,7 @@ export async function getAgriculturalNews(req, res) {
   const stream = req.query?.stream === "1";
   const isAdmin = req.newsAdmin === true;
   const cached = globalThis.__shambavetAgriculturalNews;
-  const cacheIsCurrent = cached?.version === 2;
+  const cacheIsCurrent = cached?.version === 3;
   res.setHeader("Cache-Control", "private, no-store");
   if (stream) {
     res.setHeader("Content-Type", "application/x-ndjson; charset=utf-8");
@@ -332,7 +332,7 @@ export async function getAgriculturalNews(req, res) {
       }
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
       const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size, diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length } };
-      globalThis.__shambavetAgriculturalNews = { version: 2, time: Date.now(), data };
+      globalThis.__shambavetAgriculturalNews = { version: 3, time: Date.now(), data };
       sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
       return res.end();
     } catch (error) {
