@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 const FEEDS = [
   "https://www.kenyanews.go.ke/category/agri/feed/",
   "https://www.kenyanews.go.ke/category/agriculture/feed/",
@@ -297,7 +298,7 @@ async function scrapeItem(item) {
     const source = item.source && item.source !== "Google News" ? item.source :
       (host === "kenyanews.go.ke" ? "Kenya News Agency" : host.replace(/\.(co\.ke|go\.ke|org|com|int)$/i, "").replace(/^./, c => c.toUpperCase()));
     return {
-      id: Buffer.from(finalUrl.href).toString("base64url").slice(0, 32),
+      id: createHash("sha256").update(finalUrl.href).digest("hex").slice(0, 24),
       title: title.slice(0, 240), summary, fullText, source, url: finalUrl.href,
       image: usableArticleImage(parsed.image, finalUrl.href, "article image") || usableArticleImage(item.image, finalUrl.href, "feed thumbnail"), videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
       category: classify(title + " " + summary + " " + fullText.slice(0, 1200)),
