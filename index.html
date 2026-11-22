@@ -30,6 +30,16 @@
       </section>
     </main>
   </div>
+  <script>
+    // If the app's JavaScript bundle cannot load, show a useful message instead
+    // of leaving the startup screen indefinitely.
+    window.setTimeout(function () {
+      var root = document.getElementById('root');
+      if (root && root.querySelector('.startup')) {
+        root.innerHTML = '<main class="startup"><section class="startup-card"><h1 class="startup-title">ShambaVet could not start</h1><p class="startup-copy">The application bundle did not load within 15 seconds. Reload this page. If the problem continues, send the administrator a screenshot of the browser Network tab showing failed JavaScript or CSS requests.</p><button type="button" onclick="window.location.reload()" style="margin-top:18px;padding:11px 18px;border:0;border-radius:9px;background:#188344;color:#fff;font-weight:700;cursor:pointer">Reload ShambaVet</button></section></main>';
+      }
+    }, 15000);
+  </script>
   <script async src="https://applet.payherokenya.com/cdn/button_sdk.js"></script>
   <script type="module" src="/src/main.jsx"></script>
 </body>
