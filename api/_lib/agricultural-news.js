@@ -94,24 +94,71 @@ function classify(text = "") {
   if (/crop|maize|wheat|rice|potato|seed|fertili|horticulture|farming/.test(t)) return "Crops";
   return "Agriculture";
 }
+function extractWords(text, limit = 400) {
+  const words = String(text || "").trim().split(/\s+/).filter(Boolean);
+  return words.slice(0, limit).join(" ");
+}
+function firstImage(html, area, baseUrl) {
+  const fromMeta = meta(html, "og:image") || meta(html, "og:image:url") || meta(html, "twitter:image");
+  const candidates = [];
+  if (fromMeta) candidates.push(fromMeta);
+  const imgTags = [...area.matchAll(/<(?:img|source)\b[^>]*>/gi)].map(m => m[0]);
+  for (const tag of imgTags) {
+    const srcset = tag.match(/(?:srcset|data-srcset)=["']([^"']+)["']/i)?.[1];
+    if (srcset) candidates.push(srcset.split(",").pop().trim().split(/\s+/)[0]);
+    const src = tag.match(/(?:data-lazy-src|data-original|data-src|src)=["']([^"']+)["']/i)?.[1];
+    if (src) candidates.push(src);
+  }
+  for (const candidate of candidates) {
+    try {
+      const url = new URL(candidate, baseUrl);
+      if (/^https?:$/.test(url.protocol) && !/data:image/i.test(candidate)) return url.href;
+    } catch {}
+  }
+  return "";
+}
+function structuredMedia(html, baseUrl) {
+  const scripts = [...html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+  let image = "", video = "";
+  const visit = value => {
+    if (!value || typeof value !== "object") return;
+    if (Array.isArray(value)) return value.forEach(visit);
+    if (!image && value.image) {
+      const img = typeof value.image === "string" ? value.image : value.image.url || value.image.contentUrl;
+      if (img) image = img;
+    }
+    if (!video && value.video) {
+      const v = Array.isArray(value.video) ? value.video[0] : value.video;
+      video = typeof v === "string" ? v : v.contentUrl || v.embedUrl || v.url || "";
+    }
+    if (!video && (value["@type"] === "VideoObject" || String(value["@type"] || "").includes("Video"))) {
+      video = value.contentUrl || value.embedUrl || value.url || "";
+    }
+    Object.values(value).forEach(visit);
+  };
+  for (const match of scripts) { try { visit(JSON.parse(match[1])); } catch {} }
+  const absolute = value => { try { return value ? new URL(value, baseUrl).href : ""; } catch { return ""; } };
+  return { image: absolute(image), videoUrl: absolute(video) };
+}
 function readArticle(html, baseUrl) {
   let area = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1]
     || html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1]
     || html.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1] || html;
   area = area.replace(/<(script|style|noscript|svg|nav|header|footer|aside|form|button)\b[\s\S]*?<\/\1>/gi, " ");
-  area = area.replace(/<(figure|figcaption|picture)\b[^>]*>/gi, " ").replace(/<\/\s*(p|div|h[1-6]|li|blockquote|section)\s*>/gi, "\n");
+  area = area.replace(/<\/(?:p|div|h[1-6]|li|blockquote|section)\s*>/gi, "\n");
   const paragraphs = area.split(/\n+/).map(cleanText).filter(p => p.length > 35);
   const unique = [...new Set(paragraphs)];
-  const fullText = unique.join("\n\n").slice(0, 24000);
-  const image = meta(html, "og:image") || meta(html, "twitter:image") ||
-    (area.match(/<(?:img|source)[^>]+(?:src|data-src)=["']([^"']+)["']/i)?.[1] || "");
+  const fullText = extractWords(unique.join("\n\n"), 400);
+  const media = structuredMedia(html, baseUrl);
+  const image = meta(html, "og:image") || meta(html, "twitter:image") || media.image || firstImage(html, area, baseUrl);
   const video = meta(html, "og:video:secure_url") || meta(html, "og:video") ||
-    area.match(/<(?:video|source)[^>]+src=["']([^"']+)["']/i)?.[1] ||
+    media.videoUrl ||
+    area.match(/<(?:video|source)[^>]+(?:src|data-src)=["']([^"']+)["']/i)?.[1] ||
     area.match(/<iframe[^>]+src=["']([^"']*(?:youtube|youtu\.be|vimeo)[^"']*)["']/i)?.[1] || "";
   const title = meta(html, "og:title") || cleanText(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "");
   const description = meta(html, "og:description") || meta(html, "description");
   const published = meta(html, "article:published_time") || meta(html, "date");
-  const absolute = (value) => { try { return value ? new URL(value, baseUrl).href : ""; } catch { return ""; } };
+  const absolute = value => { try { return value ? new URL(value, baseUrl).href : ""; } catch { return ""; } };
   return { fullText, image: absolute(image), videoUrl: absolute(video), pageTitle: title, description, published };
 }
 async function scrapeItem(item) {
@@ -126,8 +173,8 @@ async function scrapeItem(item) {
     const parsed = readArticle(page.text, finalUrl.href);
     const title = item.title || parsed.pageTitle;
     if (!title) return null;
-    const fullText = parsed.fullText.length >= 250 ? parsed.fullText : (item.summary || parsed.description || "");
-    const summary = (item.summary || parsed.description || fullText).slice(0, 420);
+    const fullText = extractWords(parsed.fullText.length >= 80 ? parsed.fullText : (item.summary || parsed.description || ""), 400);
+    const summary = extractWords(item.summary || parsed.description || fullText, 55);
     const publishedAt = item.publishedAt || parsed.published || null;
     const words = fullText.split(/\s+/).filter(Boolean).length;
     const host = finalUrl.hostname.replace(/^www\./, "");
@@ -136,7 +183,7 @@ async function scrapeItem(item) {
     return {
       id: Buffer.from(finalUrl.href).toString("base64url").slice(0, 32),
       title: title.slice(0, 240), summary, fullText, source, url: finalUrl.href,
-      image: parsed.image, videoUrl: parsed.videoUrl, publishedAt,
+      image: parsed.image || item.image || "", videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
       category: classify(title + " " + summary + " " + fullText.slice(0, 1200)),
       readMinutes: Math.max(1, Math.ceil(words / 220))
     };
