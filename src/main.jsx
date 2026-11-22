@@ -48,7 +48,7 @@ function AgriculturalNewsPage({authUser}){
  const categories=['All','Crops','Livestock','Dairy','Poultry','Markets','Weather & climate','Research & policy'];
  const filtered=articles.filter(a=>(category==='All'||(a.category||'').toLowerCase()===category.toLowerCase())&&((a.title||'')+' '+(a.summary||'')+' '+(a.fullText||'')+' '+(sourceVisible?(a.source||'') : '')).toLowerCase().includes(search.toLowerCase()));
  const videoEmbed=url=>{if(!url)return '';try{const u=new URL(url);if(u.hostname.includes('youtube.com'))return 'https://www.youtube.com/embed/'+(u.searchParams.get('v')||u.pathname.split('/').filter(Boolean).pop());if(u.hostname==='youtu.be')return 'https://www.youtube.com/embed/'+u.pathname.slice(1);if(u.hostname.includes('vimeo.com'))return 'https://player.vimeo.com/video/'+u.pathname.split('/').filter(Boolean).pop();return url}catch{return url}};
- const readableText=a=>String(a.fullText||a.summary||'The publisher has not made a readable article description available.').replace(/&nbsp;|&#160;/gi,' ').replace(/\s+/g,' ').trim();
+ const readableText=a=>String(a.fullText||a.summary||'The publisher has not made a readable article description available.').replace(/&nbsp;|&#160;/gi,' ').replace(/[ \t]+/g,' ').trim();
  const wordCount=a=>readableText(a).split(/\s+/).filter(Boolean).length;
  const excerpt=a=>{const words=readableText(a).split(/\s+/);return words.slice(0,100).join(' ')+(words.length>100?'…':'')};
  return <section className="agriNewsPage">
