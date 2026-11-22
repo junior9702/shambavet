@@ -153,7 +153,8 @@ function readArticle(html, baseUrl) {
   const unique = [...new Set(paragraphs)];
   const fullText = extractWords(unique.join("\n\n"), 900);
   const media = structuredMedia(html, baseUrl);
-  const imageCandidates = [meta(html, "og:image"), meta(html, "twitter:image"), media.image, firstImage(html, area, baseUrl)].filter(Boolean);\n  const image = imageCandidates.find(value => !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar|logo\\.(png|svg))/i.test(value)) || "";
+  const imageCandidates = [meta(html, "og:image"), meta(html, "twitter:image"), media.image, firstImage(html, area, baseUrl)].filter(Boolean);
+  const image = imageCandidates.find(value => !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar|logo\.(png|svg))/i.test(value)) || "";
   const video = meta(html, "og:video:secure_url") || meta(html, "og:video") ||
     media.videoUrl ||
     area.match(/<(?:video|source)[^>]+(?:src|data-src)=["']([^"']+)["']/i)?.[1] ||
