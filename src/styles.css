@@ -635,3 +635,16 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .agriNewsSourceLink{display:inline-flex;align-items:center;gap:4px;color:#177541;text-decoration:none;font-size:10px;font-weight:800;margin-left:auto}
 .agriNewsSourceLink:hover{text-decoration:underline}
 @media(max-width:480px){.agriNewsSourceLink{margin-left:0}}
+
+
+/* Live career ticker: latest approved opportunities, with a branded empty-state fallback */
+.jobsTicker{display:flex;align-items:center;gap:0;min-height:48px;margin:0 0 18px;overflow:hidden;border:1px solid #dce9df;border-radius:13px;background:#fff;box-shadow:0 5px 18px rgba(20,60,35,.05)}
+.jobsTickerLabel{position:relative;z-index:1;align-self:stretch;display:flex;align-items:center;flex:none;padding:0 16px;background:#123f2c;color:#f5d36d;font-size:10px;font-weight:900;letter-spacing:.11em;white-space:nowrap}
+.jobsTickerViewport{min-width:0;flex:1;overflow:hidden;mask-image:linear-gradient(90deg,transparent 0,#000 3%,#000 97%,transparent 100%)}
+.jobsTickerTrack{display:flex;width:max-content;animation:shambavetJobsTicker 42s linear infinite}
+.jobsTicker:hover .jobsTickerTrack,.jobsTicker:focus-within .jobsTickerTrack{animation-play-state:paused}
+.jobsTickerGroup{display:flex;align-items:center;flex:none;min-width:max-content}
+.jobsTickerItem{display:inline-flex;align-items:center;gap:18px;padding:0 22px;color:#28553c;font-size:12px;font-weight:800;letter-spacing:.035em;white-space:nowrap}
+.jobsTickerItem i{color:#c49b32;font-style:normal;font-size:12px}
+@keyframes shambavetJobsTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.jobsTickerTrack{animation:none}.jobsTickerViewport{overflow-x:auto;mask-image:none}}
