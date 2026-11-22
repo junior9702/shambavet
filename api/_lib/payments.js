@@ -74,7 +74,7 @@ export async function finalizeConfirmedPayment(externalReference, verifiedTransa
     } else {
       const previousExpiry = Number(jobSubscription?.expiresAt || 0);
       const startsAt = previousExpiry > now ? previousExpiry : now;
-      const expiresAt = addMonths(startsAt, jobPlan.months);
+      const expiresAt = jobPlan.months === 1 ? startsAt + 30 * 24 * 60 * 60 * 1000 : addMonths(startsAt, jobPlan.months);
       tx.set(jobSubscriptionPath, {
         ownerUid: payment.ownerUid,
         audience: jobPlan.audience,
