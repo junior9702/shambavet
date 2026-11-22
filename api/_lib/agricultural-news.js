@@ -418,18 +418,33 @@ export async function getAgriculturalNews(req, res) {
   try {
     const feedResults = await Promise.all(FEEDS.map(getFeedItems));
     const seen = new Set(), items = [];
-    for (const item of feedResults.flat()) {
-      try {
-        const key = new URL(item.url).href.split("#")[0];
-        if (!seen.has(key) && allowedHost(new URL(key).hostname)) { seen.add(key); items.push({ ...item, url: key }); }
-      } catch {}
+    // Interleave feed results so one publisher cannot dominate the first page.
+    const maxFeedItems = Math.max(0, ...feedResults.map(feed => feed.length));
+    for (let index = 0; index < maxFeedItems; index++) {
+      for (const feed of feedResults) {
+        const item = feed[index];
+        if (!item) continue;
+        try {
+          const key = new URL(item.url).href.split("#")[0];
+          if (!seen.has(key) && allowedHost(new URL(key).hostname)) { seen.add(key); items.push({ ...item, url: key }); }
+        } catch {}
+      }
     }
-    const selected = items.slice(0, 20);
+    const selected = items.slice(0, 32);
     const scraped = [];
     for (let i = 0; i < selected.length; i += 8) scraped.push(...await Promise.all(selected.slice(i, i + 8).map(scrapeItem)));
     const articles = scraped.filter(Boolean).sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
-    const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size };
-    globalThis.__shambavetAgriculturalNews = { version: 6, time: Date.now(), data };
+    const seenImages = new Set();
+    for (const article of articles) {
+      if (article.image && seenImages.has(article.image)) article.image = "";
+      else if (article.image) seenImages.add(article.image);
+    }
+    const data = {
+      ok: true, articles, fetchedAt: new Date().toISOString(),
+      sourceCount: new Set(articles.map(a => a.source)).size,
+      diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length }
+    };
+    globalThis.__shambavetAgriculturalNews = { version: 7, time: Date.now(), data };
     return res.status(200).json({ ...data, articles: articles.map(a => publicArticle(a, isAdmin)), sourceVisibility: isAdmin ? "admin" : "restricted" });
   } catch (error) {
     return res.status(502).json({ error: "The agricultural news sources could not be reached. Please try again shortly." });
