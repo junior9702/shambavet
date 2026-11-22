@@ -10,7 +10,15 @@ const FEEDS = [
   "https://news.google.com/rss/search?q=East+Africa+agriculture+farmers+livestock&hl=en-KE&gl=KE&ceid=KE:en",
   "https://news.google.com/rss/search?q=Kenya+crops+maize+horticulture+farmers&hl=en-KE&gl=KE&ceid=KE:en",
   "https://news.google.com/rss/search?q=Kenya+poultry+dairy+livestock+markets&hl=en-KE&gl=KE&ceid=KE:en",
-  "https://news.google.com/rss/search?q=Kenya+agricultural+research+climate+irrigation&hl=en-KE&gl=KE&ceid=KE:en"
+  "https://news.google.com/rss/search?q=Kenya+agricultural+research+climate+irrigation&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+maize+wheat+rice+beans+crop+farmers&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+dairy+milk+farmers+cooperatives&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+livestock+cattle+goats+animal+health&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+poultry+chicken+eggs+farmers&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+agricultural+commodity+prices+markets+exports&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+weather+rainfall+drought+climate+farmers&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Kenya+agricultural+policy+KALRO+research+extension&hl=en-KE&gl=KE&ceid=KE:en",
+  "https://news.google.com/rss/search?q=Africa+agriculture+food+security+farming+innovation&hl=en-KE&gl=KE&ceid=KE:en"
 ];
 
 const ALLOWED_HOSTS = [
@@ -215,7 +223,7 @@ async function resolveGoogleNewsUrl(value) {
   const articleId = parsed.pathname.split("/").filter(Boolean).pop();
   if (!articleId) return "";
   try {
-    const page = await fetchText(value, 5000);
+    const page = await fetchText(value, 2500);
     const redirected = new URL(page.url);
     if (redirected.hostname !== "news.google.com" && allowedHost(redirected.hostname) && redirected.protocol === "https:") return redirected.href;
     const signature = page.text.match(/data-n-a-sg=["']([^"']+)["']/i)?.[1];
@@ -265,18 +273,24 @@ async function scrapeItem(item) {
   if (!allowedHost(target.hostname)) return null;
   if (!(await robotsAllows(target.href))) return null;
   try {
-    const page = await fetchText(target.href, 7000);
+    const page = await fetchText(target.href, 4500);
     const finalUrl = new URL(page.url);
     if (!allowedHost(finalUrl.hostname) || !(await robotsAllows(finalUrl.href))) return null;
     const parsed = readArticle(page.text, finalUrl.href);
     const title = item.title || parsed.pageTitle;
     if (!title) return null;
-    const candidateText = parsed.fullText || "";
+    const extractedText = parsed.fullText || "";
+    const feedSummary = cleanText(item.summary || "");
+    // Some publishers expose a useful RSS description but block their full page.
+    // Keep those verified feed summaries rather than dropping the story entirely.
+    const candidateText = extractedText.split(/\s+/).filter(Boolean).length >= 35
+      ? extractedText
+      : feedSummary.split(/\s+/).filter(Boolean).length >= 30 ? feedSummary : "";
     const boilerplate = /the standard group plc|download our app|telephone number:|corporate@standardmedia|all rights reserved|the standard group center/i.test(candidateText);
-    if (boilerplate || candidateText.split(/\s+/).filter(Boolean).length < 35) return null;
+    if (boilerplate || candidateText.split(/\s+/).filter(Boolean).length < 30) return null;
     const fullText = extractWords(candidateText, 900);
     const summary = extractWords(fullText || parsed.description, 55);
-    if (!fullText || fullText.split(/\s+/).filter(Boolean).length < 35) return null;
+    if (!fullText || fullText.split(/\s+/).filter(Boolean).length < 30) return null;
     const publishedAt = item.publishedAt || parsed.published || null;
     const words = fullText.split(/\s+/).filter(Boolean).length;
     const host = finalUrl.hostname.replace(/^www\./, "");
@@ -326,7 +340,7 @@ export async function getAgriculturalNews(req, res) {
   const stream = req.query?.stream === "1";
   const isAdmin = req.newsAdmin === true;
   const cached = globalThis.__shambavetAgriculturalNews;
-  const cacheIsCurrent = cached?.version === 6;
+  const cacheIsCurrent = cached?.version === 7;
   res.setHeader("Cache-Control", "private, no-store");
   if (stream) {
     res.setHeader("Content-Type", "application/x-ndjson; charset=utf-8");
@@ -359,13 +373,13 @@ export async function getAgriculturalNews(req, res) {
           } catch {}
         }
       }
-      const selected = items.slice(0, 20);
+      const selected = items.slice(0, 32);
       sendEvent(res, { type: "progress", message: selected.length ? "Stories found. Extracting articles and media…" : "No new stories were found in the available feeds.", completed: 0, total: selected.length });
       const articles = [];
       let checkedStories = 0;
       // Bounded concurrency keeps feed extraction fast without flooding publishers.
       let nextIndex = 0;
-      const workers = Array.from({ length: Math.min(5, selected.length) }, async () => {
+      const workers = Array.from({ length: Math.min(8, selected.length) }, async () => {
         while (nextIndex < selected.length) {
           const item = selected[nextIndex++];
           const article = await scrapeItem(item);
@@ -387,7 +401,7 @@ export async function getAgriculturalNews(req, res) {
       }
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
       const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size, diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length } };
-      globalThis.__shambavetAgriculturalNews = { version: 6, time: Date.now(), data };
+      globalThis.__shambavetAgriculturalNews = { version: 7, time: Date.now(), data };
       sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
       return res.end();
     } catch (error) {
@@ -395,7 +409,7 @@ export async function getAgriculturalNews(req, res) {
       return res.end();
     }
   }
-  if (!force && cached && Date.now() - cached.time < 10 * 60 * 1000) {
+  if (!force && cached?.version === 7 && Date.now() - cached.time < 10 * 60 * 1000) {
     return res.status(200).json({ ...cached.data, articles: cached.data.articles.map(a => publicArticle(a, isAdmin)), sourceVisibility: isAdmin ? "admin" : "restricted", cached: true });
   }
   try {
@@ -409,7 +423,7 @@ export async function getAgriculturalNews(req, res) {
     }
     const selected = items.slice(0, 20);
     const scraped = [];
-    for (let i = 0; i < selected.length; i += 5) scraped.push(...await Promise.all(selected.slice(i, i + 5).map(scrapeItem)));
+    for (let i = 0; i < selected.length; i += 8) scraped.push(...await Promise.all(selected.slice(i, i + 8).map(scrapeItem)));
     const articles = scraped.filter(Boolean).sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
     const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size };
     globalThis.__shambavetAgriculturalNews = { version: 6, time: Date.now(), data };
