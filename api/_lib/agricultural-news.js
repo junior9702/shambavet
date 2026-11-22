@@ -330,10 +330,11 @@ async function getFeedItems(url) {
   } catch { return []; }
 }
 function publicArticle(article, isAdmin) {
-  // Publisher attribution and the original article URL are public metadata.
-  // Keep the full extracted content identical for all readers, while admin
-  // authorization remains enforced for moderation and platform controls.
-  return article;
+  // Only enabled developer administrators may inspect publisher identities
+  // and original source URLs. Public readers receive the article content only.
+  if (isAdmin) return article;
+  const { source, url, ...publicFields } = article;
+  return publicFields;
 }
 function sendEvent(res, payload) {
   res.write(JSON.stringify(payload) + "\n");
@@ -356,7 +357,7 @@ export async function getAgriculturalNews(req, res) {
         for (let i = 0; i < cached.data.articles.length; i += 4) {
           sendEvent(res, { type: "articles", articles: cached.data.articles.slice(i, i + 4).map(a => publicArticle(a, isAdmin)), cached: true });
         }
-        sendEvent(res, { type: "done", fetchedAt: cached.data.fetchedAt, sourceCount: cached.data.sourceCount, diagnostics: cached.data.diagnostics, sourceVisibility: isAdmin ? "admin" : "restricted" });
+        sendEvent(res, { type: "done", fetchedAt: cached.data.fetchedAt, sourceCount: cached.data.sourceCount, diagnostics: isAdmin ? cached.data.diagnostics : { articlesExtracted: cached.data.diagnostics?.articlesExtracted || 0 }, sourceVisibility: isAdmin ? "admin" : "restricted" });
         return res.end();
       }
       sendEvent(res, { type: "progress", message: "Connecting to agricultural news feeds…", completed: 0, total: FEEDS.length });
@@ -406,7 +407,7 @@ export async function getAgriculturalNews(req, res) {
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
       const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size, diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length } };
       globalThis.__shambavetAgriculturalNews = { version: 7, time: Date.now(), data };
-      sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, diagnostics: data.diagnostics, sourceVisibility: isAdmin ? "admin" : "restricted" });
+      sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, diagnostics: isAdmin ? data.diagnostics : { articlesExtracted: data.diagnostics.articlesExtracted }, sourceVisibility: isAdmin ? "admin" : "restricted" });
       return res.end();
     } catch (error) {
       sendEvent(res, { type: "error", error: "The agricultural news sources could not be reached. Please try again shortly." });
