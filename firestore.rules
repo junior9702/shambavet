@@ -512,10 +512,34 @@ service cloud.firestore {
     // 30. JOBS AND CAREERS
     // =====================================================
 
+    function activeJobEmployer() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/jobAdvertiserSubscriptions/$(request.auth.uid))
+        && get(/databases/$(database)/documents/jobAdvertiserSubscriptions/$(request.auth.uid)).data.active == true
+        && get(/databases/$(database)/documents/jobAdvertiserSubscriptions/$(request.auth.uid)).data.expiresAt > request.time.toMillis();
+    }
+
+    function activeJobSeeker() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/jobSeekerSubscriptions/$(request.auth.uid))
+        && get(/databases/$(database)/documents/jobSeekerSubscriptions/$(request.auth.uid)).data.active == true
+        && get(/databases/$(database)/documents/jobSeekerSubscriptions/$(request.auth.uid)).data.expiresAt > request.time.toMillis();
+    }
+
+    match /jobAdvertiserSubscriptions/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow write: if false;
+    }
+
+    match /jobSeekerSubscriptions/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow write: if false;
+    }
+
     match /jobListings/{id} {
-      // Employers can only submit their own adverts for moderation.
-      // Do not let a client create an already-approved or administrator-reviewed advert.
-      allow create: if signedIn()
+      // Publishing requires a server-verified, currently active employer plan.
+      // Private fields are delivered only by the authenticated jobs-unlocked API.
+      allow create: if activeJobEmployer()
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.status == 'pending'
         && request.resource.data.title is string
@@ -553,7 +577,7 @@ service cloud.firestore {
       // or rejected adverts; developers can inspect and moderate every advert.
       allow read: if isAdmin()
         || (signedIn() && resource.data.ownerUid == request.auth.uid)
-        || resource.data.status == 'approved';
+        || (activeJobSeeker() && resource.data.status == 'approved');
 
       // Only enabled developer administrators may approve, reject or edit adverts.
       allow update: if isAdmin();
