@@ -630,3 +630,8 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .agriNewsShortNotice{padding:12px;border-radius:10px;background:#f7faf7;color:#718078;font-size:12px;line-height:1.6}
 @media(max-width:760px){.agriNewsToolbar{display:grid;grid-template-columns:1fr auto}.agriNewsSearch{grid-column:1/-1}.agriNewsSort{justify-content:space-between}.agriNewsToolbar>.primary{min-height:46px}.agriNewsCategories{padding-bottom:12px}.agriNewsCardActions{gap:8px}.agriNewsCardActions .primary{flex:1;justify-content:center}}
 @media(max-width:420px){.agriNewsToolbar{grid-template-columns:1fr}.agriNewsSearch{grid-column:auto}.agriNewsSort{width:100%}.agriNewsToolbar>.primary{width:100%}.agriNewsCardActions .primary{flex:1}}
+
+.agriNewsPublisher{margin-top:8px;color:#708176;font-size:10px;font-weight:700}
+.agriNewsSourceLink{display:inline-flex;align-items:center;gap:4px;color:#177541;text-decoration:none;font-size:10px;font-weight:800;margin-left:auto}
+.agriNewsSourceLink:hover{text-decoration:underline}
+@media(max-width:480px){.agriNewsSourceLink{margin-left:0}}
