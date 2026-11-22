@@ -330,11 +330,14 @@ async function getFeedItems(url) {
   } catch { return []; }
 }
 function publicArticle(article, isAdmin) {
-  // Only enabled developer administrators may inspect publisher identities
-  // and original source URLs. Public readers receive the article content only.
+  // The server is the security boundary: public responses use an explicit
+  // allowlist so new publisher/source metadata cannot leak by accident.
   if (isAdmin) return article;
-  const { source, url, ...publicFields } = article;
-  return publicFields;
+  const {
+    id, title, summary, fullText, image, videoUrl,
+    publishedAt, category, readMinutes
+  } = article;
+  return { id, title, summary, fullText, image, videoUrl, publishedAt, category, readMinutes };
 }
 function sendEvent(res, payload) {
   res.write(JSON.stringify(payload) + "\n");
@@ -357,7 +360,7 @@ export async function getAgriculturalNews(req, res) {
         for (let i = 0; i < cached.data.articles.length; i += 4) {
           sendEvent(res, { type: "articles", articles: cached.data.articles.slice(i, i + 4).map(a => publicArticle(a, isAdmin)), cached: true });
         }
-        sendEvent(res, { type: "done", fetchedAt: cached.data.fetchedAt, sourceCount: cached.data.sourceCount, diagnostics: isAdmin ? cached.data.diagnostics : { articlesExtracted: cached.data.diagnostics?.articlesExtracted || 0 }, sourceVisibility: isAdmin ? "admin" : "restricted" });
+        sendEvent(res, { type: "done", fetchedAt: cached.data.fetchedAt, ...(isAdmin ? { sourceCount: cached.data.sourceCount } : {}), diagnostics: isAdmin ? cached.data.diagnostics : { articlesExtracted: cached.data.diagnostics?.articlesExtracted || 0 }, sourceVisibility: isAdmin ? "admin" : "restricted" });
         return res.end();
       }
       sendEvent(res, { type: "progress", message: "Connecting to agricultural news feeds…", completed: 0, total: FEEDS.length });
@@ -407,7 +410,7 @@ export async function getAgriculturalNews(req, res) {
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
       const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size, diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length } };
       globalThis.__shambavetAgriculturalNews = { version: 7, time: Date.now(), data };
-      sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, diagnostics: isAdmin ? data.diagnostics : { articlesExtracted: data.diagnostics.articlesExtracted }, sourceVisibility: isAdmin ? "admin" : "restricted" });
+      sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, ...(isAdmin ? { sourceCount: data.sourceCount } : {}), diagnostics: isAdmin ? data.diagnostics : { articlesExtracted: data.diagnostics.articlesExtracted }, sourceVisibility: isAdmin ? "admin" : "restricted" });
       return res.end();
     } catch (error) {
       sendEvent(res, { type: "error", error: "The agricultural news sources could not be reached. Please try again shortly." });
@@ -415,7 +418,8 @@ export async function getAgriculturalNews(req, res) {
     }
   }
   if (!force && cached?.version === 7 && Date.now() - cached.time < 10 * 60 * 1000) {
-    return res.status(200).json({ ...cached.data, articles: cached.data.articles.map(a => publicArticle(a, isAdmin)), sourceVisibility: isAdmin ? "admin" : "restricted", cached: true });
+    const { sourceCount, ...publicData } = cached.data;
+    return res.status(200).json({ ...(isAdmin ? cached.data : publicData), articles: cached.data.articles.map(a => publicArticle(a, isAdmin)), sourceVisibility: isAdmin ? "admin" : "restricted", cached: true });
   }
   try {
     const feedResults = await Promise.all(FEEDS.map(getFeedItems));
@@ -447,7 +451,8 @@ export async function getAgriculturalNews(req, res) {
       diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length }
     };
     globalThis.__shambavetAgriculturalNews = { version: 7, time: Date.now(), data };
-    return res.status(200).json({ ...data, articles: articles.map(a => publicArticle(a, isAdmin)), sourceVisibility: isAdmin ? "admin" : "restricted" });
+    const { sourceCount, ...publicData } = data;
+    return res.status(200).json({ ...(isAdmin ? data : publicData), articles: articles.map(a => publicArticle(a, isAdmin)), sourceVisibility: isAdmin ? "admin" : "restricted" });
   } catch (error) {
     return res.status(502).json({ error: "The agricultural news sources could not be reached. Please try again shortly." });
   }
