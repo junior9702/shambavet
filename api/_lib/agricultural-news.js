@@ -215,7 +215,7 @@ export async function getAgriculturalNews(req, res) {
   const force = req.query?.refresh === "1";
   const cached = globalThis.__shambavetAgriculturalNews;
   if (!force && cached && Date.now() - cached.time < 10 * 60 * 1000) {
-    res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+    res.setHeader("Cache-Control", "private, no-store");
     return res.status(200).json({ ...cached.data, cached: true });
   }
   try {
@@ -235,7 +235,7 @@ export async function getAgriculturalNews(req, res) {
     });
     const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size };
     globalThis.__shambavetAgriculturalNews = { time: Date.now(), data };
-    res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+    res.setHeader("Cache-Control", "private, no-store");
     return res.status(200).json(data);
   } catch (error) {
     return res.status(502).json({ error: "The agricultural news sources could not be reached. Please try again shortly." });
