@@ -604,3 +604,29 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .agriNewsOriginal a{display:flex;align-items:center;gap:6px;color:#177541;font-weight:800;text-decoration:none}
 @media(max-width:950px){.agriNewsGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.agriNewsHero{grid-template-columns:1fr 260px}}
 @media(max-width:680px){.agriNewsPage{padding:15px 12px 38px}.agriNewsHero{grid-template-columns:1fr;padding:23px 20px;gap:18px}.agriNewsHeroArt{min-height:125px}.agriNewsHeroArt>span{font-size:38px}.agriNewsToolbar{align-items:stretch;flex-direction:column}.agriNewsToolbar>.primary{justify-content:center}.agriNewsGrid{grid-template-columns:1fr}.agriNewsImage{height:205px}.agriNewsModalBackdrop{padding:8px}.agriNewsModalContent{padding:23px 19px 27px}.agriNewsModalImage{height:220px}.agriNewsFullText{font-size:14px}}
+
+/* Agricultural news discovery, saved stories and reading controls */
+.agriNewsSort{display:flex;align-items:center;gap:8px;min-height:46px;padding:0 12px;border:1px solid #d9e5dc;border-radius:12px;background:#fff;color:#607467;font-size:12px;font-weight:700}
+.agriNewsSort select{border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;color:#244b34!important;padding:10px 2px!important;margin:0!important;min-width:112px;font-weight:700}
+.agriNewsCategories button{display:flex;align-items:center;gap:7px}
+.agriNewsCategories button span{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#f0f4f0;color:#617367;font-size:10px}
+.agriNewsCategories button.selected span{background:#d1ead6;color:#17683a}
+.agriNewsStatus{margin:3px 0 14px;padding:10px 13px;border:1px solid #dceadd;border-radius:10px;background:#f5faf5;color:#386348;font-size:12px}
+.agriNewsNotice{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.agriNewsNotice button{border:1px solid #b7d3bd;border-radius:8px;background:#fff;color:#17683a;padding:7px 11px;font-weight:800;cursor:pointer}
+.agriNewsResultCount{margin:8px 0 14px;color:#718078;font-size:12px}
+.agriNewsResultCount b{color:#1d6840;font-size:16px}
+.agriNewsIconAction{width:36px;height:36px;display:grid;place-items:center;border:1px solid #dce7de;border-radius:10px;background:#fff;color:#597064;cursor:pointer}
+.agriNewsIconAction:hover,.agriNewsIconAction.isSaved{border-color:#a8d4b2;background:#eaf6ed;color:#17683a}
+.agriNewsLoadMore{display:flex;justify-content:center;padding:25px 0 5px}
+.agriNewsLoadMore button{border:1px solid #b9d7c0;border-radius:12px;background:#f3faf4;color:#17683a;padding:12px 20px;font-weight:800;cursor:pointer}
+.agriNewsLoadMore button span{font-size:11px;font-weight:600;color:#6b8372}
+.agriNewsImage.imageUnavailable{background:linear-gradient(135deg,#eaf4e9,#d9e9d9)}
+.agriNewsImage.imageUnavailable:after{content:"🌾  ShambaVet agriculture news";color:#52715c;font-size:13px;font-weight:800}
+.agriNewsImage.imageUnavailable img{display:none}
+.agriNewsModalActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:20px;margin-top:20px;border-top:1px solid #e5ece6}
+.agriNewsModalActions>button{border:1px solid #d6e3d9;border-radius:9px;background:#fff;color:#315b40;padding:10px 13px;font-size:12px;font-weight:800;cursor:pointer}
+.agriNewsModalActions>a{display:flex;align-items:center;gap:5px;color:#177541;font-size:12px;font-weight:800;text-decoration:none}
+.agriNewsShortNotice{padding:12px;border-radius:10px;background:#f7faf7;color:#718078;font-size:12px;line-height:1.6}
+@media(max-width:760px){.agriNewsToolbar{display:grid;grid-template-columns:1fr auto}.agriNewsSearch{grid-column:1/-1}.agriNewsSort{justify-content:space-between}.agriNewsToolbar>.primary{min-height:46px}.agriNewsCategories{padding-bottom:12px}.agriNewsCardActions{gap:8px}.agriNewsCardActions .primary{flex:1;justify-content:center}}
+@media(max-width:420px){.agriNewsToolbar{grid-template-columns:1fr}.agriNewsSearch{grid-column:auto}.agriNewsSort{width:100%}.agriNewsToolbar>.primary{width:100%}.agriNewsCardActions .primary{flex:1}}
