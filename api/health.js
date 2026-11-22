@@ -28,7 +28,8 @@ export default async function handler(req, res) {
       }
       return originalJson({ ...payload, sourceVisibility: "admin" });
     };
-    req.newsAdmin = isDeveloperAdmin;\n    return getAgriculturalNews(req, res);
+    req.newsAdmin = isDeveloperAdmin;
+    return getAgriculturalNews(req, res);
   }
   return res.status(200).json({
     ok: true,
