@@ -315,7 +315,7 @@ export async function getAgriculturalNews(req, res) {
   const stream = req.query?.stream === "1";
   const isAdmin = req.newsAdmin === true;
   const cached = globalThis.__shambavetAgriculturalNews;
-  const cacheIsCurrent = cached?.version === 4;
+  const cacheIsCurrent = cached?.version === 5;
   res.setHeader("Cache-Control", "private, no-store");
   if (stream) {
     res.setHeader("Content-Type", "application/x-ndjson; charset=utf-8");
@@ -351,12 +351,20 @@ export async function getAgriculturalNews(req, res) {
       const selected = items.slice(0, 8);
       sendEvent(res, { type: "progress", message: selected.length ? "Stories found. Extracting articles and media…" : "No new stories were found in the available feeds.", completed: 0, total: selected.length });
       const articles = [];
-      for (let i = 0; i < selected.length; i += 4) {
-        const batch = await Promise.all(selected.slice(i, i + 4).map(scrapeItem));
-        const ready = batch.filter(Boolean);
-        articles.push(...ready);
-        sendEvent(res, { type: "articles", articles: ready.map(a => publicArticle(a, isAdmin)), completed: Math.min(i + 4, selected.length), total: selected.length });
-      }
+      let checkedStories = 0;
+      // Scrape all selected stories concurrently. Sequential batches can consume the
+      // entire Vercel function window when publishers are slow or Google News redirects.
+      await Promise.all(selected.map(async item => {
+        const article = await scrapeItem(item);
+        checkedStories += 1;
+        if (article) articles.push(article);
+        sendEvent(res, {
+          type: "articles",
+          articles: article ? [publicArticle(article, isAdmin)] : [],
+          completed: checkedStories,
+          total: selected.length
+        });
+      }));
       const seenImages = new Set();
       for (const article of articles) {
         if (article.image && seenImages.has(article.image)) article.image = "";
@@ -364,7 +372,7 @@ export async function getAgriculturalNews(req, res) {
       }
       articles.sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0));
       const data = { ok: true, articles, fetchedAt: new Date().toISOString(), sourceCount: new Set(articles.map(a => a.source)).size, diagnostics: { feedsChecked: FEEDS.length, feedEntries: items.length, articlesExtracted: articles.length } };
-      globalThis.__shambavetAgriculturalNews = { version: 4, time: Date.now(), data };
+      globalThis.__shambavetAgriculturalNews = { version: 5, time: Date.now(), data };
       sendEvent(res, { type: "done", fetchedAt: data.fetchedAt, sourceCount: data.sourceCount, sourceVisibility: isAdmin ? "admin" : "restricted" });
       return res.end();
     } catch (error) {
