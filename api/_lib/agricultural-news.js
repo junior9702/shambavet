@@ -24,7 +24,7 @@ function decode(value = "") {
   return String(value)
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'")
-    .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;|&#160;|&#xA0;/gi, " ").replace(/&rsquo;|&#8217;/gi, "’").replace(/&lsquo;|&#8216;/gi, "‘").replace(/&rdquo;|&#8221;/gi, "”").replace(/&ldquo;|&#8220;/gi, "“").replace(/&ndash;|&#8211;/gi, "–").replace(/&mdash;|&#8212;/gi, "—")
     .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
     .replace(/&#x([\da-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)));
 }
@@ -167,13 +167,13 @@ async function scrapeItem(item) {
   if (!allowedHost(target.hostname)) return null;
   if (!(await robotsAllows(target.href))) return null;
   try {
-    const page = await fetchText(target.href, 8500);
+    const page = await fetchText(target.href, 5200);
     const finalUrl = new URL(page.url);
     if (!allowedHost(finalUrl.hostname) || !(await robotsAllows(finalUrl.href))) return null;
     const parsed = readArticle(page.text, finalUrl.href);
     const title = item.title || parsed.pageTitle;
     if (!title) return null;
-    const fullText = extractWords(parsed.fullText.length >= 80 ? parsed.fullText : (item.summary || parsed.description || ""), 400);
+    const fullText = extractWords(parsed.fullText.length >= 80 ? parsed.fullText : [item.summary, parsed.description].filter(Boolean).join(" "), 900);
     const summary = extractWords(item.summary || parsed.description || fullText, 55);
     const publishedAt = item.publishedAt || parsed.published || null;
     const words = fullText.split(/\s+/).filter(Boolean).length;
@@ -183,7 +183,7 @@ async function scrapeItem(item) {
     return {
       id: Buffer.from(finalUrl.href).toString("base64url").slice(0, 32),
       title: title.slice(0, 240), summary, fullText, source, url: finalUrl.href,
-      image: parsed.image || item.image || "", videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
+      image: item.image || parsed.image || "", videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
       category: classify(title + " " + summary + " " + fullText.slice(0, 1200)),
       readMinutes: Math.max(1, Math.ceil(words / 220))
     };
@@ -251,7 +251,7 @@ export async function getAgriculturalNews(req, res) {
           if (!seen.has(key) && allowedHost(new URL(key).hostname)) { seen.add(key); items.push({ ...item, url: key }); }
         } catch {}
       }
-      const selected = items.slice(0, 8);
+      const selected = items.slice(0, 16);
       sendEvent(res, { type: "progress", message: selected.length ? "Stories found. Extracting articles and media…" : "No new stories were found in the available feeds.", completed: 0, total: selected.length });
       const articles = [];
       for (let i = 0; i < selected.length; i += 4) {
