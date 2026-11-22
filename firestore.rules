@@ -372,8 +372,9 @@ service cloud.firestore {
     // =====================================================
 
     match /vetApplications/{id} {
-      allow create: if signedIn()
-        && request.resource.data.fee == 250
+      // The current registration form is intentionally available before account sign-in.
+      // Payment-code verification and approval remain administrator-controlled.
+      allow create: if request.resource.data.fee == 250
         && request.resource.data.status == 'pending'
         && request.resource.data.name is string
         && request.resource.data.phone is string
