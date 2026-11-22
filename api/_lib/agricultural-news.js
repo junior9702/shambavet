@@ -119,7 +119,7 @@ function usableArticleImage(value, baseUrl, hint = "") {
     const url = new URL(value, baseUrl);
     if (!/^https?:$/.test(url.protocol)) return "";
     const probe = (url.pathname + " " + url.search + " " + hint).toLowerCase();
-    if (/(facebook|fb[-_]?icon|twitter|instagram|whatsapp|linkedin|social|share|comment|avatar|author|profile|logo|favicon|sprite|placeholder|default[-_]?image|epaper|app[-_]?store|play-lh\\.googleusercontent|badge|icon|\\.svg(?:$|[?#]))/i.test(probe)) return "";
+    if (/(facebook|fb[-_]?icon|twitter|instagram|whatsapp|linkedin|social|share|comment|avatar|author|profile|logo|favicon|sprite|placeholder|default[-_]?image|epaper|app[-_]?store|play-lh\.googleusercontent|badge|icon|\.svg(?:$|[?#]))/i.test(probe)) return "";
     if (/(1x1|pixel|tracking)/i.test(probe)) return "";
     return url.href;
   } catch { return ""; }
@@ -130,11 +130,11 @@ function firstImage(html, area, baseUrl) {
     const value = meta(html, key);
     if (value) candidates.push({ value, hint: key });
   }
-  const imgTags = [...area.matchAll(/<(?:img|source)\\b[^>]*>/gi)].map(m => m[0]);
+  const imgTags = [...area.matchAll(/<(?:img|source)\b[^>]*>/gi)].map(m => m[0]);
   for (const tag of imgTags) {
     const hint = [tag.match(/alt=["']([^"']*)["']/i)?.[1], tag.match(/(?:class|id)=["']([^"']*)["']/i)?.[1]].filter(Boolean).join(" ");
     const srcset = tag.match(/(?:srcset|data-srcset)=["']([^"']+)["']/i)?.[1];
-    if (srcset) candidates.push({ value: srcset.split(",")[0].trim().split(/\\s+/)[0], hint });
+    if (srcset) candidates.push({ value: srcset.split(",")[0].trim().split(/\s+/)[0], hint });
     const src = tag.match(/(?:data-lazy-src|data-original|data-src|src)=["']([^"']+)["']/i)?.[1];
     if (src) candidates.push({ value: src, hint });
   }
@@ -299,7 +299,7 @@ async function scrapeItem(item) {
     return {
       id: Buffer.from(finalUrl.href).toString("base64url").slice(0, 32),
       title: title.slice(0, 240), summary, fullText, source, url: finalUrl.href,
-      image: [parsed.image, item.image].find(value => value && !/(google(news)?[-_ ]?(logo|icon)|placeholder|default[-_ ]?image|avatar|logo|epaper|play-lh\.googleusercontent)/i.test(value)) || "", videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
+      image: usableArticleImage(parsed.image, finalUrl.href, "article image") || usableArticleImage(item.image, finalUrl.href, "feed thumbnail"), videoUrl: parsed.videoUrl || item.videoUrl || "", publishedAt,
       category: classify(title + " " + summary + " " + fullText.slice(0, 1200)),
       readMinutes: Math.max(1, Math.ceil(words / 220))
     };
