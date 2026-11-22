@@ -1,48 +1,107 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    function signedIn() { return request.auth != null; }
-    function isAdmin() {
-      return signedIn() &&
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true &&
-        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'developer';
+
+    // =====================================================
+    // 1. SHARED SECURITY HELPERS
+    // =====================================================
+
+    function signedIn() {
+      return request.auth != null;
     }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'developer';
+    }
+
+    function ownsDocument() {
+      return signedIn() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    function validText(value, maxLength) {
+      return value is string && value.size() <= maxLength;
+    }
+
+    function validOptionalQuantity(data) {
+      return !('quantity' in data)
+        || (data.quantity is number && data.quantity >= 0);
+    }
+
+    // =====================================================
+    // 2. DEVELOPER ADMIN ACCOUNTS
+    // =====================================================
 
     match /admins/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
-      allow write: if false;
+      // Provision administrator documents only through a trusted owner/backend.
+      allow create, update, delete: if false;
     }
+
+    // =====================================================
+    // 3. FARMER PROFILES
+    // =====================================================
 
     match /farmerProfiles/{uid} {
-      // Farmers may only manage their own profile document; admins may inspect/manage profiles.
-      allow create, read, update, delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && !request.resource.data.keys().hasAny([
+          'role', 'isAdmin', 'enabled', 'verified',
+          'verificationStatus', 'admin', 'developer'
+        ]);
+
+      allow read: if signedIn()
+        && (request.auth.uid == uid || isAdmin());
+
+      allow update: if signedIn()
+        && (
+          isAdmin()
+          || (
+            request.auth.uid == uid
+            && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+              'role', 'isAdmin', 'enabled', 'verified',
+              'verificationStatus', 'admin', 'developer'
+            ])
+          )
+        );
+
+      allow delete: if signedIn()
+        && (request.auth.uid == uid || isAdmin());
     }
 
-    // Public farmer map pins contain only non-sensitive location-directory fields.
-    // The private farmerProfiles document is never made publicly readable.
+    // =====================================================
+    // 4. FARMER PUBLIC LOCATION SHARING
+    // =====================================================
+
     match /farmerLocations/{uid} {
       allow read: if true;
-      allow create, update: if signedIn() && request.auth.uid == uid
+
+      allow create: if signedIn()
+        && request.auth.uid == uid
         && request.resource.data.locationVisible == true
         && request.resource.data.lat is string
         && request.resource.data.lng is string;
+
+      allow update: if signedIn()
+        && request.auth.uid == uid
+        && (
+          (
+            request.resource.data.locationVisible == true
+            && request.resource.data.lat is string
+            && request.resource.data.lng is string
+          )
+          || request.resource.data.locationVisible == false
+        );
+
       allow delete: if signedIn() && request.auth.uid == uid;
     }
 
-    // Agrovet / agricultural supplier onboarding and self-managed product listings.
-    // Public map directory contains only approved shop location and contact fields.
-    match /agrovetLocations/{id} {
-      allow read: if true;
-      allow create, update: if isAdmin() || (signedIn()
-        && exists(/databases/$(database)/documents/agrovetApplications/$(id))
-        && get(/databases/$(database)/documents/agrovetApplications/$(id)).data.ownerUid == request.auth.uid
-        && get(/databases/$(database)/documents/agrovetApplications/$(id)).data.status == 'approved'
-        && request.resource.data.shopName is string
-        && request.resource.data.shopLat is string
-        && request.resource.data.shopLng is string);
-      allow delete: if isAdmin();
-    }
+    // =====================================================
+    // 5. AGROVET APPLICATIONS
+    // =====================================================
 
     match /agrovetApplications/{id} {
       allow create: if signedIn()
@@ -50,34 +109,48 @@ service cloud.firestore {
         && request.resource.data.status == 'pending'
         && request.resource.data.shopName is string
         && request.resource.data.phone is string;
-      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
-      allow update: if isAdmin() || (signedIn()
-        && resource.data.ownerUid == request.auth.uid
-        && (resource.data.status == 'pending' || resource.data.status == 'approved')
-        && request.resource.data.ownerUid == resource.data.ownerUid
-        && request.resource.data.status == resource.data.status);
+
+      allow read: if isAdmin() || ownsDocument();
+
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && resource.data.ownerUid == request.auth.uid
+          && resource.data.status in ['pending', 'approved']
+          && request.resource.data.ownerUid == resource.data.ownerUid
+          && request.resource.data.status == resource.data.status
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+            'verified', 'approvedBy', 'reviewedBy', 'adminNotes', 'createdAt'
+          ])
+        );
+
       allow delete: if isAdmin();
     }
 
+    // =====================================================
+    // 6. APPROVED AGROVET SHOP LOCATIONS
+    // =====================================================
 
-    // Farmer-supplied feed ingredients are moderated before public marketplace visibility.
-    match /feedIngredientListings/{id} {
-      allow create: if signedIn()
-        && request.resource.data.ownerUid == request.auth.uid
-        && request.resource.data.status == 'pending'
-        && request.resource.data.name is string
-        && request.resource.data.quantity is number
-        && request.resource.data.quantity > 0
-        && request.resource.data.county is string
-        && request.resource.data.phone is string
-        && request.resource.data.category == 'Animal feeds';
-      allow read: if resource.data.status == 'approved' || isAdmin()
-        || (signedIn() && resource.data.ownerUid == request.auth.uid);
-      allow update: if isAdmin();
-      allow delete: if isAdmin() || (signedIn()
-        && resource.data.ownerUid == request.auth.uid
-        && resource.data.status == 'pending');
+    match /agrovetLocations/{id} {
+      allow read: if true;
+
+      allow create, update: if isAdmin()
+        || (
+          signedIn()
+          && exists(/databases/$(database)/documents/agrovetApplications/$(id))
+          && get(/databases/$(database)/documents/agrovetApplications/$(id)).data.ownerUid == request.auth.uid
+          && get(/databases/$(database)/documents/agrovetApplications/$(id)).data.status == 'approved'
+          && request.resource.data.shopName is string
+          && request.resource.data.shopLat is string
+          && request.resource.data.shopLng is string
+        );
+
+      allow delete: if isAdmin();
     }
+
+    // =====================================================
+    // 7. AGROVET MARKETPLACE PRODUCTS AND STOCK
+    // =====================================================
 
     match /marketplaceProducts/{id} {
       function approvedSupplier() {
@@ -88,97 +161,233 @@ service cloud.firestore {
           && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.ownerUid == request.auth.uid
           && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.status == 'approved';
       }
-      allow read: if resource.data.status == 'approved' || isAdmin()
-        || (signedIn() && resource.data.ownerUid == request.auth.uid);
-      // Only an approved supplier can publish directly to the public marketplace.
-      allow create: if isAdmin() || (approvedSupplier()
-        && request.resource.data.status == 'approved'
-        && request.resource.data.available == true
-        && request.resource.data.name is string
-        && request.resource.data.category is string);
-      allow update: if isAdmin() || (signedIn()
-        && resource.data.ownerUid == request.auth.uid
-        && request.resource.data.ownerUid == resource.data.ownerUid
-        && request.resource.data.applicationId is string
-        && request.resource.data.status == 'approved'
-        && request.resource.data.available is bool
-        && exists(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId))
-        && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.ownerUid == request.auth.uid
-        && get(/databases/$(database)/documents/agrovetApplications/$(request.resource.data.applicationId)).data.status == 'approved');
-      allow delete: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+
+      allow read: if resource.data.status == 'approved'
+        || isAdmin()
+        || ownsDocument();
+
+      allow create: if isAdmin()
+        || (
+          approvedSupplier()
+          && request.resource.data.status == 'approved'
+          && request.resource.data.available is bool
+          && request.resource.data.name is string
+          && request.resource.data.category is string
+          && validOptionalQuantity(request.resource.data)
+        );
+
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && resource.data.ownerUid == request.auth.uid
+          && request.resource.data.ownerUid == resource.data.ownerUid
+          && request.resource.data.applicationId == resource.data.applicationId
+          && request.resource.data.status == 'approved'
+          && request.resource.data.available is bool
+          && request.resource.data.name is string
+          && request.resource.data.category is string
+          && validOptionalQuantity(request.resource.data)
+          && exists(/databases/$(database)/documents/agrovetApplications/$(resource.data.applicationId))
+          && get(/databases/$(database)/documents/agrovetApplications/$(resource.data.applicationId)).data.ownerUid == request.auth.uid
+          && get(/databases/$(database)/documents/agrovetApplications/$(resource.data.applicationId)).data.status == 'approved'
+        );
+
+      allow delete: if isAdmin() || ownsDocument();
     }
 
+    // =====================================================
+    // 8. FARMER FEED INGREDIENT MARKETPLACE LISTINGS
+    // =====================================================
+
+    match /feedIngredientListings/{id} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.name is string
+        && request.resource.data.quantity is number
+        && request.resource.data.quantity > 0
+        && request.resource.data.county is string
+        && request.resource.data.phone is string
+        && request.resource.data.category == 'Animal feeds';
+
+      allow read: if resource.data.status == 'approved'
+        || isAdmin()
+        || ownsDocument();
+
+      allow update: if isAdmin();
+
+      allow delete: if isAdmin()
+        || (ownsDocument() && resource.data.status == 'pending');
+    }
+
+    // =====================================================
+    // 9. ORGANIZATION APPLICATIONS
+    // =====================================================
+
     match /organizationApplications/{id} {
-      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.status == 'pending'
         && request.resource.data.name is string
         && request.resource.data.phone is string;
-      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+
+      allow read: if isAdmin() || ownsDocument();
       allow update, delete: if isAdmin();
     }
+
+    // =====================================================
+    // 10. APPROVED AGRICULTURAL ORGANIZATIONS
+    // =====================================================
 
     match /organizations/{id} {
       allow read: if resource.data.status == 'approved' || isAdmin();
       allow create, update, delete: if isAdmin();
     }
 
+    // =====================================================
+    // 11. FARMER ORGANIZATION REQUESTS
+    // =====================================================
+
     match /farmerOrganizationRequests/{id} {
-      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.status == 'submitted'
         && request.resource.data.message is string;
-      allow read: if isAdmin() || (signedIn() &&
-        (resource.data.ownerUid == request.auth.uid ||
-         resource.data.organizationOwnerUid == request.auth.uid));
-      allow update: if isAdmin() || (signedIn() &&
-        resource.data.organizationOwnerUid == request.auth.uid &&
-        request.resource.data.organizationId == resource.data.organizationId &&
-        request.resource.data.ownerUid == resource.data.ownerUid);
-      allow delete: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+
+      allow read: if isAdmin()
+        || (
+          signedIn()
+          && (
+            resource.data.ownerUid == request.auth.uid
+            || resource.data.organizationOwnerUid == request.auth.uid
+          )
+        );
+
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && resource.data.organizationOwnerUid == request.auth.uid
+          && request.resource.data.organizationId == resource.data.organizationId
+          && request.resource.data.ownerUid == resource.data.ownerUid
+          && request.resource.data.organizationOwnerUid == resource.data.organizationOwnerUid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'status', 'response', 'respondedAt', 'updatedAt'
+          ])
+        );
+
+      allow delete: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
     }
 
+    // =====================================================
+    // 12. FIELD VISIT REPORTS
+    // =====================================================
+
     match /fieldVisitReports/{id} {
-      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.status == 'submitted'
         && request.resource.data.topic is string
         && request.resource.data.county is string;
-      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+
+      allow read: if isAdmin() || ownsDocument();
       allow update, delete: if isAdmin();
     }
 
-    // Learning Academy content is public only after an administrator publishes a course.
-    // Only approved ShambaVet developers can create or edit course, module, lesson and quiz content.
-    match /academyCourses/{id} {
-      allow read: if resource.data.status == 'published' || isAdmin();
-      allow create, update, delete: if isAdmin();
-    }
+    // =====================================================
+    // 13. AGRICULTURAL TRAINING EVENTS
+    // =====================================================
 
     match /trainingEvents/{id} {
       allow read: if resource.data.status == 'published' || isAdmin();
       allow create, update, delete: if isAdmin();
     }
 
+    // =====================================================
+    // 14. LEARNING ACADEMY COURSES
+    // =====================================================
+
+    match /academyCourses/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // =====================================================
+    // 15. TRAINING REGISTRATIONS
+    // =====================================================
+
     match /trainingRegistrations/{id} {
-      allow create: if signedIn() && request.resource.data.farmerUid == request.auth.uid;
-      allow read: if isAdmin() || (signedIn() && resource.data.farmerUid == request.auth.uid);
+      // The current learner UI writes status: 'registered'.
+      allow create: if signedIn()
+        && request.resource.data.farmerUid == request.auth.uid
+        && request.resource.data.farmerUid is string
+        && (
+          !('status' in request.resource.data)
+          || request.resource.data.status in ['pending', 'submitted', 'registered']
+        );
+
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.farmerUid == request.auth.uid);
+
       allow update, delete: if isAdmin();
     }
+
+    // =====================================================
+    // 16. FARM CONSTRUCTION AND PROJECT REQUESTS
+    // =====================================================
 
     match /farmProjectRequests/{id} {
-      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.status == 'submitted';
-      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+
+      allow read: if isAdmin() || ownsDocument();
       allow update, delete: if isAdmin();
     }
+
+    // =====================================================
+    // 17. EXPERT FARM VISIT REQUESTS
+    // =====================================================
 
     match /expertVisitRequests/{id} {
-      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.status == 'submitted';
-      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+
+      allow read: if isAdmin() || ownsDocument();
       allow update, delete: if isAdmin();
     }
 
-    // Farmer consultation requests: farmers may submit and read only their own requests.
-    // Only an enabled ShambaVet developer administrator may review or change request status.
+    // =====================================================
+    // 18. VETERINARIANS PUBLIC DIRECTORY
+    // =====================================================
+
+    match /veterinarians/{id} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // =====================================================
+    // 19. VETERINARIAN REGISTRATION APPLICATIONS
+    // =====================================================
+
+    match /vetApplications/{id} {
+      // The current registration form is intentionally available before account sign-in.
+      // Payment-code verification and approval remain administrator-controlled.
+      allow create: if request.resource.data.fee == 250
+        && request.resource.data.status == 'pending'
+        && request.resource.data.name is string
+        && request.resource.data.phone is string
+        && request.resource.data.email is string
+        && request.resource.data.paymentCode is string;
+
+      allow read, update, delete: if isAdmin();
+    }
+
+    // =====================================================
+    // 20. VETERINARY CONSULTATION REQUESTS
+    // =====================================================
+
     match /vetAppointments/{id} {
       allow create: if signedIn()
         && request.resource.data.ownerUid == request.auth.uid
@@ -191,68 +400,178 @@ service cloud.firestore {
         && request.resource.data.issue is string
         && request.resource.data.issue.size() > 0
         && request.resource.data.issue.size() <= 1500;
-      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+
+      allow read: if isAdmin() || ownsDocument();
       allow update: if isAdmin();
-      allow delete: if isAdmin() || (signedIn()
-        && resource.data.ownerUid == request.auth.uid
-        && resource.data.status == 'submitted');
+
+      allow delete: if isAdmin()
+        || (ownsDocument() && resource.data.status == 'submitted');
     }
 
-    match /veterinarians/{id} {
-      allow read: if true;
-      allow create, update, delete: if isAdmin();
-    }
-    match /vetApplications/{id} {
-      allow create: if request.resource.data.fee == 250 && request.resource.data.status == 'pending'
-        && request.resource.data.name is string && request.resource.data.phone is string
-        && request.resource.data.email is string;
-      allow read, update, delete: if isAdmin();
-    }
+    // =====================================================
+    // 21. PLATFORM NOTIFICATIONS
+    // =====================================================
 
-    // Platform notifications: public event announcements, private recipient alerts and admin operational alerts.
     match /platformNotifications/{id} {
       allow create: if signedIn()
         && request.resource.data.actorUid == request.auth.uid
-        && request.resource.data.title is string
-        && request.resource.data.message is string
+        && validText(request.resource.data.title, 100)
+        && validText(request.resource.data.message, 500)
         && request.resource.data.audience in ['all', 'admins']
-        && (request.resource.data.audience == 'admins' || isAdmin())
-        && request.resource.data.read == false;
-      allow read: if (resource.data.audience == 'all')
+        && request.resource.data.read == false
+        && (request.resource.data.audience == 'admins' || isAdmin());
+
+      allow read: if resource.data.audience == 'all'
         || (signedIn() && resource.data.recipientUid == request.auth.uid)
-        || isAdmin();
+        || (isAdmin() && resource.data.audience == 'admins');
+
       allow update: if isAdmin()
-        || (signedIn() && resource.data.recipientUid == request.auth.uid
+        || (
+          signedIn()
+          && resource.data.recipientUid == request.auth.uid
           && request.resource.data.recipientUid == resource.data.recipientUid
-          && request.resource.data.actorUid == resource.data.actorUid);
+          && request.resource.data.actorUid == resource.data.actorUid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt'])
+        );
+
       allow delete: if isAdmin()
         || (signedIn() && resource.data.recipientUid == request.auth.uid);
     }
 
-    // Payment, certificate and AI entitlements are written only by trusted server endpoints.
-    // Learners can read only their own records; browser clients cannot grant themselves credit or completion.
+    // =====================================================
+    // 22. BROWSER PUSH SUBSCRIPTIONS
+    // =====================================================
+
+    match /pushSubscriptions/{id} {
+      allow read, write: if false;
+    }
+
+    // =====================================================
+    // 23. WHATSAPP CONSENT RECORDS
+    // =====================================================
+
+    match /whatsappOptIns/{uid} {
+      allow read, write: if false;
+    }
+
+    // =====================================================
+    // 24. PAYMENT THROTTLING
+    // =====================================================
+
+    match /payheroThrottles/{id} {
+      allow read, write: if false;
+    }
+
+    // =====================================================
+    // 25. FARMER PRIVATE DATA AND SUBCOLLECTIONS
+    // =====================================================
+
+    match /users/{uid}/{document=**} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    // =====================================================
+    // 26. SECURE ACADEMY PROGRESS
+    // =====================================================
+
     match /academyProgress/{uid}/courses/{courseId} {
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow write: if false;
     }
+
+    // =====================================================
+    // 27. AI ACCOUNTS AND CREDITS
+    // =====================================================
 
     match /aiAccounts/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow write: if false;
     }
 
+    // =====================================================
+    // 28. CERTIFICATE PAYMENT ENTITLEMENTS
+    // =====================================================
+
     match /certificateEntitlements/{id} {
-      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
       allow write: if false;
     }
+
+    // =====================================================
+    // 29. PAYHERO PAYMENT RECORDS
+    // =====================================================
 
     match /payheroPayments/{id} {
-      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
       allow write: if false;
     }
 
-    match /users/{uid}/{document=**} {
-      allow read, write: if signedIn() && request.auth.uid == uid;
+    // =====================================================
+    // 30. JOBS AND CAREERS
+    // =====================================================
+
+    match /jobListings/{id} {
+      // Employers can only submit their own adverts for moderation.
+      // Do not let a client create an already-approved or administrator-reviewed advert.
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 2
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.organization is string
+        && request.resource.data.organization.size() > 1
+        && request.resource.data.organization.size() <= 120
+        && request.resource.data.category is string
+        && request.resource.data.county is string
+        && request.resource.data.county.size() > 0
+        && request.resource.data.county.size() <= 80
+        && request.resource.data.workType is string
+        && request.resource.data.workplace is string
+        && request.resource.data.description is string
+        && request.resource.data.description.size() > 20
+        && request.resource.data.description.size() <= 5000
+        && request.resource.data.requirements is string
+        && request.resource.data.requirements.size() <= 3000
+        && request.resource.data.salary is string
+        && request.resource.data.salary.size() <= 100
+        && request.resource.data.applicationEmail is string
+        && request.resource.data.applicationEmail.size() <= 160
+        && request.resource.data.applicationPhone is string
+        && request.resource.data.applicationPhone.size() <= 40
+        && request.resource.data.applicationUrl is string
+        && request.resource.data.applicationUrl.size() <= 500
+        && (
+          request.resource.data.applicationEmail.size() > 0
+          || request.resource.data.applicationPhone.size() > 0
+          || request.resource.data.applicationUrl.size() > 0
+        );
+
+      // Public users see approved adverts only. Owners can see their own pending
+      // or rejected adverts; developers can inspect and moderate every advert.
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.ownerUid == request.auth.uid)
+        || resource.data.status == 'approved';
+
+      // Only enabled developer administrators may approve, reject or edit adverts.
+      allow update: if isAdmin();
+
+      // Owners may withdraw only their own pending advert.
+      allow delete: if isAdmin()
+        || (
+          signedIn()
+          && resource.data.ownerUid == request.auth.uid
+          && resource.data.status == 'pending'
+        );
     }
+
+    // =====================================================
+    // 31. DEFAULT DENY
+    // =====================================================
+
+    // Collections not explicitly listed above remain denied.
+
   }
 }
