@@ -659,7 +659,7 @@ function Crop(){
    if(!user)throw new Error('Your secure ShambaVet session is still starting. Please try again.');
    const token=await user.getIdToken();
    const image=photo?{mimeType:photo.type,data:await toBase64(photo)}:null;
-   const response=await fetch('/api/crop',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({...form,followUp:refine?followUp:'',previousAssessment:refine?result:null,image})});
+   const response=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({mode:'crop',...form,followUp:refine?followUp:'',previousAssessment:refine?result:null,image})});
    const raw=await response.text();let data={};try{data=raw?JSON.parse(raw):{}}catch{throw new Error('The crop service returned an unreadable response. Please try again.')}
    if(response.status===402&&data.code==='PAYMENT_REQUIRED')throw new Error(data.error||'Your free AI checks have been used. Open AI Vet to add another KSh 49 credit.');
    if(!response.ok)throw new Error(data.error||'Crop assessment failed.');
