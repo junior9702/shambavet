@@ -7,15 +7,15 @@ service cloud.firestore {
     // 1. SHARED SECURITY HELPERS
     // =====================================================
 
+    function signedIn() {
+      return request.auth != null;
+    }
+
     function activeAgrovetPartner() {
       return signedIn()
         && exists(/databases/$(database)/documents/agrovetPartnershipSubscriptions/$(request.auth.uid))
         && get(/databases/$(database)/documents/agrovetPartnershipSubscriptions/$(request.auth.uid)).data.active == true
         && get(/databases/$(database)/documents/agrovetPartnershipSubscriptions/$(request.auth.uid)).data.expiresAt > request.time.toMillis();
-    }
-
-    function signedIn() {
-      return request.auth != null;
     }
 
     function isAdmin() {
