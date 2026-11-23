@@ -17,7 +17,34 @@ const RESPONSE_SCHEMA = {
   required: ["possible", "urgency", "medicine", "questions", "precautions"]
 };
 
-async function callGemini(model, key, input) {
+const CROP_RESPONSE_SCHEMA = {
+  type: "object",
+  properties: {
+    summary: { type: "string" }, severity: { type: "string" }, confidence: { type: "string" },
+    possibleCauses: { type: "array", items: { type: "object", properties: {
+      name: { type: "string" }, likelihood: { type: "string" }, whyItFits: { type: "string" },
+      signsToCheck: { type: "array", items: { type: "string" } }
+    }, required: ["name", "likelihood", "whyItFits", "signsToCheck"] } },
+    immediateActions: { type: "array", items: { type: "string" } },
+    treatmentOptions: { type: "array", items: { type: "string" } },
+    prevention: { type: "array", items: { type: "string" } },
+    followUpQuestions: { type: "array", items: { type: "string" } },
+    escalation: { type: "string" }, localNotes: { type: "string" }
+  },
+  required: ["summary", "severity", "confidence", "possibleCauses", "immediateActions", "treatmentOptions", "prevention", "followUpQuestions", "escalation", "localNotes"]
+};
+
+const CROP_SYSTEM_INSTRUCTION = [
+  "You are ShambaVet Crop Advisor, a careful crop-production and plant-health decision-support assistant for farmers in Kenya.",
+  "Give detailed practical guidance, not one generic sentence. Rank up to four plausible causes and explain the evidence for each.",
+  "Use crop, growth stage, county, symptoms, field pattern, weather, soil and photo. State what is missing and ask targeted follow-up questions.",
+  "Never claim certainty from a photo alone. Do not invent outbreaks, laboratory results, pesticide registrations, product names, application rates or harvest intervals.",
+  "Give low-risk immediate actions first. For pesticides and fertilisers, require confirmation that the product is registered for the crop and problem and that its label and local extension guidance are followed. Do not prescribe unsupported chemical doses.",
+  "Flag rapid spread, severe wilting, suspected invasive pests, poisoning or major crop loss for prompt county agricultural extension or plant-health officer support.",
+  "Use plain language, Kenyan farming context and metric units. Distinguish observations, possibilities and recommendations."
+].join(" ");
+
+async function callGemini(model, key, input, schema = RESPONSE_SCHEMA, systemInstruction = "You are a careful veterinary decision-support assistant. Safety and veterinarian referral take priority over definitive diagnosis or prescribing.") {
   return fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": key },
@@ -28,9 +55,9 @@ async function callGemini(model, key, input) {
       response_format: {
         type: "text",
         mime_type: "application/json",
-        schema: RESPONSE_SCHEMA
+        schema
       },
-      system_instruction: "You are a careful veterinary decision-support assistant. Safety and veterinarian referral take priority over definitive diagnosis or prescribing."
+      system_instruction: systemInstruction
     }),
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
   });
@@ -72,13 +99,40 @@ export default async function handler(req, res) {
   let reservation = null;
   try {
     user = await requireFirebaseUser(req);
-    const { animal, symptoms, duration, image } = req.body || {};
-    if (!animal || !symptoms) return res.status(400).json({ error: "Animal and symptoms are required." });
-    if (typeof symptoms !== "string" || symptoms.length > 5000) {
-      return res.status(400).json({ error: "Please keep the symptom description under 5,000 characters." });
-    }
+    const body = req.body || {};
+    const isCrop = body.mode === "crop";
+    const { animal, symptoms, duration, image } = body;
+    let prompt = "";
+    let responseSchema = RESPONSE_SCHEMA;
+    let systemInstruction = "You are a careful veterinary decision-support assistant. Safety and veterinarian referral take priority over definitive diagnosis or prescribing.";
 
-    const prompt = `You are Shamba Vet AI, a veterinary decision-support assistant for farmers in Kenya.
+    if (isCrop) {
+      const crop = String(body.crop || "").trim().slice(0, 100);
+      if (!crop || typeof symptoms !== "string" || !symptoms.trim()) return res.status(400).json({ error: "Select a crop and describe what you are seeing." });
+      if (symptoms.length > 5000) return res.status(400).json({ error: "Please keep the symptom description under 5,000 characters." });
+      responseSchema = CROP_RESPONSE_SCHEMA;
+      systemInstruction = CROP_SYSTEM_INSTRUCTION;
+      prompt = [
+        "Prepare a structured crop assessment for this farm case.",
+        "Crop: " + crop,
+        "Variety: " + String(body.variety || "Not provided").slice(0, 100),
+        "Growth stage: " + String(body.stage || "Not provided").slice(0, 100),
+        "County / area: " + String(body.county || "Not provided").slice(0, 100),
+        "Symptoms and observations: " + symptoms,
+        "When it started: " + String(duration || "Not provided").slice(0, 150),
+        "Field pattern: " + String(body.pattern || "Not provided").slice(0, 200),
+        "Recent weather / watering: " + String(body.weather || "Not provided").slice(0, 300),
+        "Soil / field conditions: " + String(body.soil || "Not provided").slice(0, 300),
+        "Previous actions or inputs: " + String(body.previousActions || "Not provided").slice(0, 500),
+        "Additional farmer observations / follow-up: " + String(body.followUp || "None").slice(0, 2000),
+        "Previous assessment to refine (if any): " + JSON.stringify(body.previousAssessment || {}).slice(0, 5000),
+        "For follow-ups, explain what the new information changes, what remains uncertain and what to check next. Do not merely repeat the previous answer.",
+        "Provide up to four ranked possible causes, field checks, safe immediate actions, cautious treatment options, prevention, targeted questions, escalation advice and locally relevant notes."
+      ].join("\n");
+    } else {
+      if (!animal || !symptoms) return res.status(400).json({ error: "Animal and symptoms are required." });
+      if (typeof symptoms !== "string" || symptoms.length > 5000) return res.status(400).json({ error: "Please keep the symptom description under 5,000 characters." });
+      prompt = `You are Shamba Vet AI, a veterinary decision-support assistant for farmers in Kenya.
 Animal: ${String(animal).slice(0, 100)}
 Symptoms: ${symptoms}
 Duration: ${String(duration || "not provided").slice(0, 200)}
@@ -91,6 +145,7 @@ Return a structured JSON assessment with:
 - medicine: safe high-level medicine guidance; do not prescribe a dose
 - questions: useful follow-up questions for the farmer
 - precautions: safe immediate steps the farmer can take`;
+    }
 
     const content = [{ type: "text", text: prompt }];
     if (image?.mimeType && image?.data) {
@@ -122,7 +177,7 @@ Return a structured JSON assessment with:
     for (let index = 0; index < MODELS.length; index++) {
       const model = MODELS[index];
       try {
-        const response = await callGemini(model, key, input);
+        const response = await callGemini(model, key, input, responseSchema, systemInstruction);
         data = await response.json().catch(() => ({}));
         if (response.ok) {
           usedModel = model;
