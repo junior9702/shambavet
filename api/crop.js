@@ -102,6 +102,9 @@ export default async function handler(req, res) {
         "Recent weather / watering: " + String(body.weather || "Not provided").slice(0, 300),
         "Soil / field conditions: " + String(body.soil || "Not provided").slice(0, 300),
         "Previous actions or inputs: " + String(body.previousActions || "Not provided").slice(0, 500),
+        "Additional farmer observations / follow-up: " + String(body.followUp || "None").slice(0, 2000),
+        "Previous assessment to refine (if any): " + JSON.stringify(body.previousAssessment || {}).slice(0, 5000),
+        "If this is a follow-up, explicitly explain what the new information changes, what remains uncertain, and what the farmer should check next. Do not merely repeat the previous answer.",
         "Provide up to four ranked possible causes, field checks to distinguish them, safe immediate actions, cautious treatment options, prevention, targeted follow-up questions, escalation advice and locally relevant notes."
       ].join("\n")
     }];
