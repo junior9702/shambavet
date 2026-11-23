@@ -85,6 +85,16 @@ export async function finalizeConfirmedPayment(externalReference, verifiedTransa
           paymentReference: externalReference, paidAt: now
         });
       }
+    } else if (partnerPlan) {
+      const previousExpiry = Number(partnerSubscription?.expiresAt || 0);
+      const startsAt = previousExpiry > now ? previousExpiry : now;
+      const expiresAt = addMonths(startsAt, partnerPlan.months);
+      tx.set('agrovetPartnershipSubscriptions/' + payment.ownerUid, {
+        ownerUid: payment.ownerUid, applicationId: payment.applicationId,
+        active: true, plan: partnerPlan.plan, planLabel: partnerPlan.planLabel,
+        amount: partnerPlan.amount, currency: 'KES', startsAt, expiresAt,
+        updatedAt: now, lastPaymentReference: externalReference, lastPaidAt: now
+      });
     } else {
       const previousExpiry = Number(jobSubscription?.expiresAt || 0);
       const startsAt = previousExpiry > now ? previousExpiry : now;
