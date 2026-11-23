@@ -840,3 +840,26 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .partnershipActive{padding:12px 14px;border-radius:10px;background:#e8f5eb;color:#17613d;font-weight:700}
 .learningNameCard{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.learningNameCard label{display:grid;gap:7px;flex:1;min-width:240px}.learningNameCard input{padding:12px;border:1px solid #ccd8ce;border-radius:9px}
 @media(max-width:700px){.partnershipPlans{grid-template-columns:1fr}.partnershipPaymentRow{align-items:stretch}.partnershipPaymentRow>*{width:100%}.learningNameCard{align-items:stretch}}
+
+
+/* Crop Assistant — detailed diagnostic workspace */
+.cropAssistantLayout{align-items:start;gap:22px}
+.cropAssistantLayout>.card{min-width:0}
+.cropAssistantLayout label{display:block;font-weight:700;margin:14px 0 7px}
+.cropAssistantLayout input,.cropAssistantLayout select,.cropAssistantLayout textarea{width:100%;box-sizing:border-box}
+.cropAssistantLayout .formGrid{margin:10px 0}
+.cropAssessmentResult{max-height:none;overflow:visible}
+.cropAssessmentResult h2{margin:12px 0}
+.cropAssessmentResult h3{margin:22px 0 8px;color:var(--green-dark,#245b39)}
+.cropAssessmentResult p,.cropAssessmentResult li{line-height:1.65}
+.cropAssessmentResult ul,.cropAssessmentResult ol{padding-left:22px}
+.cropCause{padding:14px;margin:12px 0;border:1px solid var(--line,#dce5dc);border-radius:13px;background:var(--surface,#fff)}
+.cropCause>span{float:right}
+.cropCause p{margin:8px 0}
+.cropPhotoPreview{display:flex;align-items:center;gap:14px;margin:12px 0;padding:10px;border:1px solid var(--line,#dce5dc);border-radius:12px}
+.cropPhotoPreview img{width:104px;height:104px;object-fit:cover;border-radius:9px}
+.cropRefineBox{margin:24px 0 16px;padding:16px;border:1px solid var(--line,#dce5dc);border-radius:14px;background:var(--surface-soft,#f6faf6)}
+.cropEmpty{display:grid;gap:12px;align-content:start;min-height:300px;padding:16px}
+.cropEmpty>svg{color:var(--green,#347a4a)}
+.cropEmpty li{margin:8px 0}
+@media(max-width:760px){.cropAssistantLayout{grid-template-columns:1fr}.cropCause>span{float:none;display:inline-flex;margin:7px 0}.cropPhotoPreview{align-items:flex-start}}
