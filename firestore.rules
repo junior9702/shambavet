@@ -7,6 +7,13 @@ service cloud.firestore {
     // 1. SHARED SECURITY HELPERS
     // =====================================================
 
+    function activeAgrovetPartner() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/agrovetPartnershipSubscriptions/$(request.auth.uid))
+        && get(/databases/$(database)/documents/agrovetPartnershipSubscriptions/$(request.auth.uid)).data.active == true
+        && get(/databases/$(database)/documents/agrovetPartnershipSubscriptions/$(request.auth.uid)).data.expiresAt > request.time.toMillis();
+    }
+
     function signedIn() {
       return request.auth != null;
     }
@@ -168,7 +175,8 @@ service cloud.firestore {
 
       allow create: if isAdmin()
         || (
-          approvedSupplier()
+          activeAgrovetPartner()
+          && approvedSupplier()
           && request.resource.data.status == 'approved'
           && request.resource.data.available is bool
           && request.resource.data.name is string
@@ -178,7 +186,8 @@ service cloud.firestore {
 
       allow update: if isAdmin()
         || (
-          signedIn()
+          activeAgrovetPartner()
+          && signedIn()
           && resource.data.ownerUid == request.auth.uid
           && request.resource.data.ownerUid == resource.data.ownerUid
           && request.resource.data.applicationId == resource.data.applicationId
@@ -193,6 +202,12 @@ service cloud.firestore {
         );
 
       allow delete: if isAdmin() || ownsDocument();
+    }
+
+    // Marketplace partnership entitlements are written only by the verified payment backend.
+    match /agrovetPartnershipSubscriptions/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow write: if false;
     }
 
     // =====================================================
