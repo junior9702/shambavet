@@ -828,3 +828,15 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .homeLogo{width:min(360px,100%);height:auto;max-height:none;object-fit:contain;object-position:left center}
 .onboardingBrand img{width:150px;height:150px;object-fit:contain;object-position:center;flex:0 0 150px}
 @media(max-width:650px){.siteHeader .brandLogo{width:54px;height:54px;flex-basis:54px}.homeLogo{width:min(300px,100%)}.onboardingBrand img{width:104px;height:104px;flex-basis:104px}}
+
+/* Marketplace partnership plans */
+.partnershipPanel{border:1px solid #d7e5d9;background:linear-gradient(135deg,#f7fbf7,#fffdf5);padding:clamp(18px,3vw,30px)}
+.partnershipHeader h2{margin:8px 0;color:#174b32}.partnershipHeader p{max-width:760px;color:#5d6c62}
+.partnershipPlans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}
+.partnershipPlan{display:grid;gap:8px;text-align:left;padding:18px;border:1px solid #d6e0d7;border-radius:14px;background:#fff;color:#234735;cursor:pointer}
+.partnershipPlan.selected{border:2px solid #17734a;background:#f0f8f1;box-shadow:0 5px 18px #174b3215}
+.partnershipPlan strong{font-size:25px;color:#14633f}.partnershipPlan small{color:#68766d;line-height:1.45}
+.partnershipPaymentRow{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.partnershipPaymentRow label{display:grid;gap:7px;flex:1;min-width:220px}.partnershipPaymentRow input{width:100%;padding:12px;border:1px solid #cbd8cd;border-radius:9px}
+.partnershipActive{padding:12px 14px;border-radius:10px;background:#e8f5eb;color:#17613d;font-weight:700}
+.learningNameCard{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.learningNameCard label{display:grid;gap:7px;flex:1;min-width:240px}.learningNameCard input{padding:12px;border:1px solid #ccd8ce;border-radius:9px}
+@media(max-width:700px){.partnershipPlans{grid-template-columns:1fr}.partnershipPaymentRow{align-items:stretch}.partnershipPaymentRow>*{width:100%}.learningNameCard{align-items:stretch}}
