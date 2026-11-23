@@ -822,3 +822,9 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .jobsPlanCard--employer .jobsPlanRibbon{background:#e9c46a;color:#3e3218}
 .jobsPlanCard--seeker .jobsPlanRibbon{background:#bce8dc;color:#145c50}
 @media(max-width:650px){.jobsPlansPanel--employer,.jobsPlansPanel--seeker{background:#fff}}
+
+/* Updated ShambaVet Kenya Agricultural Hub emblem */
+.siteHeader .brandLogo{width:68px;height:68px;object-fit:contain;object-position:center;border-radius:50%;flex:0 0 68px}
+.homeLogo{width:min(360px,100%);height:auto;max-height:none;object-fit:contain;object-position:left center}
+.onboardingBrand img{width:150px;height:150px;object-fit:contain;object-position:center;flex:0 0 150px}
+@media(max-width:650px){.siteHeader .brandLogo{width:54px;height:54px;flex-basis:54px}.homeLogo{width:min(300px,100%)}.onboardingBrand img{width:104px;height:104px;flex-basis:104px}}
