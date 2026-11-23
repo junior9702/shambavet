@@ -1,5 +1,11 @@
 import { firestoreTransaction } from './firebase-rest.js';
 
+const PARTNER_PLANS = {
+  marketplace_partner_monthly: { plan: 'monthly', planLabel: '2-Month Partnership', amount: 500, months: 2 },
+  marketplace_partner_annual: { plan: 'annual', planLabel: 'Annual Partnership', amount: 1000, months: 12 },
+  marketplace_partner_premium: { plan: 'premium', planLabel: 'Premium Partnership', amount: 2100, months: 24 }
+};
+
 const JOB_PLANS = {
   job_ad_monthly: { audience: 'employer', plan: 'monthly', amount: 200, months: 1 },
   job_ad_annual: { audience: 'employer', plan: 'annual', amount: 450, months: 12 },
@@ -12,6 +18,7 @@ const JOB_PLANS = {
 function expectedAmount(purpose) {
   if (purpose === 'ai_credit') return 49;
   if (purpose === 'certificate') return 1000;
+  if (PARTNER_PLANS[purpose]) return PARTNER_PLANS[purpose].amount;
   return JOB_PLANS[purpose]?.amount || 0;
 }
 
@@ -42,14 +49,21 @@ export async function finalizeConfirmedPayment(externalReference, verifiedTransa
     let certificateEntitlement = null;
     let progress = null;
     const jobPlan = JOB_PLANS[payment.purpose];
+    const partnerPlan = PARTNER_PLANS[payment.purpose];
     let jobSubscription = null;
     let jobSubscriptionPath = '';
+    let partnerSubscription = null;
     if (payment.purpose === 'ai_credit') {
       aiAccount = await tx.get('aiAccounts/' + payment.ownerUid) || {};
     } else if (payment.purpose === 'certificate') {
       certificateEntitlement = await tx.get('certificateEntitlements/' + payment.ownerUid + '_' + payment.courseId);
       progress = await tx.get('academyProgress/' + payment.ownerUid + '/courses/' + payment.courseId);
       if (!progress?.courseCompleted) return false;
+    } else if (partnerPlan) {
+      if (payment.plan !== partnerPlan.plan || Number(payment.amount) !== partnerPlan.amount || !payment.applicationId) return false;
+      const application = await tx.get('agrovetApplications/' + payment.applicationId);
+      if (!application || application.ownerUid !== payment.ownerUid || application.status !== 'approved') return false;
+      partnerSubscription = await tx.get('agrovetPartnershipSubscriptions/' + payment.ownerUid) || {};
     } else if (jobPlan) {
       if (payment.audience !== jobPlan.audience || payment.plan !== jobPlan.plan) return false;
       jobSubscriptionPath = (jobPlan.audience === 'employer' ? 'jobAdvertiserSubscriptions/' : 'jobSeekerSubscriptions/') + payment.ownerUid;
