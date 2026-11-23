@@ -127,7 +127,8 @@ function App(){
  useEffect(()=>{const fn=e=>{e.preventDefault();setInstallEvent(e)};window.addEventListener('beforeinstallprompt',fn);return()=>window.removeEventListener('beforeinstallprompt',fn)},[]);
  useEffect(()=>{
    if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
-   getRedirectResult(auth).then(result=>{if(result?.user){authPausedRef.current=false;try{localStorage.removeItem('shambavet_signed_out')}catch{}}}).catch(error=>console.warn('Google redirect sign-in:',error.code||error.message));\n   const unsub=onAuthStateChanged(auth,user=>{
+   getRedirectResult(auth).then(result=>{if(result?.user){authPausedRef.current=false;try{localStorage.removeItem('shambavet_signed_out')}catch{}}}).catch(error=>console.warn('Google redirect sign-in:',error.code||error.message));
+   const unsub=onAuthStateChanged(auth,user=>{
      if(user){setDeveloperAdmin(false);setAuthUser(user);setCloudReady(true);getDoc(doc(db,'admins',user.uid)).then(s=>setDeveloperAdmin(s.exists()&&s.data()?.enabled===true&&s.data()?.role==='developer')).catch(()=>setDeveloperAdmin(false));return;}
      setDeveloperAdmin(false);setAuthUser(null);setCloudReady(false);
      // Do not silently recreate a session after the user explicitly signs out.
