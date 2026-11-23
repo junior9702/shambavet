@@ -2,7 +2,7 @@ import React,{useEffect,useRef,useState}from"react";
 import{createRoot}from"react-dom/client";
 import{Activity,AlertTriangle,Brain,Briefcase,Camera,Settings,Check,CheckCircle2,ClipboardList,CloudUpload,CreditCard,FileText,Home as HomeIcon,Leaf,Mail,SlidersHorizontal,ChevronRight,Menu,MessageCircle,Phone,Plus,Search,ShieldCheck,ShoppingBag,Stethoscope,UserRound,X,MapPin,Navigation,LogIn,LogOut,Download,Trash2,Map as MapIcon,Building2,GraduationCap,CalendarDays,ClipboardCheck,Users,Sprout,Upload,LocateFixed,Wallet,Boxes,CalendarCheck,Bell,ChevronDown,UserCircle,Newspaper,RefreshCw,PlayCircle,ExternalLink,Clock3}from"lucide-react";
 import{collection,addDoc,deleteDoc,doc,onSnapshot,orderBy,query,serverTimestamp,setDoc,updateDoc,getDoc,where,limit}from"firebase/firestore";
-import{signInAnonymously,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,onAuthStateChanged,EmailAuthProvider,linkWithCredential,GoogleAuthProvider,signInWithPopup,linkWithPopup,updateProfile,signInWithRedirect,getRedirectResult}from"firebase/auth";
+import{signInAnonymously,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,onAuthStateChanged,EmailAuthProvider,linkWithCredential,linkWithRedirect,GoogleAuthProvider,signInWithPopup,linkWithPopup,updateProfile,signInWithRedirect,getRedirectResult}from"firebase/auth";
 import{auth,db,storage}from"./firebase";
 import{ref as storageRef,uploadBytes,getDownloadURL}from"firebase/storage";
 import L from"leaflet";
