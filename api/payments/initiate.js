@@ -20,12 +20,24 @@ export default async function handler(req, res) {
       job_unlock_premium: { audience: 'seeker', plan: 'premium', amount: 500 }
     };
     const jobPlan = jobPlans[purpose];
-    if (!['ai_credit', 'certificate'].includes(purpose) && !jobPlan) {
+    const partnerPlans = { marketplace_partner_monthly: { plan: 'monthly', planLabel: '2-Month Partnership', amount: 500, months: 2 }, marketplace_partner_annual: { plan: 'annual', planLabel: 'Annual Partnership', amount: 1000, months: 12 }, marketplace_partner_premium: { plan: 'premium', planLabel: 'Premium Partnership', amount: 2100, months: 24 } };
+    const partnerPlan = partnerPlans[purpose];
+    if (!['ai_credit', 'certificate'].includes(purpose) && !jobPlan && !partnerPlan) {
       return res.status(400).json({ error: 'Choose a valid ShambaVet payment purpose.' });
     }
 
-    let amount = jobPlan ? jobPlan.amount : purpose === 'ai_credit' ? 49 : 1000;
+    let amount = jobPlan ? jobPlan.amount : partnerPlan ? partnerPlan.amount : purpose === 'ai_credit' ? 49 : 1000;
     let course = null;
+    if (partnerPlan) {
+      const application = await firestoreGet('agrovetApplications/' + String(body.applicationId || '').trim());
+      if (!application || application.ownerUid !== user.uid || application.status !== 'approved') {
+        return res.status(403).json({ error: 'An approved shop application is required before purchasing a Marketplace Partnership.' });
+      }
+      const current = await firestoreGet('agrovetPartnershipSubscriptions/' + user.uid);
+      if (current?.active === true && Number(current.expiresAt || 0) > Date.now()) {
+        return res.status(200).json({ alreadyActive: true, expiresAt: current.expiresAt, message: 'Your Marketplace Partnership is already active.' });
+      }
+    }
     if (purpose === 'certificate') {
       if (!user.email && !(user.providerUserInfo || []).length) {
         return res.status(403).json({ error: 'Create a permanent learner account before purchasing a course certificate.' });
@@ -80,6 +92,7 @@ export default async function handler(req, res) {
       courseId: course ? String(body.courseId) : '',
       courseTitle: course?.title || '',
       ...(jobPlan ? { audience: jobPlan.audience, plan: jobPlan.plan } : {}),
+      ...(partnerPlan ? { plan: partnerPlan.plan, planLabel: partnerPlan.planLabel, months: partnerPlan.months, applicationId: String(body.applicationId || '') } : {}),
       status: 'initiating',
       createdAt: Date.now()
     };
