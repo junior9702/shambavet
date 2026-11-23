@@ -554,7 +554,8 @@ service cloud.firestore {
     match /jobListings/{id} {
       // Publishing requires a server-verified, currently active employer plan.
       // Private fields are delivered only by the authenticated jobs-unlocked API.
-      allow create: if activeJobEmployer()
+      // Verified developer administrators may publish without buying an employer plan.
+      allow create: if isAdmin() || (activeJobEmployer()
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.status == 'pending'
         && request.resource.data.title is string
@@ -586,7 +587,7 @@ service cloud.firestore {
           request.resource.data.applicationEmail.size() > 0
           || request.resource.data.applicationPhone.size() > 0
           || request.resource.data.applicationUrl.size() > 0
-        );
+        ));
 
       // Public users see approved adverts only. Owners can see their own pending
       // or rejected adverts; developers can inspect and moderate every advert.
