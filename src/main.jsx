@@ -1159,6 +1159,7 @@ function AcademyContentManager(){
    if(!title)throw new Error('Course title is missing. Add title to the course details.');
    if(!summary)throw new Error('Course description is missing. Add summary or description to the course details.');
    if(!rawModules.length)throw new Error('No modules found. Add a modules array containing the complete course.');
+   let skippedInvalidResources=0;
    const modules=rawModules.map((m,i)=>{
     if(!m||typeof m!=='object')throw new Error('Module '+(i+1)+' must be an object.');
     const rawLessons=Array.isArray(m.sections)?m.sections:(Array.isArray(m.lessons)?m.lessons:(Array.isArray(m.topics)?m.topics:[]));
@@ -1178,12 +1179,14 @@ function AcademyContentManager(){
      return{question:String(q?.question||q?.prompt||q?.text||'').trim(),options,correctIndex:Number(correct),explanation:String(q?.explanation||q?.rationale||q?.feedback||'').trim()};
     });
     const rawResources=Array.isArray(m.resources)?m.resources:(Array.isArray(m.references)?m.references:[]);
-    const resources=rawResources.map(x=>typeof x==='string'?{name:'Learning resource',url:x.trim(),type:'link'}:{name:String(x?.name||x?.title||'Learning resource').trim(),url:String(x?.url||x?.link||'').trim(),type:String(x?.type||'link')});
+    const normalizedResources=rawResources.map(x=>typeof x==='string'?{name:'Learning resource',url:x.trim(),type:'link'}:{name:String(x?.name||x?.title||'Learning resource').trim(),url:String(x?.url||x?.link||'').trim(),type:String(x?.type||'link')});
+    // Resource links are optional: silently skip missing or invalid URLs so they cannot block a valid course import.
+    const resources=normalizedResources.filter(x=>/^https?:\/\/\S+$/i.test(x.url));
+    skippedInvalidResources+=normalizedResources.length-resources.length;
     const moduleTitle=String(m.title||m.name||m.moduleTitle||'').trim();
     if(!moduleTitle)throw new Error('Module '+(i+1)+' is missing its title.');
     if(!sections.length&&!resources.some(x=>/^https?:\/\//i.test(x.url)))throw new Error('Module '+(i+1)+' (“'+moduleTitle+'”) needs at least one lesson with written content or a valid resource link.');
     if(!quiz.length||quiz.some(q=>!q.question||q.options.length!==4||q.options.some(x=>!x)||!Number.isInteger(q.correctIndex)||q.correctIndex<0||q.correctIndex>3||!q.explanation))throw new Error('Assessment error in module '+(i+1)+' (“'+moduleTitle+'”): every question needs a question, exactly four options, correctIndex 0–3 and an explanation.');
-    if(resources.some(x=>!/^https?:\/\//i.test(x.url)))throw new Error('A resource link in module '+(i+1)+' is not a valid http/https URL.');
     sections.forEach(section=>section.images=section.images.filter(url=>typeof url==='string'&&/^https?:\/\//i.test(url)));
     return{id:String(m.id||('module-'+(i+1)+'-'+Date.now())),title:moduleTitle,sections:sections.map(x=>[x.heading,x.body,{images:x.images}]),task:String(m.task||m.practicalActivity||m.assignment||m.activity||''),quiz:quiz.map(q=>[q.question,q.options,q.correctIndex,q.explanation]),resources};
    });
@@ -1200,7 +1203,7 @@ function AcademyContentManager(){
     importVersion:2
    });
    const savedCourseId=createdRef.id;
-   setSelectedId(savedCourseId);setIsCreating(false);setCourseForm({title:payload.title,category:payload.category,level:payload.level,summary:payload.summary,icon:payload.icon,iconUrl:payload.iconUrl,iconPublicId:payload.iconPublicId});setPastedCourseText('');setSupportingImages([]);setActiveTab('modules');setNotice('SUCCESS — New course created (ID: '+savedCourseId+'): “'+title+'” saved with '+modules.length+' modules, '+modules.reduce((n,m)=>n+m.quiz.length,0)+' assessment questions and '+payload.supportingImages.length+' supporting images. Review it, then publish when ready.');
+   setSelectedId(savedCourseId);setIsCreating(false);setCourseForm({title:payload.title,category:payload.category,level:payload.level,summary:payload.summary,icon:payload.icon,iconUrl:payload.iconUrl,iconPublicId:payload.iconPublicId});setPastedCourseText('');setSupportingImages([]);setActiveTab('modules');setNotice('SUCCESS — New course created (ID: '+savedCourseId+'): “'+title+'” saved with '+modules.length+' modules, '+modules.reduce((n,m)=>n+m.quiz.length,0)+' assessment questions and '+payload.supportingImages.length+' supporting images.'+(skippedInvalidResources?' '+skippedInvalidResources+' invalid or empty resource link(s) were skipped.':'')+' Review it, then publish when ready.');
   }catch(e){
    const code=e?.code||'';
    const detail=code==='permission-denied'?' Firebase denied the write: confirm you are signed in with the enabled developer admin account in the admins collection.':code==='resource-exhausted'||/maximum.*size|larger than.*maximum|document.*size/i.test(e?.message||'')?' Firestore document size limit reached; shorten the course package.':'';
