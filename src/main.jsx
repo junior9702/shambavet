@@ -1146,11 +1146,11 @@ function AcademyContentManager(){
  };
  const [replaceSelectedCourse,setReplaceSelectedCourse]=useState(false);
  const importCoursePackage=async(file)=>{
-  if(file){if(!/\\.json$/i.test(file.name))return setNotice('Choose a .json file, or paste the complete course package below.');if(file.size>4*1024*1024)return setNotice('Course package is larger than 4 MB. Remove embedded image data and upload images separately.');}
+  if(file){if(!/\.json$/i.test(file.name))return setNotice('Choose a .json file, or paste the complete course package below.');if(file.size>4*1024*1024)return setNotice('Course package is larger than 4 MB. Remove embedded image data and upload images separately.');}
   const source=file?await file.text():pastedCourseText.trim();if(!source)return setNotice('Paste your complete course JSON or choose a JSON file first.');
   setSaving(true);setNotice('Checking the complete course package…');
   try{
-   let clean=source.trim().replace(/^\\uFEFF/,'').replace(/^\\x60{3}(?:json)?\\s*/i,'').replace(/\\s*\\x60{3}$/,'');
+   let clean=source.trim().replace(/^\uFEFF/,'').replace(/^\x60{3}(?:json)?\s*/i,'').replace(/\s*\x60{3}$/,'');
    let parsed;try{parsed=JSON.parse(clean);}catch{throw new Error('Invalid JSON. Ask Gemini for one complete JSON object only, then copy everything from the opening { to the final }.');}
    const course=parsed.course&&typeof parsed.course==='object'?parsed.course:parsed;
    const rawModules=Array.isArray(parsed.modules)?parsed.modules:(Array.isArray(course.modules)?course.modules:(Array.isArray(parsed.curriculum)?parsed.curriculum:[]));
@@ -1174,17 +1174,17 @@ function AcademyContentManager(){
      const options=Array.isArray(rawOptions)?rawOptions.map(x=>String(typeof x==='object'?(x.text||x.label||''):x||'').trim()):['a','b','c','d'].map(k=>String(rawOptions?.[k]??rawOptions?.[k.toUpperCase()]??'').trim());
      let correct=q?.correctIndex??q?.answerIndex??q?.correctOptionIndex??q?.correctAnswer??q?.answer??0;
      if(typeof correct==='string'&&/^[A-D]$/i.test(correct.trim()))correct=correct.trim().toUpperCase().charCodeAt(0)-65;
-     else if(typeof correct==='string'&&/^\\d+$/.test(correct.trim()))correct=Number(correct);
+     else if(typeof correct==='string'&&/^\d+$/.test(correct.trim()))correct=Number(correct);
      return{question:String(q?.question||q?.prompt||q?.text||'').trim(),options,correctIndex:Number(correct),explanation:String(q?.explanation||q?.rationale||q?.feedback||'').trim()};
     });
     const rawResources=Array.isArray(m.resources)?m.resources:(Array.isArray(m.references)?m.references:[]);
     const resources=rawResources.map(x=>typeof x==='string'?{name:'Learning resource',url:x.trim(),type:'link'}:{name:String(x?.name||x?.title||'Learning resource').trim(),url:String(x?.url||x?.link||'').trim(),type:String(x?.type||'link')});
     const moduleTitle=String(m.title||m.name||m.moduleTitle||'').trim();
     if(!moduleTitle)throw new Error('Module '+(i+1)+' is missing its title.');
-    if(!sections.length&&!resources.some(x=>/^https?:\\/\\//i.test(x.url)))throw new Error('Module '+(i+1)+' (“'+moduleTitle+'”) needs at least one lesson with written content or a valid resource link.');
+    if(!sections.length&&!resources.some(x=>/^https?:\/\//i.test(x.url)))throw new Error('Module '+(i+1)+' (“'+moduleTitle+'”) needs at least one lesson with written content or a valid resource link.');
     if(!quiz.length||quiz.some(q=>!q.question||q.options.length!==4||q.options.some(x=>!x)||!Number.isInteger(q.correctIndex)||q.correctIndex<0||q.correctIndex>3||!q.explanation))throw new Error('Assessment error in module '+(i+1)+' (“'+moduleTitle+'”): every question needs a question, exactly four options, correctIndex 0–3 and an explanation.');
-    if(resources.some(x=>!/^https?:\\/\\//i.test(x.url)))throw new Error('A resource link in module '+(i+1)+' is not a valid http/https URL.');
-    sections.forEach(section=>section.images=section.images.filter(url=>typeof url==='string'&&/^https?:\\/\\//i.test(url)));
+    if(resources.some(x=>!/^https?:\/\//i.test(x.url)))throw new Error('A resource link in module '+(i+1)+' is not a valid http/https URL.');
+    sections.forEach(section=>section.images=section.images.filter(url=>typeof url==='string'&&/^https?:\/\//i.test(url)));
     return{id:String(m.id||('module-'+(i+1)+'-'+Date.now())),title:moduleTitle,sections:sections.map(x=>[x.heading,x.body,{images:x.images}]),task:String(m.task||m.practicalActivity||m.assignment||m.activity||''),quiz:quiz.map(q=>[q.question,q.options,q.correctIndex,q.explanation]),resources};
    });
    const courseImages=Array.isArray(course.supportingImages)?course.supportingImages:[];
