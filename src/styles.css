@@ -863,3 +863,5 @@ header nav .navGroupItems button.active{background:#e5f4e8;color:#16743a;box-sha
 .cropEmpty>svg{color:var(--green,#347a4a)}
 .cropEmpty li{margin:8px 0}
 @media(max-width:760px){.cropAssistantLayout{grid-template-columns:1fr}.cropCause>span{float:none;display:inline-flex;margin:7px 0}.cropPhotoPreview{align-items:flex-start}}
+
+.learningNoteContent p{margin:0 0 1rem;line-height:1.8;white-space:normal}.learningInlineNoteImage{margin:1.25rem 0 1.5rem}.learningInlineNoteImage img{display:block;width:100%;max-width:760px;max-height:480px;object-fit:contain;border-radius:14px;background:#f3f6f2}.learningInlineNoteImage figcaption{font-size:.82rem;color:#64748b;margin-top:.45rem}
