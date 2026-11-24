@@ -1199,7 +1199,7 @@ function AcademyContentManager(){
     importVersion:2
    });
    const savedCourseId=createdRef.id;
-   setSelectedId(savedCourseId);setIsCreating(false);setCourseForm({title:payload.title,category:payload.category,level:payload.level,summary:payload.summary,icon:payload.icon,iconUrl:payload.iconUrl,iconPublicId:payload.iconPublicId});setPastedCourseText('');setSupportingImages([]);setActiveTab('modules');setNotice('SUCCESS — New course created (ID: '+savedCourseId+'): “'+title+'” saved with +modules.length+' modules, '+modules.reduce((n,m)=>n+m.quiz.length,0)+' assessment questions and '+payload.supportingImages.length+' supporting images. Review it, then publish when ready.');
+   setSelectedId(savedCourseId);setIsCreating(false);setCourseForm({title:payload.title,category:payload.category,level:payload.level,summary:payload.summary,icon:payload.icon,iconUrl:payload.iconUrl,iconPublicId:payload.iconPublicId});setPastedCourseText('');setSupportingImages([]);setActiveTab('modules');setNotice('SUCCESS — New course created (ID: '+savedCourseId+'): “'+title+'” saved with '+modules.length+' modules, '+modules.reduce((n,m)=>n+m.quiz.length,0)+' assessment questions and '+payload.supportingImages.length+' supporting images. Review it, then publish when ready.');
   }catch(e){
    const code=e?.code||'';
    const detail=code==='permission-denied'?' Firebase denied the write: confirm you are signed in with the enabled developer admin account in the admins collection.':code==='resource-exhausted'||/maximum.*size|larger than.*maximum|document.*size/i.test(e?.message||'')?' Firestore document size limit reached; shorten the course package.':'';
