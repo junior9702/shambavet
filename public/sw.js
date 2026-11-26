@@ -5,7 +5,7 @@ self.addEventListener('push', event => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch { data = { body: event.data?.text?.() || '' }; }
   const title = data.title || 'ShambaVet update';
-  const options = { body: data.body || 'You have a new ShambaVet announcement.', icon: '/shambavet-icon-192.png', badge: '/shambavet-icon-192.png', data: { url: data.url || '/' }, tag: data.tag || 'shambavet-announcement', renotify: false };
+  const options = { body: data.body || 'You have a new ShambaVet announcement.', icon: '/shambavet-logo.webp?v=2', badge: '/shambavet-logo.webp?v=2', data: { url: data.url || '/' }, tag: data.tag || 'shambavet-announcement', renotify: false };
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
