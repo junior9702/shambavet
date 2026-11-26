@@ -1,16 +1,18 @@
 {
   "name": "ShambaVet Kenya Agricultural Hub",
   "short_name": "ShambaVet",
+  "description": "Kenya's agricultural hub for farmers, veterinary services and agribusiness.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#188344",
   "icons": [
     {
-      "src": "/shambavet-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "/shambavet-logo.webp?v=2",
+      "sizes": "320x320",
+      "type": "image/webp",
+      "purpose": "any"
     }
   ]
 }
